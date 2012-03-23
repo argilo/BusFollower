@@ -52,6 +52,6 @@
         android:clickable="true"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:apiKey="0IC4-PFL6soYnJALrHunTcKo2J6jqqX-fCFdmIg" />
+        android:apiKey="@string/google_maps_api_key" />
 
 </LinearLayout>
