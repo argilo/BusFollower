@@ -75,7 +75,7 @@ public class Trip {
 	}
 	
 	public GeoPoint getGeoPoint() {
-		if (latitude == Float.NaN || longitude == Float.NaN) {
+		if (Float.isNaN(latitude) || Float.isNaN(longitude)) {
 			return null;
 		} else {
 			return new GeoPoint((int)(latitude * 1000000), (int)(longitude * 1000000));
