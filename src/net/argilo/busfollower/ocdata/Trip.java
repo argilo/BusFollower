@@ -33,7 +33,7 @@ public class Trip {
 				} else if ("AdjustmentAge".equalsIgnoreCase(tagName)) {
 					adjustmentAge = xpp.nextText();
 				} else if ("LastTripOfSchedule".equalsIgnoreCase(tagName)) {
-					lastTripOfSchedule = "true".equalsIgnoreCase(xpp.nextText());
+					lastTripOfSchedule = "1".equalsIgnoreCase(xpp.nextText());
 				} else if ("BusType".equalsIgnoreCase(tagName)) {
 					busType = xpp.nextText();
 				} else if ("GPSSpeed".equalsIgnoreCase(tagName)) {

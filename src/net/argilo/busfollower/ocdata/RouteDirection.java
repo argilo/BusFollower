@@ -11,12 +11,12 @@ import android.util.Log;
 public class RouteDirection {
 	private static final String TAG = "RouteDirection";
 
-	private String routeNumber;
-	private String routeLabel;
-	private String direction;
-	private String error;
-	private String requestProcessingTime;
-	private ArrayList<Trip> trips;
+	private String routeNumber = null;
+	private String routeLabel = null;
+	private String direction = null;
+	private String error = null;
+	private String requestProcessingTime = null;
+	private ArrayList<Trip> trips = new ArrayList<Trip>();
 
 	public RouteDirection(XmlPullParser xpp) {
 		try {

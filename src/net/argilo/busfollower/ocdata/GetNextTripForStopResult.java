@@ -11,10 +11,10 @@ import android.util.Log;
 public class GetNextTripForStopResult {
 	private static final String TAG = "GetNextTripForStopResult";
 
-	private String stopNumber;
-	private String stopLabel;
-	private String error;
-	private ArrayList<RouteDirection> routeDirections;
+	private String stopNumber = null;
+	private String stopLabel = null;
+	private String error = null;
+	private ArrayList<RouteDirection> routeDirections = new ArrayList<RouteDirection>();
 	
 	public GetNextTripForStopResult(XmlPullParser xpp) {
 		try {
