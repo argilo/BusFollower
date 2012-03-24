@@ -3,6 +3,7 @@
     <string name="app_name">BusFollower</string>
     <string name="stop_number">Stop</string>
     <string name="route_number">Route</string>
+    <string name="update">Update</string>
     
 	<string name="google_maps_api_key">0IC4-PFL6soYnJALrHunTcKo2J6jqqX-fCFdmIg</string>
 	<string name="oc_transpo_application_id">0f9f9b9f</string>

@@ -13,9 +13,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/stop_number" />
-
+
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/stopNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -30,14 +30,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/route_number" />
-
+
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/routeNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:inputType="number" />
+
+        <Button
+            android:id="@+id/updateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/update" />
 
     </LinearLayout>
 
