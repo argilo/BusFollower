@@ -34,10 +34,12 @@ public class BusFollowerActivity extends MapActivity {
         final MapView mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
         
-        Button updateButton = (Button) findViewById(R.id.updateButton);
+        final Button updateButton = (Button) findViewById(R.id.updateButton);
         updateButton.setOnClickListener(new View.OnClickListener() {
         	@Override
         	public void onClick(View v) {
+        		updateButton.setEnabled(false);
+        		
         		EditText routeNumberField = (EditText) findViewById(R.id.routeNumber);
         		EditText stopNumberField = (EditText) findViewById(R.id.stopNumber);
         		
@@ -72,6 +74,7 @@ public class BusFollowerActivity extends MapActivity {
         		        mapView.post(new Runnable() {
         		        	public void run() {
                 		        mapView.invalidate();
+                		        updateButton.setEnabled(true);
         		        	}
         		        });
         			}
