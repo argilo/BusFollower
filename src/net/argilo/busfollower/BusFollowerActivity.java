@@ -57,7 +57,11 @@ public class BusFollowerActivity extends MapActivity {
         					for (Trip trip : rd.getTrips()) {
         						GeoPoint point = trip.getGeoPoint();
         						if (point != null) {
-        					        OverlayItem overlayItem = new OverlayItem(point, "Testing", "One two three!");
+        					        OverlayItem overlayItem = new OverlayItem(point,
+        					        		rd.getRouteNumber() + " " + rd.getRouteLabel(), 
+        					        		"Direction: " + rd.getDirection() + 
+        					        		"\nDestination: " + trip.getDestination() + 
+        					        		"\nStart time: " + trip.getStartTime());
         	        		        itemizedOverlay.addOverlay(overlayItem);
         						}
         					}

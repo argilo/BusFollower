@@ -74,6 +74,14 @@ public class Trip {
 		}		
 	}
 	
+	public String getDestination() {
+		return destination;
+	}
+	
+	public String getStartTime() {
+		return startTime;
+	}
+	
 	public GeoPoint getGeoPoint() {
 		if (Float.isNaN(latitude) || Float.isNaN(longitude)) {
 			return null;

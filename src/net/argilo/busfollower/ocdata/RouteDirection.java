@@ -58,6 +58,18 @@ public class RouteDirection {
 		}		
 	}
 	
+	public String getRouteNumber() {
+		return routeNumber;
+	}
+	
+	public String getRouteLabel() {
+		return routeLabel;
+	}
+	
+	public String getDirection() {
+		return direction;
+	}
+	
 	public ArrayList<Trip> getTrips() {
 		return trips;
 	}
