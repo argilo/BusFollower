@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.argilo.busfollower.ocdata.GetNextTripForStopResult;
+import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -32,7 +32,7 @@ public class OCTranspoDataFetcher {
 		this.apiKey = apiKey;
 	}
 	
-	public GetNextTripForStopResult getNextTripsForStop(String routeNumber, String stopNumber) {
+	public GetNextTripsForStopResult getNextTripsForStop(String routeNumber, String stopNumber) {
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost("https://api.octranspo1.com/GetNextTripsForStop");
@@ -52,7 +52,7 @@ public class OCTranspoDataFetcher {
 
 			xpp.setInput(response.getEntity().getContent(), "UTF-8");
 			xpp.next();
-			return new GetNextTripForStopResult(xpp);
+			return new GetNextTripsForStopResult(xpp);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

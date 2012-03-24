@@ -2,7 +2,7 @@ package net.argilo.busfollower;
 
 import java.util.List;
 
-import net.argilo.busfollower.ocdata.GetNextTripForStopResult;
+import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Trip;
 
@@ -46,7 +46,7 @@ public class BusFollowerActivity extends MapActivity {
         		
         		new Thread(new Runnable() {
         			public void run() {
-        				GetNextTripForStopResult result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
+        				GetNextTripsForStopResult result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
 
         		        List<Overlay> mapOverlays = mapView.getOverlays();
         		        mapOverlays.clear();

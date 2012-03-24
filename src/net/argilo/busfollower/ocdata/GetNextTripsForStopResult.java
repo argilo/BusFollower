@@ -8,7 +8,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Log;
 
-public class GetNextTripForStopResult {
+public class GetNextTripsForStopResult {
 	private static final String TAG = "GetNextTripForStopResult";
 
 	private String stopNumber = null;
@@ -16,7 +16,7 @@ public class GetNextTripForStopResult {
 	private String error = null;
 	private ArrayList<RouteDirection> routeDirections = new ArrayList<RouteDirection>();
 	
-	public GetNextTripForStopResult(XmlPullParser xpp) {
+	public GetNextTripsForStopResult(XmlPullParser xpp) {
 		try {
 			while (xpp.next() == XmlPullParser.START_TAG) {
 				String tagName = xpp.getName();
