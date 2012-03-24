@@ -1,8 +1,14 @@
 package net.argilo.busfollower;
 
+import java.util.List;
+
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +47,15 @@ public class BusFollowerActivity extends MapActivity {
         		}).start();
         	}
         });
+        
+        List<Overlay> mapOverlays = mapView.getOverlays();
+        Drawable drawable = this.getResources().getDrawable(R.drawable.ic_launcher);
+        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, this);
+        
+        GeoPoint point = new GeoPoint(45348518,-75938460);
+        OverlayItem overlayItem = new OverlayItem(point, "Testing", "One two three!");
+        itemizedOverlay.addOverlay(overlayItem);
+        mapOverlays.add(itemizedOverlay);
     }
 
 	@Override
