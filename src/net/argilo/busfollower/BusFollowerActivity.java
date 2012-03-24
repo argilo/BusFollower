@@ -65,6 +65,11 @@ public class BusFollowerActivity extends MapActivity {
         		        if (itemizedOverlay.size() > 0) {
         		        	mapOverlays.add(itemizedOverlay);
         		        }
+        		        mapView.post(new Runnable() {
+        		        	public void run() {
+                		        mapView.invalidate();
+        		        	}
+        		        });
         			}
         		}).start();
         	}
