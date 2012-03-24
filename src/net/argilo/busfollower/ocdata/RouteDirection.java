@@ -22,6 +22,10 @@ public class RouteDirection {
 		try {
 			while (xpp.next() == XmlPullParser.START_TAG) {
 				String tagName = xpp.getName();
+				if ("node".equalsIgnoreCase(tagName)) {
+					// Handle XML that doesn't match the published API.
+					continue;
+				}
 				if ("RouteNo".equalsIgnoreCase(tagName)) {
 					routeNumber = xpp.nextText();
 				} else if ("RouteLabel".equalsIgnoreCase(tagName)) {
@@ -33,15 +37,13 @@ public class RouteDirection {
 				} else if ("RequestProcessingTime".equalsIgnoreCase(tagName)) {
 					requestProcessingTime = xpp.nextText();
 				} else if ("Trips".equalsIgnoreCase(tagName)) {
-					xpp.next();
-					xpp.require(XmlPullParser.START_TAG, "", "Trip");
 					while (xpp.next() == XmlPullParser.START_TAG) {
-						xpp.require(XmlPullParser.START_TAG, "", "node");
 						trips.add(new Trip(xpp));
 					}
-					xpp.require(XmlPullParser.END_TAG, "", "Trip");
-					xpp.next();
-					xpp.require(XmlPullParser.END_TAG, "", "Trips");
+					if ("Trip".equals(xpp.getName())) {
+						// Handle XML that doesn't match the published API.
+						xpp.next();
+					}
 				} else {
 					Log.w(TAG, "Unrecognized start tag: " + tagName);
 				}

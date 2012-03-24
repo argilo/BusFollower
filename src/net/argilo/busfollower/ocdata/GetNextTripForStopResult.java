@@ -28,8 +28,11 @@ public class GetNextTripForStopResult {
 					error = xpp.nextText();
 				} else if ("Route".equalsIgnoreCase(tagName)) {
 					while (xpp.next() == XmlPullParser.START_TAG) {
-						xpp.require(XmlPullParser.START_TAG, "", "RouteDirection");
 						routeDirections.add(new RouteDirection(xpp));
+					}
+					if ("RouteDirection".equals(xpp.getName())) {
+						// Handle XML that doesn't match the published API.
+						xpp.next();
 					}
 				} else {
 					Log.w(TAG, "Unrecognized start tag: " + tagName);
