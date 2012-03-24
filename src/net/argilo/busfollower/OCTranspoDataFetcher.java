@@ -5,6 +5,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.argilo.busfollower.ocdata.GetNextTripForStopResult;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -49,20 +51,9 @@ public class OCTranspoDataFetcher {
 			XmlPullParser xpp = factory.newPullParser();
 
 			xpp.setInput(response.getEntity().getContent(), "UTF-8");
-			int eventType = xpp.getEventType();
-			while (eventType != XmlPullParser.END_DOCUMENT) {
-				if(eventType == XmlPullParser.START_DOCUMENT) {
-					Log.d(TAG, "Start document");
-				} else if(eventType == XmlPullParser.START_TAG) {
-					Log.d(TAG, "Start tag "+xpp.getName());
-				} else if(eventType == XmlPullParser.END_TAG) {
-					Log.d(TAG, "End tag "+xpp.getName());
-				} else if(eventType == XmlPullParser.TEXT) {
-					Log.d(TAG, "Text "+xpp.getText());
-				}
-				eventType = xpp.next();
-			}
-			Log.d(TAG, "End document");
+			xpp.next();
+			GetNextTripForStopResult result = new GetNextTripForStopResult(xpp);
+			Log.d(TAG, "Got next trip result.");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
