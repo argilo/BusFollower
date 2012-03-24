@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
+import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -19,11 +20,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.util.Log;
-
 public class OCTranspoDataFetcher {
-	private static final String TAG = "OCTranspoDataFetcher";
-	
 	private final String appID;
 	private final String apiKey;
 	
@@ -53,6 +50,45 @@ public class OCTranspoDataFetcher {
 			xpp.setInput(response.getEntity().getContent(), "UTF-8");
 			xpp.next();
 			return new GetNextTripsForStopResult(xpp);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) {
+		try {
+			HttpClient client = new DefaultHttpClient();
+			HttpPost post = new HttpPost("https://api.octranspo1.com/GetRouteSummaryForStop");
+			
+			List<NameValuePair> params = new ArrayList<NameValuePair>(3);
+			params.add(new BasicNameValuePair("appID", appID));
+			params.add(new BasicNameValuePair("apiKey", apiKey));
+			params.add(new BasicNameValuePair("stopNo", stopNumber));
+			post.setEntity(new UrlEncodedFormEntity(params));
+			
+			HttpResponse response = client.execute(post);
+			
+			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+			factory.setNamespaceAware(true);
+			XmlPullParser xpp = factory.newPullParser();
+
+			xpp.setInput(response.getEntity().getContent(), "UTF-8");
+			xpp.next();
+			return new GetRouteSummaryForStopResult(xpp);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
