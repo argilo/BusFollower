@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.google.android.maps.GeoPoint;
+
 import android.util.Log;
 
 public class Trip {
@@ -17,8 +19,8 @@ public class Trip {
 	private boolean lastTripOfSchedule = false;
 	private String busType = null;
 	private float gpsSpeed = Float.NaN;
-	private float longitude = Float.NaN;
 	private float latitude = Float.NaN;
+	private float longitude = Float.NaN;
 	
 	public Trip(XmlPullParser xpp) {
 		try {
@@ -70,5 +72,13 @@ public class Trip {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
+	}
+	
+	public GeoPoint getGeoPoint() {
+		if (latitude == Float.NaN || longitude == Float.NaN) {
+			return null;
+		} else {
+			return new GeoPoint((int)(latitude * 1000000), (int)(longitude * 1000000));
+		}
 	}
 }

@@ -2,6 +2,10 @@ package net.argilo.busfollower;
 
 import java.util.List;
 
+import net.argilo.busfollower.ocdata.GetNextTripForStopResult;
+import net.argilo.busfollower.ocdata.RouteDirection;
+import net.argilo.busfollower.ocdata.Trip;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -27,7 +31,7 @@ public class BusFollowerActivity extends MapActivity {
         		getString(R.string.oc_transpo_application_id),
         		getString(R.string.oc_transpo_application_key));
         
-        MapView mapView = (MapView) findViewById(R.id.mapView);
+        final MapView mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
         
         Button updateButton = (Button) findViewById(R.id.updateButton);
@@ -42,20 +46,29 @@ public class BusFollowerActivity extends MapActivity {
         		
         		new Thread(new Runnable() {
         			public void run() {
-        				dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
+        				GetNextTripForStopResult result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
+
+        		        List<Overlay> mapOverlays = mapView.getOverlays();
+        		        mapOverlays.clear();
+        		        Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.ic_launcher);
+        		        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, BusFollowerActivity.this);
+
+        		        for (RouteDirection rd : result.getRouteDirections()) {
+        					for (Trip trip : rd.getTrips()) {
+        						GeoPoint point = trip.getGeoPoint();
+        						if (point != null) {
+        					        OverlayItem overlayItem = new OverlayItem(point, "Testing", "One two three!");
+        	        		        itemizedOverlay.addOverlay(overlayItem);
+        						}
+        					}
+        				}
+        		        if (itemizedOverlay.size() > 0) {
+        		        	mapOverlays.add(itemizedOverlay);
+        		        }
         			}
         		}).start();
         	}
         });
-        
-        List<Overlay> mapOverlays = mapView.getOverlays();
-        Drawable drawable = this.getResources().getDrawable(R.drawable.ic_launcher);
-        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, this);
-        
-        GeoPoint point = new GeoPoint(45348518,-75938460);
-        OverlayItem overlayItem = new OverlayItem(point, "Testing", "One two three!");
-        itemizedOverlay.addOverlay(overlayItem);
-        mapOverlays.add(itemizedOverlay);
     }
 
 	@Override

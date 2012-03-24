@@ -47,4 +47,8 @@ public class GetNextTripForStopResult {
 			e.printStackTrace();
 		}		
 	}
+	
+	public ArrayList<RouteDirection> getRouteDirections() {
+		return routeDirections;
+	}
 }

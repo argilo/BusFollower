@@ -57,4 +57,8 @@ public class RouteDirection {
 			e.printStackTrace();
 		}		
 	}
+	
+	public ArrayList<Trip> getTrips() {
+		return trips;
+	}
 }

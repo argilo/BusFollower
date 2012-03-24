@@ -32,7 +32,7 @@ public class OCTranspoDataFetcher {
 		this.apiKey = apiKey;
 	}
 	
-	public void getNextTripsForStop(String routeNumber, String stopNumber) {
+	public GetNextTripForStopResult getNextTripsForStop(String routeNumber, String stopNumber) {
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost("https://api.octranspo1.com/GetNextTripsForStop");
@@ -52,8 +52,7 @@ public class OCTranspoDataFetcher {
 
 			xpp.setInput(response.getEntity().getContent(), "UTF-8");
 			xpp.next();
-			GetNextTripForStopResult result = new GetNextTripForStopResult(xpp);
-			Log.d(TAG, "Got next trip result.");
+			return new GetNextTripForStopResult(xpp);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -70,5 +69,6 @@ public class OCTranspoDataFetcher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 }
