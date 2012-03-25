@@ -1,6 +1,10 @@
 package net.argilo.busfollower.ocdata;
 
-public class BusType {
+import java.io.Serializable;
+
+public class BusType implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String busType;
 	
 	public BusType(String busType) {

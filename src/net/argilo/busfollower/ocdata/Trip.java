@@ -1,6 +1,7 @@
 package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -11,7 +12,8 @@ import com.google.android.maps.GeoPoint;
 
 import android.util.Log;
 
-public class Trip {
+public class Trip implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static final String TAG = "Trip";
 	
 	private String destination = null;

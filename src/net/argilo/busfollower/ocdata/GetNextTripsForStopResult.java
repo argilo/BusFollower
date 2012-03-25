@@ -1,6 +1,7 @@
 package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -8,7 +9,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Log;
 
-public class GetNextTripsForStopResult {
+public class GetNextTripsForStopResult implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static final String TAG = "GetNextTripForStopResult";
 
 	private String stopNumber = null;

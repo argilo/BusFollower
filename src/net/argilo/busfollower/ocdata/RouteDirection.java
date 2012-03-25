@@ -1,6 +1,7 @@
 package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,7 +13,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Log;
 
-public class RouteDirection {
+public class RouteDirection implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static final String TAG = "RouteDirection";
 
 	private String routeNumber = null;

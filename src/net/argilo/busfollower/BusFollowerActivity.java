@@ -38,6 +38,11 @@ public class BusFollowerActivity extends MapActivity {
 	private static int globalMaxLongitude = -75342690;
 	
 	private OCTranspoDataFetcher dataFetcher;
+	private GetNextTripsForStopResult result = null;
+
+	private MapView mapView = null;
+	private EditText stopNumberField = null;
+	private EditText routeNumberField = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -49,17 +54,27 @@ public class BusFollowerActivity extends MapActivity {
         		getString(R.string.oc_transpo_application_id),
         		getString(R.string.oc_transpo_application_key));
         
-        final MapView mapView = (MapView) findViewById(R.id.mapView);
+        mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
         
-        // Zoom to OC Transpo service area at start.
-        MapController mapController = mapView.getController();
-        mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
-        mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
-        
-		final EditText stopNumberField = (EditText) findViewById(R.id.stopNumber);
-		final EditText routeNumberField = (EditText) findViewById(R.id.routeNumber);
+		stopNumberField = (EditText) findViewById(R.id.stopNumber);
+		routeNumberField = (EditText) findViewById(R.id.routeNumber);
 		
+        if (savedInstanceState != null) {
+        	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
+        	stopNumberField.setText(savedInstanceState.getString("stopNumber"));
+        	routeNumberField.setText(savedInstanceState.getString("routeNumber"));
+        }
+        
+    	if (result != null) {
+			displayGetNextTripsForStopResult(result);
+    	} else {
+	        // Zoom to OC Transpo service area if it's our first time.
+	        MapController mapController = mapView.getController();
+	        mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
+	        mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
+    	}
+        
         final Button updateButton = (Button) findViewById(R.id.updateButton);
         updateButton.setOnClickListener(new View.OnClickListener() {
         	@Override
@@ -75,7 +90,6 @@ public class BusFollowerActivity extends MapActivity {
         		
         		new Thread(new Runnable() {
         			public void run() {
-        				GetNextTripsForStopResult result = null;
         				String errorString;
         				try {
         					result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
@@ -103,38 +117,9 @@ public class BusFollowerActivity extends MapActivity {
         					return;
         				}
         				
-        		        List<Overlay> mapOverlays = mapView.getOverlays();
-        		        mapOverlays.clear();
-        		        Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);
-        		        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, BusFollowerActivity.this);
-
-        		        int minLatitude = 81000000;
-        		        int maxLatitude = -81000000;
-        		        int minLongitude = 181000000;
-        		        int maxLongitude = -181000000;
-        		        
-        		        for (RouteDirection rd : result.getRouteDirections()) {
-        					for (Trip trip : rd.getTrips()) {
-        						GeoPoint point = trip.getGeoPoint();
-        						if (point != null) {
-        							minLatitude = Math.min(minLatitude, point.getLatitudeE6());
-        							maxLatitude = Math.max(maxLatitude, point.getLatitudeE6());
-        							minLongitude = Math.min(minLongitude, point.getLongitudeE6());
-        							maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
-        							
-        					        OverlayItem overlayItem = new BusFollowerOverlayItem(point, BusFollowerActivity.this, rd, trip);
-        	        		        itemizedOverlay.addOverlay(overlayItem);
-        						}
-        					}
-        				}
-        		        if (itemizedOverlay.size() > 0) {
-        		        	mapOverlays.add(itemizedOverlay);
-        		        	
-        		            MapController mapController = mapView.getController();
-        		            mapController.zoomToSpan(Math.max(10000, maxLatitude - minLatitude) * 11 / 10, Math.max(10000, maxLongitude - minLongitude) * 11 / 10);
-        		            mapController.animateTo(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
-        		        }
-        		        mapView.post(new Runnable() {
+        				BusFollowerActivity.this.displayGetNextTripsForStopResult(result);
+        				
+        				mapView.post(new Runnable() {
         		        	public void run() {
                 		        mapView.invalidate();
                 		        updateButton.setEnabled(true);
@@ -160,6 +145,47 @@ public class BusFollowerActivity extends MapActivity {
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable("result", result);
+		outState.putString("stopNumber", stopNumberField.getText().toString());
+		outState.putString("routeNumber", routeNumberField.getText().toString());
+	}
+	
+	private void displayGetNextTripsForStopResult(GetNextTripsForStopResult result) {
+        List<Overlay> mapOverlays = mapView.getOverlays();
+        mapOverlays.clear();
+        Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);
+        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, BusFollowerActivity.this);
+
+        int minLatitude = 81000000;
+        int maxLatitude = -81000000;
+        int minLongitude = 181000000;
+        int maxLongitude = -181000000;
+        
+        for (RouteDirection rd : result.getRouteDirections()) {
+			for (Trip trip : rd.getTrips()) {
+				GeoPoint point = trip.getGeoPoint();
+				if (point != null) {
+					minLatitude = Math.min(minLatitude, point.getLatitudeE6());
+					maxLatitude = Math.max(maxLatitude, point.getLatitudeE6());
+					minLongitude = Math.min(minLongitude, point.getLongitudeE6());
+					maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
+					
+			        OverlayItem overlayItem = new BusFollowerOverlayItem(point, BusFollowerActivity.this, rd, trip);
+    		        itemizedOverlay.addOverlay(overlayItem);
+				}
+			}
+		}
+        if (itemizedOverlay.size() > 0) {
+        	mapOverlays.add(itemizedOverlay);
+        	
+            MapController mapController = mapView.getController();
+            mapController.zoomToSpan(Math.max(10000, maxLatitude - minLatitude) * 11 / 10, Math.max(10000, maxLongitude - minLongitude) * 11 / 10);
+            mapController.animateTo(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
+        }		
 	}
 	
 	private String getErrorString(String error) {
