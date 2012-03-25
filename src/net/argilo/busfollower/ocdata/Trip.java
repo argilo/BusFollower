@@ -89,8 +89,29 @@ public class Trip {
 		return destination;
 	}
 	
-	public String getStartTime() {
-		return startTime;
+	public Date getStartTime() {
+		Calendar calendar = Calendar.getInstance();
+		if (routeDirection.getRequestProcessingTime() != null) {
+			calendar.setTime(routeDirection.getRequestProcessingTime());
+		}
+		
+		int colonIndex = startTime.indexOf(":");
+		int hour = Integer.parseInt(startTime.substring(0, colonIndex)) % 24;
+		int minute = Integer.parseInt(startTime.substring(colonIndex + 1));
+		
+		// Since we're only given the time and not the date, search within
+		// an eight hour window to ensure we get the date right.
+		
+		calendar.add(Calendar.HOUR, -8);
+		for (int i = -8; i <= 8; i++) {
+			if (calendar.get(Calendar.HOUR) == hour) break;
+			calendar.add(Calendar.HOUR, 1);
+		}
+		calendar.set(Calendar.MINUTE, minute);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		
+		return calendar.getTime();
 	}
 	
 	public Date getAdjustedScheduleTime() {

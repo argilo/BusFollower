@@ -1,7 +1,6 @@
 package net.argilo.busfollower;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
@@ -82,12 +81,12 @@ public class BusFollowerActivity extends MapActivity {
         					for (Trip trip : rd.getTrips()) {
         						GeoPoint point = trip.getGeoPoint();
         						if (point != null) {
-        							DateFormat formatter = new SimpleDateFormat("HH:mm");
+        							DateFormat formatter = android.text.format.DateFormat.getTimeFormat(BusFollowerActivity.this);
         					        OverlayItem overlayItem = new OverlayItem(point,
         					        		rd.getRouteNumber() + " " + rd.getRouteLabel(), 
         					        		"Direction: " + rd.getDirection() + 
         					        		"\nDestination: " + trip.getDestination() + 
-        					        		"\nStart time: " + trip.getStartTime() +
+        					        		"\nStart time: " + formatter.format(trip.getStartTime()) +
         					        		(trip.isEstimated() ? "\nEstimated arrival: " : "\nScheduled arrival: ") + 
         					        		formatter.format(trip.getAdjustedScheduleTime()) +
         					        		"\nBus type: " + trip.getBusType() +
