@@ -104,7 +104,7 @@ public class Trip {
 		
 		calendar.add(Calendar.HOUR, -8);
 		for (int i = -8; i <= 8; i++) {
-			if (calendar.get(Calendar.HOUR) == hour) break;
+			if (calendar.get(Calendar.HOUR_OF_DAY) == hour) break;
 			calendar.add(Calendar.HOUR, 1);
 		}
 		calendar.set(Calendar.MINUTE, minute);
