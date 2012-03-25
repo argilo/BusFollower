@@ -3,6 +3,8 @@ package net.argilo.busfollower;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import net.argilo.busfollower.ocdata.BusType;
@@ -169,12 +171,11 @@ public class BusFollowerActivity extends MapActivity {
 	}
 	
 	private String getBusInformationString(RouteDirection rd, Trip trip) {
-		DateFormat formatter = android.text.format.DateFormat.getTimeFormat(BusFollowerActivity.this);
 		return getString(R.string.direction) + " " + rd.getDirection() + 
         		"\n" + getString(R.string.destination) + " " + trip.getDestination() + 
-        		"\n" + getString(R.string.start_time) + " " + formatter.format(trip.getStartTime()) +
+        		"\n" + getString(R.string.start_time) + " " + getHumanReadableTime(trip.getStartTime()) +
         		"\n" + getString(trip.isEstimated() ? R.string.estimated_arrival : R.string.scheduled_arrival) + 
-        		" " + formatter.format(trip.getAdjustedScheduleTime()) +
+        		" " + getHumanReadableTime(trip.getAdjustedScheduleTime()) +
         		"\n" + getString(R.string.bus_type) + " " + getBusTypeString(trip.getBusType()) +
         		(trip.isLastTrip() ? "\n" + getString(R.string.last_trip) : "");
 	}
@@ -232,5 +233,25 @@ public class BusFollowerActivity extends MapActivity {
 			Log.w(TAG, "Couldn't parse error code: " + error);
 			return null;
 		}
+	}
+	
+	private String getHumanReadableTime(Date date) {
+		StringBuffer result = new StringBuffer();
+		DateFormat formatter = android.text.format.DateFormat.getTimeFormat(BusFollowerActivity.this);
+		result.append(formatter.format(date));
+		result.append(" (");
+		
+		// Relative time
+		long difference = date.getTime() - Calendar.getInstance().getTimeInMillis();
+		if (difference >= 0) {
+			int differenceMinutes = (int) ((difference + 30000) / 60000);
+			result.append(this.getResources().getQuantityString(R.plurals.minutes, differenceMinutes, differenceMinutes));
+		} else {
+			int differenceMinutes = (int) ((-difference + 30000) / 60000);
+			result.append(this.getResources().getQuantityString(R.plurals.minutesAgo, differenceMinutes, differenceMinutes));
+		}
+		
+		result.append(")");
+		return result.toString();
 	}
 }

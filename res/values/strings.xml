@@ -15,8 +15,17 @@
     <string name="scheduled_arrival">Scheduled arrival:</string>
     <string name="bus_type">Bus type:</string>
     <string name="last_trip">This is the last trip.</string>
-		
-    <string name="length_40">40-foot</string>
+    
+	<plurals name="minutes">
+	    <item quantity="one">one min</item>
+	    <item quantity="other">%d mins</item>
+	</plurals>
+	<plurals name="minutesAgo">
+	    <item quantity="one">one min ago</item>
+	    <item quantity="other">%d mins ago</item>
+	</plurals>
+	
+	<string name="length_40">40-foot</string>
     <string name="length_60">60-foot</string>
     <string name="bike_rack">bike rack</string>
     <string name="hybrid">hybrid</string>
