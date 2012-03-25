@@ -1,6 +1,8 @@
 package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -15,14 +17,19 @@ public class Trip {
 	private String destination = null;
 	private String startTime = null;
 	private String adjustedScheduleTime = null;
-	private String adjustmentAge = null;
+	private float adjustmentAge = Float.NaN;
 	private boolean lastTripOfSchedule = false;
 	private String busType = null;
 	private float gpsSpeed = Float.NaN;
 	private float latitude = Float.NaN;
 	private float longitude = Float.NaN;
 	
-	public Trip(XmlPullParser xpp) {
+	// Needed to get the request processing time.
+	private RouteDirection routeDirection;
+	
+	public Trip(XmlPullParser xpp, RouteDirection routeDirection) {
+		this.routeDirection = routeDirection;
+		
 		try {
 			while (xpp.next() == XmlPullParser.START_TAG) {
 				String tagName = xpp.getName();
@@ -37,7 +44,11 @@ public class Trip {
 				} else if ("AdjustedScheduleTime".equalsIgnoreCase(tagName)) {
 					adjustedScheduleTime = xpp.nextText();
 				} else if ("AdjustmentAge".equalsIgnoreCase(tagName)) {
-					adjustmentAge = xpp.nextText();
+					try {
+						adjustmentAge = Float.parseFloat(xpp.nextText());
+					} catch (Exception e) {
+						Log.w(TAG, "Couldn't parse AdjustmentAge.");
+					}
 				} else if ("LastTripOfSchedule".equalsIgnoreCase(tagName)) {
 					lastTripOfSchedule = "1".equalsIgnoreCase(xpp.nextText());
 				} else if ("BusType".equalsIgnoreCase(tagName)) {
@@ -80,6 +91,36 @@ public class Trip {
 	
 	public String getStartTime() {
 		return startTime;
+	}
+	
+	public Date getAdjustedScheduleTime() {
+		try {
+			Calendar calendar = Calendar.getInstance();
+			if (routeDirection.getRequestProcessingTime() != null) {
+				calendar.setTime(routeDirection.getRequestProcessingTime());
+			}
+			calendar.add(Calendar.MINUTE, Integer.parseInt(adjustedScheduleTime));
+			return calendar.getTime();
+		} catch (NumberFormatException e) {
+			Log.w(TAG, "Couldn't parse AdjustedScheduleTime: " + adjustedScheduleTime);
+			return null;
+		}
+	}
+	
+	public float getAdjustmentAge() {
+		return adjustmentAge;
+	}
+	
+	public boolean isLastTrip() {
+		return lastTripOfSchedule;
+	}
+	
+	public String getBusType() {
+		return busType;
+	}
+	
+	public float getGpsSpeed() {
+		return gpsSpeed;
 	}
 	
 	public GeoPoint getGeoPoint() {

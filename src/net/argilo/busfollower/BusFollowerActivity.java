@@ -1,5 +1,7 @@
 package net.argilo.busfollower;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
@@ -61,7 +63,7 @@ public class BusFollowerActivity extends MapActivity {
         		new Thread(new Runnable() {
         			public void run() {
         				GetNextTripsForStopResult result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
-
+        				
         		        List<Overlay> mapOverlays = mapView.getOverlays();
         		        mapOverlays.clear();
         		        Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.ic_launcher);
@@ -71,11 +73,15 @@ public class BusFollowerActivity extends MapActivity {
         					for (Trip trip : rd.getTrips()) {
         						GeoPoint point = trip.getGeoPoint();
         						if (point != null) {
+        							DateFormat formatter = new SimpleDateFormat("HH:mm");
         					        OverlayItem overlayItem = new OverlayItem(point,
         					        		rd.getRouteNumber() + " " + rd.getRouteLabel(), 
         					        		"Direction: " + rd.getDirection() + 
         					        		"\nDestination: " + trip.getDestination() + 
-        					        		"\nStart time: " + trip.getStartTime());
+        					        		"\nStart time: " + trip.getStartTime() +
+        					        		"\nEstimated arrival: " + formatter.format(trip.getAdjustedScheduleTime()) +
+        					        		"\nBus type: " + trip.getBusType() +
+        					        		(trip.isLastTrip() ? "\nThis is the last trip." : ""));
         	        		        itemizedOverlay.addOverlay(overlayItem);
         						}
         					}

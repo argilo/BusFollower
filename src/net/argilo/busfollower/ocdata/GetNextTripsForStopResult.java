@@ -48,6 +48,18 @@ public class GetNextTripsForStopResult {
 		}		
 	}
 	
+	public String getStopNumber() {
+		return stopNumber;
+	}
+	
+	public String getStopLabel() {
+		return stopLabel;
+	}
+	
+	public String getError() {
+		return error;
+	}
+	
 	public ArrayList<RouteDirection> getRouteDirections() {
 		return routeDirections;
 	}

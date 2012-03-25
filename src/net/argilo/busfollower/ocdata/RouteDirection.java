@@ -1,7 +1,11 @@
 package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -38,7 +42,7 @@ public class RouteDirection {
 					requestProcessingTime = xpp.nextText();
 				} else if ("Trips".equalsIgnoreCase(tagName)) {
 					while (xpp.next() == XmlPullParser.START_TAG) {
-						trips.add(new Trip(xpp));
+						trips.add(new Trip(xpp, this));
 					}
 					if ("Trip".equals(xpp.getName())) {
 						// Handle XML that doesn't match the published API.
@@ -68,6 +72,20 @@ public class RouteDirection {
 	
 	public String getDirection() {
 		return direction;
+	}
+	
+	public String getError() {
+		return error;
+	}
+	
+	public Date getRequestProcessingTime() {
+		try {
+			DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+			return format.parse(requestProcessingTime);
+		} catch (ParseException e) {
+			Log.w(TAG, "Couldn't parse RequestProcessingTime: " + requestProcessingTime);
+			return null;
+		}
 	}
 	
 	public ArrayList<Trip> getTrips() {
