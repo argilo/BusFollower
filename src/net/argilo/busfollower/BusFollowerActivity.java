@@ -15,9 +15,11 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -53,6 +55,10 @@ public class BusFollowerActivity extends MapActivity {
         	@Override
         	public void onClick(View v) {
         		updateButton.setEnabled(false);
+        		
+        		// Hide the on-screen keyboard when the user presses the Update button.
+        		InputMethodManager imm = (InputMethodManager) BusFollowerActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        		imm.hideSoftInputFromWindow(updateButton.getWindowToken(), 0);
         		
         		EditText routeNumberField = (EditText) findViewById(R.id.routeNumber);
         		EditText stopNumberField = (EditText) findViewById(R.id.stopNumber);
