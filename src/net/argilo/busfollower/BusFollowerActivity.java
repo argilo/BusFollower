@@ -1,8 +1,10 @@
 package net.argilo.busfollower;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
+import net.argilo.busfollower.ocdata.BusType;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Trip;
@@ -17,6 +19,7 @@ import com.google.android.maps.OverlayItem;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -91,16 +94,9 @@ public class BusFollowerActivity extends MapActivity {
         							minLongitude = Math.min(minLongitude, point.getLongitudeE6());
         							maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
         							
-        							DateFormat formatter = android.text.format.DateFormat.getTimeFormat(BusFollowerActivity.this);
         					        OverlayItem overlayItem = new OverlayItem(point,
-        					        		rd.getRouteNumber() + " " + rd.getRouteLabel(), 
-        					        		"Direction: " + rd.getDirection() + 
-        					        		"\nDestination: " + trip.getDestination() + 
-        					        		"\nStart time: " + formatter.format(trip.getStartTime()) +
-        					        		(trip.isEstimated() ? "\nEstimated arrival: " : "\nScheduled arrival: ") + 
-        					        		formatter.format(trip.getAdjustedScheduleTime()) +
-        					        		"\nBus type: " + trip.getBusType() +
-        					        		(trip.isLastTrip() ? "\nThis is the last trip." : ""));
+        					        		rd.getRouteNumber() + " " + rd.getRouteLabel(),
+        					        		getBusInformationString(rd, trip));
         	        		        itemizedOverlay.addOverlay(overlayItem);
         						}
         					}
@@ -109,7 +105,7 @@ public class BusFollowerActivity extends MapActivity {
         		        	mapOverlays.add(itemizedOverlay);
         		        	
         		            MapController mapController = mapView.getController();
-        		            mapController.zoomToSpan(Math.max(10000, maxLatitude - minLatitude), Math.max(10000, maxLongitude - minLongitude));
+        		            mapController.zoomToSpan(Math.max(10000, maxLatitude - minLatitude) * 11 / 10, Math.max(10000, maxLongitude - minLongitude) * 11 / 10);
         		            mapController.animateTo(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
         		        }
         		        mapView.post(new Runnable() {
@@ -138,5 +134,43 @@ public class BusFollowerActivity extends MapActivity {
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
+	}
+	
+	private String getBusInformationString(RouteDirection rd, Trip trip) {
+		DateFormat formatter = android.text.format.DateFormat.getTimeFormat(BusFollowerActivity.this);
+		return getString(R.string.direction) + " " + rd.getDirection() + 
+        		"\n" + getString(R.string.destination) + " " + trip.getDestination() + 
+        		"\n" + getString(R.string.start_time) + " " + formatter.format(trip.getStartTime()) +
+        		"\n" + getString(trip.isEstimated() ? R.string.estimated_arrival : R.string.scheduled_arrival) + 
+        		" " + formatter.format(trip.getAdjustedScheduleTime()) +
+        		"\n" + getString(R.string.bus_type) + " " + getBusTypeString(trip.getBusType()) +
+        		(trip.isLastTrip() ? "\n" + getString(R.string.last_trip) : "");
+	}
+	
+	private String getBusTypeString(BusType busType) {
+		ArrayList<String> pieces = new ArrayList<String>();
+		
+		switch (busType.getLength()) {
+		case 40:
+			pieces.add(getString(R.string.length_40));
+			break;
+		case 60:
+			pieces.add(getString(R.string.length_60));
+			break;
+		}
+		
+		if (busType.hasBikeRack()) {
+			pieces.add(getString(R.string.bike_rack));
+		}
+		
+		if (busType.isDoubleDecker()) {
+			pieces.add(getString(R.string.double_decker));
+		}
+
+		if (busType.isHybrid()) {
+			pieces.add(getString(R.string.hybrid));
+		}
+
+		return TextUtils.join(", ", pieces);
 	}
 }

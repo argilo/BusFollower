@@ -19,7 +19,7 @@ public class Trip {
 	private String adjustedScheduleTime = null;
 	private float adjustmentAge = Float.NaN;
 	private boolean lastTripOfSchedule = false;
-	private String busType = null;
+	private BusType busType = new BusType("");
 	private float gpsSpeed = Float.NaN;
 	private float latitude = Float.NaN;
 	private float longitude = Float.NaN;
@@ -52,7 +52,7 @@ public class Trip {
 				} else if ("LastTripOfSchedule".equalsIgnoreCase(tagName)) {
 					lastTripOfSchedule = "1".equalsIgnoreCase(xpp.nextText());
 				} else if ("BusType".equalsIgnoreCase(tagName)) {
-					busType = xpp.nextText();
+					busType = new BusType(xpp.nextText());
 				} else if ("GPSSpeed".equalsIgnoreCase(tagName)) {
 					try {
 						gpsSpeed = Float.parseFloat(xpp.nextText());
@@ -140,7 +140,7 @@ public class Trip {
 		return lastTripOfSchedule;
 	}
 	
-	public String getBusType() {
+	public BusType getBusType() {
 		return busType;
 	}
 	
