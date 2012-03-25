@@ -27,10 +27,10 @@ import android.widget.TextView;
 
 public class BusFollowerActivity extends MapActivity {
 	// Values taken from stops.txt.
-	private static int minLatitude = 45130104; 
-	private static int maxLatitude = 45519650;
-	private static int minLongitude = -76040543;
-	private static int maxLongitude = -75342690;
+	private static int globalMinLatitude = 45130104; 
+	private static int globalMaxLatitude = 45519650;
+	private static int globalMinLongitude = -76040543;
+	private static int globalMaxLongitude = -75342690;
 	
 	private OCTranspoDataFetcher dataFetcher;
 	
@@ -49,8 +49,8 @@ public class BusFollowerActivity extends MapActivity {
         
         // Zoom to OC Transpo service area at start.
         MapController mapController = mapView.getController();
-        mapController.zoomToSpan((maxLatitude - minLatitude), (maxLongitude - minLongitude));
-        mapController.setCenter(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
+        mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
+        mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
         
 		final EditText stopNumberField = (EditText) findViewById(R.id.stopNumber);
 		final EditText routeNumberField = (EditText) findViewById(R.id.routeNumber);
@@ -77,10 +77,20 @@ public class BusFollowerActivity extends MapActivity {
         		        Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.ic_launcher);
         		        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, BusFollowerActivity.this);
 
+        		        int minLatitude = 81000000;
+        		        int maxLatitude = -81000000;
+        		        int minLongitude = 181000000;
+        		        int maxLongitude = -181000000;
+        		        
         		        for (RouteDirection rd : result.getRouteDirections()) {
         					for (Trip trip : rd.getTrips()) {
         						GeoPoint point = trip.getGeoPoint();
         						if (point != null) {
+        							minLatitude = Math.min(minLatitude, point.getLatitudeE6());
+        							maxLatitude = Math.max(maxLatitude, point.getLatitudeE6());
+        							minLongitude = Math.min(minLongitude, point.getLongitudeE6());
+        							maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
+        							
         							DateFormat formatter = android.text.format.DateFormat.getTimeFormat(BusFollowerActivity.this);
         					        OverlayItem overlayItem = new OverlayItem(point,
         					        		rd.getRouteNumber() + " " + rd.getRouteLabel(), 
@@ -97,6 +107,10 @@ public class BusFollowerActivity extends MapActivity {
         				}
         		        if (itemizedOverlay.size() > 0) {
         		        	mapOverlays.add(itemizedOverlay);
+        		        	
+        		            MapController mapController = mapView.getController();
+        		            mapController.zoomToSpan(Math.max(10000, maxLatitude - minLatitude), Math.max(10000, maxLongitude - minLongitude));
+        		            mapController.animateTo(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
         		        }
         		        mapView.post(new Runnable() {
         		        	public void run() {
