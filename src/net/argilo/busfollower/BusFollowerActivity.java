@@ -16,10 +16,13 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -29,6 +32,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class BusFollowerActivity extends MapActivity {
+	private static final String TAG = "BusFollowerActivity";
+	
 	// Values taken from stops.txt.
 	private static int globalMinLatitude = 45130104; 
 	private static int globalMaxLatitude = 45519650;
@@ -74,6 +79,25 @@ public class BusFollowerActivity extends MapActivity {
         		new Thread(new Runnable() {
         			public void run() {
         				GetNextTripsForStopResult result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
+        				final String errorString = getErrorString(result.getError());
+        				if (errorString != null) {
+        					BusFollowerActivity.this.runOnUiThread(new Runnable() {
+        						public void run() {
+                					AlertDialog.Builder builder = new AlertDialog.Builder(BusFollowerActivity.this);
+                					builder.setTitle(R.string.error)
+                					       .setMessage(errorString)
+                					       .setNegativeButton(BusFollowerActivity.this.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                					           public void onClick(DialogInterface dialog, int id) {
+                					                dialog.cancel();
+                					           }
+                					       });
+                					AlertDialog alert = builder.create();
+                					alert.show();
+                					updateButton.setEnabled(true);
+        						}
+        					});
+        					return;
+        				}
         				
         		        List<Overlay> mapOverlays = mapView.getOverlays();
         		        mapOverlays.clear();
@@ -172,5 +196,33 @@ public class BusFollowerActivity extends MapActivity {
 		}
 
 		return TextUtils.join(", ", pieces);
+	}
+	
+	private String getErrorString(String error) {
+		if ("".equals(error)) {
+			return null;
+		}
+		
+		try {
+			int errorNumber = Integer.parseInt(error);
+			switch (errorNumber) {
+			case 1:
+				return getString(R.string.error_1);
+			case 2:
+				return getString(R.string.error_2);
+			case 10:
+				return getString(R.string.error_10);
+			case 11:
+				return getString(R.string.error_11);
+			case 12:
+				return getString(R.string.error_12);
+			default:
+				Log.w(TAG, "Unknown error code: " + error);
+				return null;
+			}
+		} catch (NumberFormatException e) {
+			Log.w(TAG, "Couldn't parse error code: " + error);
+			return null;
+		}
 	}
 }

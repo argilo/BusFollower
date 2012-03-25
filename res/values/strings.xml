@@ -4,6 +4,8 @@
     <string name="stop_number">Stop</string>
     <string name="route_number">Route</string>
     <string name="update">Update</string>
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
     
 	<string name="direction">Direction:</string>
 	<string name="destination">Destination:</string>
@@ -19,6 +21,12 @@
     <string name="hybrid">hybrid</string>
     <string name="double_decker">double decker</string>
     
+    <string name="error_1">Invalid API key</string>
+    <string name="error_2">Unable to query data source</string>
+	<string name="error_10">Invalid stop number</string>
+	<string name="error_11">Invalid stop number format</string>
+	<string name="error_12">Invalid route number</string>
+        
 	<string name="google_maps_api_key">0IC4-PFL6soYnJALrHunTcKo2J6jqqX-fCFdmIg</string>
 	<string name="oc_transpo_application_id">0f9f9b9f</string>
 	<string name="oc_transpo_application_key">28220095a10a6c426e1834fa6035f1bd</string>
