@@ -18,10 +18,13 @@ import com.google.android.maps.OverlayItem;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class BusFollowerActivity extends MapActivity {
 	// Values taken from stops.txt.
@@ -50,6 +53,9 @@ public class BusFollowerActivity extends MapActivity {
         mapController.zoomToSpan((maxLatitude - minLatitude), (maxLongitude - minLongitude));
         mapController.setCenter(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
         
+		final EditText stopNumberField = (EditText) findViewById(R.id.stopNumber);
+		final EditText routeNumberField = (EditText) findViewById(R.id.routeNumber);
+		
         final Button updateButton = (Button) findViewById(R.id.updateButton);
         updateButton.setOnClickListener(new View.OnClickListener() {
         	@Override
@@ -60,11 +66,8 @@ public class BusFollowerActivity extends MapActivity {
         		InputMethodManager imm = (InputMethodManager) BusFollowerActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
         		imm.hideSoftInputFromWindow(updateButton.getWindowToken(), 0);
         		
-        		EditText routeNumberField = (EditText) findViewById(R.id.routeNumber);
-        		EditText stopNumberField = (EditText) findViewById(R.id.stopNumber);
-        		
-        		final String routeNumber = routeNumberField.getText().toString();
         		final String stopNumber = stopNumberField.getText().toString();
+        		final String routeNumber = routeNumberField.getText().toString();
         		
         		new Thread(new Runnable() {
         			public void run() {
@@ -105,6 +108,17 @@ public class BusFollowerActivity extends MapActivity {
         		}).start();
         	}
         });
+        
+        routeNumberField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+					updateButton.performClick();
+					return true;
+				}
+				return false;
+			}
+		});
     }
 
 	@Override
