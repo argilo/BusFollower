@@ -17,11 +17,11 @@
     <string name="last_trip">This is the last trip.</string>
     
 	<plurals name="minutes">
-	    <item quantity="one">one min</item>
+	    <item quantity="one">%d min</item>
 	    <item quantity="other">%d mins</item>
 	</plurals>
 	<plurals name="minutesAgo">
-	    <item quantity="one">one min ago</item>
+	    <item quantity="one">%d min ago</item>
 	    <item quantity="other">%d mins ago</item>
 	</plurals>
 	

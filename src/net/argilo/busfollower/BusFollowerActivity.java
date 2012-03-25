@@ -1,13 +1,8 @@
 package net.argilo.busfollower;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import net.argilo.busfollower.ocdata.BusType;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Trip;
@@ -24,7 +19,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -128,9 +122,7 @@ public class BusFollowerActivity extends MapActivity {
         							minLongitude = Math.min(minLongitude, point.getLongitudeE6());
         							maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
         							
-        					        OverlayItem overlayItem = new OverlayItem(point,
-        					        		rd.getRouteNumber() + " " + rd.getRouteLabel(),
-        					        		getBusInformationString(rd, trip));
+        					        OverlayItem overlayItem = new BusFollowerOverlayItem(point, BusFollowerActivity.this, rd, trip);
         	        		        itemizedOverlay.addOverlay(overlayItem);
         						}
         					}
@@ -170,43 +162,6 @@ public class BusFollowerActivity extends MapActivity {
 		return false;
 	}
 	
-	private String getBusInformationString(RouteDirection rd, Trip trip) {
-		return getString(R.string.direction) + " " + rd.getDirection() + 
-        		"\n" + getString(R.string.destination) + " " + trip.getDestination() + 
-        		"\n" + getString(R.string.start_time) + " " + getHumanReadableTime(trip.getStartTime()) +
-        		"\n" + getString(trip.isEstimated() ? R.string.estimated_arrival : R.string.scheduled_arrival) + 
-        		" " + getHumanReadableTime(trip.getAdjustedScheduleTime()) +
-        		"\n" + getString(R.string.bus_type) + " " + getBusTypeString(trip.getBusType()) +
-        		(trip.isLastTrip() ? "\n" + getString(R.string.last_trip) : "");
-	}
-	
-	private String getBusTypeString(BusType busType) {
-		ArrayList<String> pieces = new ArrayList<String>();
-		
-		switch (busType.getLength()) {
-		case 40:
-			pieces.add(getString(R.string.length_40));
-			break;
-		case 60:
-			pieces.add(getString(R.string.length_60));
-			break;
-		}
-		
-		if (busType.hasBikeRack()) {
-			pieces.add(getString(R.string.bike_rack));
-		}
-		
-		if (busType.isDoubleDecker()) {
-			pieces.add(getString(R.string.double_decker));
-		}
-
-		if (busType.isHybrid()) {
-			pieces.add(getString(R.string.hybrid));
-		}
-
-		return TextUtils.join(", ", pieces);
-	}
-	
 	private String getErrorString(String error) {
 		if ("".equals(error)) {
 			return null;
@@ -233,25 +188,5 @@ public class BusFollowerActivity extends MapActivity {
 			Log.w(TAG, "Couldn't parse error code: " + error);
 			return null;
 		}
-	}
-	
-	private String getHumanReadableTime(Date date) {
-		StringBuffer result = new StringBuffer();
-		DateFormat formatter = android.text.format.DateFormat.getTimeFormat(BusFollowerActivity.this);
-		result.append(formatter.format(date));
-		result.append(" (");
-		
-		// Relative time
-		long difference = date.getTime() - Calendar.getInstance().getTimeInMillis();
-		if (difference >= 0) {
-			int differenceMinutes = (int) ((difference + 30000) / 60000);
-			result.append(this.getResources().getQuantityString(R.plurals.minutes, differenceMinutes, differenceMinutes));
-		} else {
-			int differenceMinutes = (int) ((-difference + 30000) / 60000);
-			result.append(this.getResources().getQuantityString(R.plurals.minutesAgo, differenceMinutes, differenceMinutes));
-		}
-		
-		result.append(")");
-		return result.toString();
 	}
 }
