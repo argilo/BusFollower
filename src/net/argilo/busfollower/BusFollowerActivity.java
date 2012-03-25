@@ -1,5 +1,6 @@
 package net.argilo.busfollower;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,14 +79,21 @@ public class BusFollowerActivity extends MapActivity {
         		
         		new Thread(new Runnable() {
         			public void run() {
-        				GetNextTripsForStopResult result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
-        				final String errorString = getErrorString(result.getError());
+        				GetNextTripsForStopResult result = null;
+        				String errorString;
+        				try {
+        					result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
+            				errorString = getErrorString(result.getError());
+        				} catch (IOException e) {
+        					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
+        				}
+        				final String errorStringFinal = errorString;
         				if (errorString != null) {
         					BusFollowerActivity.this.runOnUiThread(new Runnable() {
         						public void run() {
                 					AlertDialog.Builder builder = new AlertDialog.Builder(BusFollowerActivity.this);
                 					builder.setTitle(R.string.error)
-                					       .setMessage(errorString)
+                					       .setMessage(errorStringFinal)
                 					       .setNegativeButton(BusFollowerActivity.this.getString(R.string.ok), new DialogInterface.OnClickListener() {
                 					           public void onClick(DialogInterface dialog, int id) {
                 					                dialog.cancel();

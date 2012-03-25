@@ -29,7 +29,7 @@ public class OCTranspoDataFetcher {
 		this.apiKey = apiKey;
 	}
 	
-	public GetNextTripsForStopResult getNextTripsForStop(String routeNumber, String stopNumber) {
+	public GetNextTripsForStopResult getNextTripsForStop(String routeNumber, String stopNumber) throws IOException {
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost("https://api.octranspo1.com/GetNextTripsForStop");
@@ -50,15 +50,6 @@ public class OCTranspoDataFetcher {
 			xpp.setInput(response.getEntity().getContent(), "UTF-8");
 			xpp.next();
 			return new GetNextTripsForStopResult(xpp);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,7 +60,7 @@ public class OCTranspoDataFetcher {
 		return null;
 	}
 	
-	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) {
+	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException {
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost("https://api.octranspo1.com/GetRouteSummaryForStop");
@@ -89,15 +80,6 @@ public class OCTranspoDataFetcher {
 			xpp.setInput(response.getEntity().getContent(), "UTF-8");
 			xpp.next();
 			return new GetRouteSummaryForStopResult(xpp);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
