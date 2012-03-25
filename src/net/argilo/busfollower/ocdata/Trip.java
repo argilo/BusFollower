@@ -111,6 +111,10 @@ public class Trip {
 		return adjustmentAge;
 	}
 	
+	public boolean isEstimated() {
+		return (adjustmentAge >= 0);
+	}
+	
 	public boolean isLastTrip() {
 		return lastTripOfSchedule;
 	}

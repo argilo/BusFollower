@@ -88,7 +88,8 @@ public class BusFollowerActivity extends MapActivity {
         					        		"Direction: " + rd.getDirection() + 
         					        		"\nDestination: " + trip.getDestination() + 
         					        		"\nStart time: " + trip.getStartTime() +
-        					        		"\nEstimated arrival: " + formatter.format(trip.getAdjustedScheduleTime()) +
+        					        		(trip.isEstimated() ? "\nEstimated arrival: " : "\nScheduled arrival: ") + 
+        					        		formatter.format(trip.getAdjustedScheduleTime()) +
         					        		"\nBus type: " + trip.getBusType() +
         					        		(trip.isLastTrip() ? "\nThis is the last trip." : ""));
         	        		        itemizedOverlay.addOverlay(overlayItem);
