@@ -18,36 +18,28 @@ public class GetNextTripsForStopResult implements Serializable {
 	private String error = null;
 	private ArrayList<RouteDirection> routeDirections = new ArrayList<RouteDirection>();
 	
-	public GetNextTripsForStopResult(XmlPullParser xpp) {
-		try {
-			while (xpp.next() == XmlPullParser.START_TAG) {
-				String tagName = xpp.getName();
-				if ("StopNo".equalsIgnoreCase(tagName)) {
-					stopNumber = xpp.nextText();
-				} else if ("StopLabel".equalsIgnoreCase(tagName)) {
-					stopLabel = xpp.nextText();
-				} else if ("Error".equalsIgnoreCase(tagName)) {
-					error = xpp.nextText();
-				} else if ("Route".equalsIgnoreCase(tagName)) {
-					while (xpp.next() == XmlPullParser.START_TAG) {
-						routeDirections.add(new RouteDirection(xpp));
-					}
-					if ("RouteDirection".equals(xpp.getName())) {
-						// Handle XML that doesn't match the published API.
-						xpp.next();
-					}
-				} else {
-					Log.w(TAG, "Unrecognized start tag: " + tagName);
+	public GetNextTripsForStopResult(XmlPullParser xpp) throws XmlPullParserException, IOException {
+		while (xpp.next() == XmlPullParser.START_TAG) {
+			String tagName = xpp.getName();
+			if ("StopNo".equalsIgnoreCase(tagName)) {
+				stopNumber = xpp.nextText();
+			} else if ("StopLabel".equalsIgnoreCase(tagName)) {
+				stopLabel = xpp.nextText();
+			} else if ("Error".equalsIgnoreCase(tagName)) {
+				error = xpp.nextText();
+			} else if ("Route".equalsIgnoreCase(tagName)) {
+				while (xpp.next() == XmlPullParser.START_TAG) {
+					routeDirections.add(new RouteDirection(xpp));
 				}
-				xpp.require(XmlPullParser.END_TAG, "", tagName);
+				if ("RouteDirection".equals(xpp.getName())) {
+					// Handle XML that doesn't match the published API.
+					xpp.next();
+				}
+			} else {
+				Log.w(TAG, "Unrecognized start tag: " + tagName);
 			}
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+			xpp.require(XmlPullParser.END_TAG, "", tagName);
+		}
 	}
 	
 	public String getStopNumber() {
