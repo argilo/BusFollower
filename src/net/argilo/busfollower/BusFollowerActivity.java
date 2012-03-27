@@ -3,6 +3,8 @@ package net.argilo.busfollower;
 import java.io.IOException;
 import java.util.List;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.RouteDirection;
@@ -95,6 +97,8 @@ public class BusFollowerActivity extends MapActivity {
             				errorString = getErrorString(result.getError());
         				} catch (IOException e) {
         					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
+        				} catch (XmlPullParserException e) {
+        					errorString = BusFollowerActivity.this.getString(R.string.invalid_response);
         				} catch (IllegalArgumentException e) {
         					errorString = e.getMessage();
         				}

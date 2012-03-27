@@ -30,70 +30,52 @@ public class OCTranspoDataFetcher {
         apiKey = context.getString(R.string.oc_transpo_application_key);
 	}
 	
-	public GetNextTripsForStopResult getNextTripsForStop(String stopNumber, String routeNumber) throws IOException {
+	public GetNextTripsForStopResult getNextTripsForStop(String stopNumber, String routeNumber) throws IOException, XmlPullParserException {
 		validateStopNumber(stopNumber);
 		validateRouteNumber(routeNumber);
 		
-		try {
-			HttpClient client = new DefaultHttpClient();
-			HttpPost post = new HttpPost("https://api.octranspo1.com/GetNextTripsForStop");
-			
-			List<NameValuePair> params = new ArrayList<NameValuePair>(4);
-			params.add(new BasicNameValuePair("appID", appID));
-			params.add(new BasicNameValuePair("apiKey", apiKey));
-			params.add(new BasicNameValuePair("routeNo", routeNumber));
-			params.add(new BasicNameValuePair("stopNo", stopNumber));
-			post.setEntity(new UrlEncodedFormEntity(params));
-			
-			HttpResponse response = client.execute(post);
-			
-			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			XmlPullParser xpp = factory.newPullParser();
+		HttpClient client = new DefaultHttpClient();
+		HttpPost post = new HttpPost("https://api.octranspo1.com/GetNextTripsForStop");
+		
+		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
+		params.add(new BasicNameValuePair("appID", appID));
+		params.add(new BasicNameValuePair("apiKey", apiKey));
+		params.add(new BasicNameValuePair("routeNo", routeNumber));
+		params.add(new BasicNameValuePair("stopNo", stopNumber));
+		post.setEntity(new UrlEncodedFormEntity(params));
+		
+		HttpResponse response = client.execute(post);
+		
+		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		XmlPullParser xpp = factory.newPullParser();
 
-			xpp.setInput(response.getEntity().getContent(), "UTF-8");
-			xpp.next();
-			return new GetNextTripsForStopResult(xpp);
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		xpp.setInput(response.getEntity().getContent(), "UTF-8");
+		xpp.next();
+		return new GetNextTripsForStopResult(xpp);
 	}
 	
-	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException {
+	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
 		validateStopNumber(stopNumber);
 
-		try {
-			HttpClient client = new DefaultHttpClient();
-			HttpPost post = new HttpPost("https://api.octranspo1.com/GetRouteSummaryForStop");
-			
-			List<NameValuePair> params = new ArrayList<NameValuePair>(3);
-			params.add(new BasicNameValuePair("appID", appID));
-			params.add(new BasicNameValuePair("apiKey", apiKey));
-			params.add(new BasicNameValuePair("stopNo", stopNumber));
-			post.setEntity(new UrlEncodedFormEntity(params));
-			
-			HttpResponse response = client.execute(post);
-			
-			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			XmlPullParser xpp = factory.newPullParser();
+		HttpClient client = new DefaultHttpClient();
+		HttpPost post = new HttpPost("https://api.octranspo1.com/GetRouteSummaryForStop");
+		
+		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
+		params.add(new BasicNameValuePair("appID", appID));
+		params.add(new BasicNameValuePair("apiKey", apiKey));
+		params.add(new BasicNameValuePair("stopNo", stopNumber));
+		post.setEntity(new UrlEncodedFormEntity(params));
+		
+		HttpResponse response = client.execute(post);
+		
+		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		XmlPullParser xpp = factory.newPullParser();
 
-			xpp.setInput(response.getEntity().getContent(), "UTF-8");
-			xpp.next();
-			return new GetRouteSummaryForStopResult(xpp);
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		xpp.setInput(response.getEntity().getContent(), "UTF-8");
+		xpp.next();
+		return new GetRouteSummaryForStopResult(xpp);
 	}
 	
 	private void validateStopNumber(String stopNumber) {
