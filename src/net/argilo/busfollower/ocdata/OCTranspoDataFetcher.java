@@ -1,11 +1,9 @@
-package net.argilo.busfollower;
+package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
-import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;

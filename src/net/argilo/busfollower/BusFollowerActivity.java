@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
+import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Trip;
 
