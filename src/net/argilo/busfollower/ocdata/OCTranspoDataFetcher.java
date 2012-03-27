@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.argilo.busfollower.R;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -16,16 +17,23 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.content.Context;
+
 public class OCTranspoDataFetcher {
+	private final Context context;
 	private final String appID;
 	private final String apiKey;
 	
-	public OCTranspoDataFetcher(String appID, String apiKey) {
-		this.appID = appID;
-		this.apiKey = apiKey;
+	public OCTranspoDataFetcher(Context context) {
+		this.context = context;
+		appID = context.getString(R.string.oc_transpo_application_id);
+        apiKey = context.getString(R.string.oc_transpo_application_key);
 	}
 	
-	public GetNextTripsForStopResult getNextTripsForStop(String routeNumber, String stopNumber) throws IOException {
+	public GetNextTripsForStopResult getNextTripsForStop(String stopNumber, String routeNumber) throws IOException {
+		validateStopNumber(stopNumber);
+		validateRouteNumber(routeNumber);
+		
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost("https://api.octranspo1.com/GetNextTripsForStop");
@@ -57,6 +65,8 @@ public class OCTranspoDataFetcher {
 	}
 	
 	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException {
+		validateStopNumber(stopNumber);
+
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost("https://api.octranspo1.com/GetRouteSummaryForStop");
@@ -84,5 +94,27 @@ public class OCTranspoDataFetcher {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private void validateStopNumber(String stopNumber) {
+		if (stopNumber.length() < 3 || stopNumber.length() > 4) {
+			throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
+		}
+		for (int i = 0; i < stopNumber.length(); i++) {
+			if (!Character.isDigit(stopNumber.charAt(i))) {
+				throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
+			}
+		}
+	}
+	
+	private void validateRouteNumber(String routeNumber) {
+		if (routeNumber.length() < 1 || routeNumber.length() > 3) {
+			throw new IllegalArgumentException(context.getString(R.string.invalid_route_number));
+		}
+		for (int i = 0; i < routeNumber.length(); i++) {
+			if (!Character.isDigit(routeNumber.charAt(i))) {
+				throw new IllegalArgumentException(context.getString(R.string.invalid_route_number));
+			}
+		}
 	}
 }

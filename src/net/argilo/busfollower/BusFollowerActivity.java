@@ -51,9 +51,7 @@ public class BusFollowerActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        dataFetcher = new OCTranspoDataFetcher(
-        		getString(R.string.oc_transpo_application_id),
-        		getString(R.string.oc_transpo_application_key));
+        dataFetcher = new OCTranspoDataFetcher(this);
         
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
@@ -93,10 +91,12 @@ public class BusFollowerActivity extends MapActivity {
         			public void run() {
         				String errorString;
         				try {
-        					result = dataFetcher.getNextTripsForStop(routeNumber, stopNumber);
+        					result = dataFetcher.getNextTripsForStop(stopNumber, routeNumber);
             				errorString = getErrorString(result.getError());
         				} catch (IOException e) {
         					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
+        				} catch (IllegalArgumentException e) {
+        					errorString = e.getMessage();
         				}
         				final String errorStringFinal = errorString;
         				if (errorString != null) {
@@ -198,15 +198,14 @@ public class BusFollowerActivity extends MapActivity {
 			int errorNumber = Integer.parseInt(error);
 			switch (errorNumber) {
 			case 1:
-				return getString(R.string.error_1);
+				return getString(R.string.invalid_api_key);
 			case 2:
-				return getString(R.string.error_2);
+				return getString(R.string.unable_to_query_data_source);
 			case 10:
-				return getString(R.string.error_10);
 			case 11:
-				return getString(R.string.error_11);
+				return getString(R.string.invalid_stop_number);
 			case 12:
-				return getString(R.string.error_12);
+				return getString(R.string.invalid_route_number);
 			default:
 				Log.w(TAG, "Unknown error code: " + error);
 				return null;
