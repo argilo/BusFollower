@@ -45,10 +45,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		    ContentValues cv = new ContentValues();
 		    while ((line = in.readLine()) != null) {
 		        columns = line.split(",");
+
 		        cv.put("stop_code", columns[stopCodeCol]);
-		        cv.put("stop_name", columns[stopNameCol]);
-                cv.put("stop_lat", columns[stopLatCol]);
-                cv.put("stop_lon", columns[stopLonCol]);
+		        try {
+		        	cv.put("stop_name", Integer.parseInt(columns[stopNameCol]));
+		        } catch (NumberFormatException e) {
+		        	cv.putNull("stop_name");
+		        }
+		        try {
+		        	cv.put("stop_lat", Util.latStringToMicroDegrees(columns[stopLatCol]));
+		        } catch (NumberFormatException e) {
+		        	cv.putNull("stop_name");
+		        }
+		        try {
+		        	cv.put("stop_lon", Util.lonStringToMicroDegrees(columns[stopLonCol]));
+		        } catch (NumberFormatException e) {
+		        	cv.putNull("stop_name");
+		        }
+
                 db.insert("stops", "stop_code", cv);
 		    }
         } catch (IOException e) {

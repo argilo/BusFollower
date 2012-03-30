@@ -23,8 +23,8 @@ public class Trip implements Serializable {
 	private boolean lastTripOfSchedule = false;
 	private BusType busType = new BusType("");
 	private float gpsSpeed = Float.NaN;
-	private float latitude = Float.NaN;
-	private float longitude = Float.NaN;
+	private int latitude = Integer.MIN_VALUE;
+	private int longitude = Integer.MIN_VALUE;
 	
 	// Needed to get the request processing time.
 	private RouteDirection routeDirection;
@@ -62,14 +62,14 @@ public class Trip implements Serializable {
 				}
 			} else if ("Latitude".equalsIgnoreCase(tagName)) {
 				try {
-					latitude = Float.parseFloat(xpp.nextText());
-				} catch (Exception e) {
+					latitude = Util.latStringToMicroDegrees(xpp.nextText());
+				} catch (NumberFormatException e) {
 					// Ignore.
 				}
 			} else if ("Longitude".equalsIgnoreCase(tagName)) {
 				try {
-					longitude = Float.parseFloat(xpp.nextText());
-				} catch (Exception e) {
+					longitude = Util.lonStringToMicroDegrees(xpp.nextText());
+				} catch (NumberFormatException e) {
 					// Ignore.
 				}
 			} else {
@@ -143,10 +143,10 @@ public class Trip implements Serializable {
 	}
 	
 	public GeoPoint getGeoPoint() {
-		if (Float.isNaN(latitude) || Float.isNaN(longitude)) {
+		if (latitude == Integer.MIN_VALUE || longitude == Integer.MIN_VALUE) {
 			return null;
 		} else {
-			return new GeoPoint((int)(latitude * 1000000), (int)(longitude * 1000000));
+			return new GeoPoint(latitude, longitude);
 		}
 	}
 }
