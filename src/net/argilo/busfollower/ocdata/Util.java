@@ -25,23 +25,6 @@ public class Util {
 		}
 		degreesString = degreesString.trim();
 
-		int sign = 1;
-		if (degreesString.startsWith("-")) {
-			sign = -1;
-			degreesString = degreesString.substring(1);
-		}
-		
-		int decimalOffset = degreesString.indexOf(".");
-		if (decimalOffset == -1) {
-			degreesString = degreesString + ".000000";
-			decimalOffset = degreesString.indexOf(".");
-		}
-		String beforeDecimal = degreesString.substring(0, decimalOffset);
-		String afterDecimal = degreesString.substring(decimalOffset + 1);
-		while (afterDecimal.length() < 6) {
-			afterDecimal = afterDecimal + "0";
-		}
-		afterDecimal = afterDecimal.substring(0, 6);
-		return sign * (1000000 * Integer.parseInt(beforeDecimal) + Integer.parseInt(afterDecimal));
+		return Math.round(1000000 * Float.parseFloat(degreesString));
 	}
 }
