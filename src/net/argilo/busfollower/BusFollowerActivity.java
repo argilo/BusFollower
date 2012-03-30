@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.RouteDirection;
@@ -20,6 +21,7 @@ import com.google.android.maps.OverlayItem;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +43,7 @@ public class BusFollowerActivity extends MapActivity {
 	private static int globalMaxLongitude = -75342690;
 	
 	private OCTranspoDataFetcher dataFetcher;
+	private SQLiteDatabase db;
 	private GetNextTripsForStopResult result = null;
 
 	private MapView mapView = null;
@@ -54,6 +57,8 @@ public class BusFollowerActivity extends MapActivity {
         setContentView(R.layout.main);
         
         dataFetcher = new OCTranspoDataFetcher(this);
+        
+        db = (new DatabaseHelper(this)).getReadableDatabase();
         
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
