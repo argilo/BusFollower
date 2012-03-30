@@ -30,9 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		    BufferedReader in = new BufferedReader(new InputStreamReader(context.getAssets().open("stops.txt")));
 		    String line = in.readLine();
 		    String[] columns = line.split(",");
-		    int stopCodeCol = -1, stopNameCol = -1, stopLatCol = -1, stopLonCol = -1;
+		    int stopIdCol = -1, stopCodeCol = -1, stopNameCol = -1, stopLatCol = -1, stopLonCol = -1;
 		    for (int i = 0; i < columns.length; i++) {
-		        if ("stop_code".equals(columns[i])) {
+                if ("stop_id".equals(columns[i])) {
+                    stopIdCol = i;
+                } else if ("stop_code".equals(columns[i])) {
 		            stopCodeCol = i;
 		        } else if ("stop_name".equals(columns[i])) {
 		            stopNameCol = i;
@@ -46,12 +48,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		    while ((line = in.readLine()) != null) {
 		        columns = line.split(",");
 
-		        cv.put("stop_code", columns[stopCodeCol]);
+                cv.put("stop_id", columns[stopIdCol]);
 		        try {
-		        	cv.put("stop_name", Integer.parseInt(columns[stopNameCol]));
+	                cv.put("stop_code", Integer.parseInt(columns[stopCodeCol]));
 		        } catch (NumberFormatException e) {
-		        	cv.putNull("stop_name");
+		        	cv.putNull("stop_code");
 		        }
+                cv.put("stop_name", columns[stopNameCol]);
 		        try {
 		        	cv.put("stop_lat", Util.latStringToMicroDegrees(columns[stopLatCol]));
 		        } catch (NumberFormatException e) {
