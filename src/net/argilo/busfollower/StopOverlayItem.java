@@ -1,16 +1,16 @@
 package net.argilo.busfollower;
 
+import net.argilo.busfollower.ocdata.Stop;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
 public class StopOverlayItem extends OverlayItem {
 	private Context context;
 
-	public StopOverlayItem(GeoPoint point, Context context, String title, String snippet) {
-		super(point, title, snippet);
+	public StopOverlayItem(Stop stop, Context context) {
+		super(stop.getLocation(), context.getString(R.string.stop_number) + " " + stop.getNumber(), stop.getName());
 		this.context = context;
 	}
 

@@ -9,6 +9,7 @@ import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.RouteDirection;
+import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
 
 import com.google.android.maps.GeoPoint;
@@ -16,12 +17,10 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -76,13 +75,13 @@ public class BusFollowerActivity extends MapActivity {
         }
         
     	if (result != null) {
-			GeoPoint stopLocation = null;
+			Stop stop = null;
 			try {
-				stopLocation = getStopLocation(result.getStopNumber());
+				stop = Stop.getStop(this, db, result.getStopNumber());
 			} catch (IllegalArgumentException e) {
 				// Ignore.
 			}
-			displayGetNextTripsForStopResult(result, stopLocation);
+			displayGetNextTripsForStopResult(result, stop);
     	} else {
 	        // Zoom to OC Transpo service area if it's our first time.
 	        MapController mapController = mapView.getController();
@@ -105,10 +104,10 @@ public class BusFollowerActivity extends MapActivity {
         		
         		new Thread(new Runnable() {
         			public void run() {
-                		GeoPoint stopLocation = null;
+                		Stop stop = null;
         				String errorString;
         				try {
-        					stopLocation = getStopLocation(stopNumber);
+        					stop = Stop.getStop(BusFollowerActivity.this, db, stopNumber);
         					result = dataFetcher.getNextTripsForStop(stopNumber, routeNumber);
             				errorString = getErrorString(result.getError());
         				} catch (IOException e) {
@@ -138,7 +137,7 @@ public class BusFollowerActivity extends MapActivity {
         					return;
         				}
         				
-        				BusFollowerActivity.this.displayGetNextTripsForStopResult(result, stopLocation);
+        				BusFollowerActivity.this.displayGetNextTripsForStopResult(result, stop);
         				
         				mapView.post(new Runnable() {
         		        	public void run() {
@@ -175,7 +174,7 @@ public class BusFollowerActivity extends MapActivity {
 		outState.putString("routeNumber", routeNumberField.getText().toString());
 	}
 	
-	private void displayGetNextTripsForStopResult(GetNextTripsForStopResult result, GeoPoint stopLocation) {
+	private void displayGetNextTripsForStopResult(GetNextTripsForStopResult result, Stop stop) {
         List<Overlay> mapOverlays = mapView.getOverlays();
         mapOverlays.clear();
         Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);
@@ -186,10 +185,10 @@ public class BusFollowerActivity extends MapActivity {
         int minLongitude = Integer.MAX_VALUE;
         int maxLongitude = Integer.MIN_VALUE;
         
-        if (stopLocation != null) {
-        	itemizedOverlay.addOverlay(new StopOverlayItem(stopLocation, this, "Ble", "Algh"));
-        	minLatitude = maxLatitude = stopLocation.getLatitudeE6();
-        	minLongitude = maxLongitude = stopLocation.getLongitudeE6();
+        if (stop != null) {
+        	itemizedOverlay.addOverlay(new StopOverlayItem(stop, this));
+        	minLatitude = maxLatitude = stop.getLocation().getLatitudeE6();
+        	minLongitude = maxLongitude = stop.getLocation().getLongitudeE6();
         }
 
         for (RouteDirection rd : result.getRouteDirections()) {
@@ -239,14 +238,5 @@ public class BusFollowerActivity extends MapActivity {
 			Log.w(TAG, "Couldn't parse error code: " + error);
 			return null;
 		}
-	}
-	
-	private GeoPoint getStopLocation(String stopNumber) throws IllegalArgumentException {
-		Cursor result = db.rawQuery("SELECT stop_lat, stop_lon FROM stops WHERE stop_code = ?", new String[] { stopNumber });
-		if (result.getCount() == 0) {
-			throw new IllegalArgumentException(getString(R.string.invalid_stop_number));
-		}
-		result.moveToFirst();
-		return new GeoPoint(result.getInt(0), result.getInt(1));
 	}
 }
