@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="custom_rules">
+    <target name="-pre-build">
+        <exec executable="inkscape">
+            <arg value="-e" />
+            <arg value="res/drawable-xhdpi/pin_red.png" />
+            <arg value="-w" />
+            <arg value="96" />
+            <arg value="-h" />
+            <arg value="96" />
+            <arg value="svg/pin_red.svg" />
+        </exec>
+        <exec executable="inkscape">
+            <arg value="-e" />
+            <arg value="res/drawable-hdpi/pin_red.png" />
+            <arg value="-w" />
+            <arg value="72" />
+            <arg value="-h" />
+            <arg value="72" />
+            <arg value="svg/pin_red.svg" />
+        </exec>
+        <exec executable="inkscape">
+            <arg value="-e" />
+            <arg value="res/drawable-mdpi/pin_red.png" />
+            <arg value="-w" />
+            <arg value="48" />
+            <arg value="-h" />
+            <arg value="48" />
+            <arg value="svg/pin_red.svg" />
+        </exec>
+        <exec executable="inkscape">
+            <arg value="-e" />
+            <arg value="res/drawable-ldpi/pin_red.png" />
+            <arg value="-w" />
+            <arg value="36" />
+            <arg value="-h" />
+            <arg value="36" />
+            <arg value="svg/pin_red.svg" />
+        </exec>
+    </target>
+</project>
