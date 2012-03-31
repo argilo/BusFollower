@@ -60,38 +60,56 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-764.36218)">
-    <g
-       id="g4874"
-       transform="translate(-10.484763,-6.0609179)">
-      <rect
-         transform="translate(0,764.36218)"
-         y="72"
-         x="156"
-         height="24"
-         width="108"
-         id="rect4870"
-         style="fill:#ff0000;stroke:none" />
-      <rect
-         transform="translate(0,764.36218)"
-         y="132"
-         x="156"
-         height="12"
-         width="108"
-         id="rect4872"
-         style="fill:#ff0000;stroke:none" />
-      <rect
-         y="836.36218"
-         x="156"
-         height="72.000122"
-         width="107.99999"
-         id="rect4865"
-         style="fill:none;stroke:#333333;stroke-width:5;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
+    <rect
+       style="fill:#ffffff;stroke:none"
+       id="rect4892"
+       width="108"
+       height="48"
+       x="144"
+       y="84"
+       transform="translate(0,764.36218)" />
+    <rect
+       style="fill:#ff0000;stroke:none"
+       id="rect4870"
+       width="108"
+       height="24"
+       x="145.51524"
+       y="830.30127" />
+    <rect
+       style="fill:#ff0000;stroke:none"
+       id="rect4872"
+       width="108"
+       height="12"
+       x="145.51524"
+       y="890.30127" />
+    <rect
+       style="fill:none;stroke:#333333;stroke-width:5;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect4865"
+       width="107.99999"
+       height="72.000122"
+       x="145.51524"
+       y="830.30127" />
     <path
        style="fill:none;stroke:#333333;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="M 144,288 144,60"
        id="path4355"
        inkscape:connector-curvature="0"
+       transform="translate(0,764.36218)" />
+    <rect
+       style="fill:none;stroke:none"
+       id="rect4884"
+       width="108"
+       height="48"
+       x="144"
+       y="84"
+       transform="translate(0,764.36218)" />
+    <rect
+       style="fill:#ffffff;stroke:none"
+       id="rect4888"
+       width="72"
+       height="48"
+       x="12"
+       y="84"
        transform="translate(0,764.36218)" />
   </g>
 </svg>
