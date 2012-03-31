@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		try {
 		    BufferedReader in = new BufferedReader(new InputStreamReader(context.getAssets().open("stops.txt")));
 		    String line = in.readLine();
-		    String[] columns = line.split(",");
+		    String[] columns = csvColumns(line);
 		    int stopIdCol = -1, stopCodeCol = -1, stopNameCol = -1, stopLatCol = -1, stopLonCol = -1;
 		    for (int i = 0; i < columns.length; i++) {
                 if ("stop_id".equals(columns[i])) {
@@ -46,7 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		    }
 		    ContentValues cv = new ContentValues();
 		    while ((line = in.readLine()) != null) {
-		        columns = line.split(",");
+		        columns = csvColumns(line);
 
                 cv.put("stop_id", columns[stopIdCol]);
 		        try {
@@ -80,4 +80,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	}
 
+	private String[] csvColumns(String line) {
+		String[] columns = line.split(",");
+		for (int i = 0; i < columns.length; i++) {
+			if (columns[i].length() >= 2 && columns[i].startsWith("\"") && columns[i].endsWith("\"")) {
+				// Strip off surrounding quotation marks.
+				columns[i] = columns[i].substring(1, columns[i].length() - 1);
+				// Unescape quotation marks within the string.
+				columns[i] = columns[i].replace("\"\"", "\"");
+			}
+		}
+		return columns;
+	}
 }
