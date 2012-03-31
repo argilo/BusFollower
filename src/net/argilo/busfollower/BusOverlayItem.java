@@ -15,12 +15,12 @@ import android.text.TextUtils;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
-public class BusFollowerOverlayItem extends OverlayItem {
+public class BusOverlayItem extends OverlayItem {
 	Context context;
 	RouteDirection rd;
 	Trip trip;
 	
-	public BusFollowerOverlayItem(GeoPoint point, Context context, RouteDirection rd, Trip trip) {
+	public BusOverlayItem(GeoPoint point, Context context, RouteDirection rd, Trip trip) {
 		super(point, rd.getRouteNumber() + " " + rd.getRouteLabel(), "");
 		this.context = context;
 		this.rd = rd;

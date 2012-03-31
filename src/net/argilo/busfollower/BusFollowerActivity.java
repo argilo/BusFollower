@@ -21,6 +21,7 @@ import com.google.android.maps.OverlayItem;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -75,7 +76,13 @@ public class BusFollowerActivity extends MapActivity {
         }
         
     	if (result != null) {
-			displayGetNextTripsForStopResult(result);
+			GeoPoint stopLocation = null;
+			try {
+				getStopLocation(result.getStopNumber());
+			} catch (IllegalArgumentException e) {
+				// Ignore.
+			}
+			displayGetNextTripsForStopResult(result, stopLocation);
     	} else {
 	        // Zoom to OC Transpo service area if it's our first time.
 	        MapController mapController = mapView.getController();
@@ -98,8 +105,10 @@ public class BusFollowerActivity extends MapActivity {
         		
         		new Thread(new Runnable() {
         			public void run() {
+                		GeoPoint stopLocation = null;
         				String errorString;
         				try {
+        					stopLocation = getStopLocation(stopNumber);
         					result = dataFetcher.getNextTripsForStop(stopNumber, routeNumber);
             				errorString = getErrorString(result.getError());
         				} catch (IOException e) {
@@ -129,7 +138,7 @@ public class BusFollowerActivity extends MapActivity {
         					return;
         				}
         				
-        				BusFollowerActivity.this.displayGetNextTripsForStopResult(result);
+        				BusFollowerActivity.this.displayGetNextTripsForStopResult(result, stopLocation);
         				
         				mapView.post(new Runnable() {
         		        	public void run() {
@@ -166,17 +175,23 @@ public class BusFollowerActivity extends MapActivity {
 		outState.putString("routeNumber", routeNumberField.getText().toString());
 	}
 	
-	private void displayGetNextTripsForStopResult(GetNextTripsForStopResult result) {
+	private void displayGetNextTripsForStopResult(GetNextTripsForStopResult result, GeoPoint stopLocation) {
         List<Overlay> mapOverlays = mapView.getOverlays();
         mapOverlays.clear();
         Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);
         BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, BusFollowerActivity.this);
-
-        int minLatitude = 81000000;
-        int maxLatitude = -81000000;
-        int minLongitude = 181000000;
-        int maxLongitude = -181000000;
         
+        int minLatitude = Integer.MAX_VALUE;
+        int maxLatitude = Integer.MIN_VALUE;
+        int minLongitude = Integer.MAX_VALUE;
+        int maxLongitude = Integer.MIN_VALUE;
+        
+        if (stopLocation != null) {
+        	itemizedOverlay.addOverlay(new StopOverlayItem(stopLocation, this, "Ble", "Algh"));
+        	minLatitude = maxLatitude = stopLocation.getLatitudeE6();
+        	minLongitude = maxLongitude = stopLocation.getLongitudeE6();
+        }
+
         for (RouteDirection rd : result.getRouteDirections()) {
 			for (Trip trip : rd.getTrips()) {
 				GeoPoint point = trip.getGeoPoint();
@@ -186,8 +201,7 @@ public class BusFollowerActivity extends MapActivity {
 					minLongitude = Math.min(minLongitude, point.getLongitudeE6());
 					maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
 					
-			        OverlayItem overlayItem = new BusFollowerOverlayItem(point, BusFollowerActivity.this, rd, trip);
-    		        itemizedOverlay.addOverlay(overlayItem);
+    		        itemizedOverlay.addOverlay(new BusOverlayItem(point, this, rd, trip));
 				}
 			}
 		}
@@ -225,5 +239,14 @@ public class BusFollowerActivity extends MapActivity {
 			Log.w(TAG, "Couldn't parse error code: " + error);
 			return null;
 		}
+	}
+	
+	private GeoPoint getStopLocation(String stopNumber) throws IllegalArgumentException {
+		Cursor result = db.rawQuery("SELECT stop_lat, stop_lon FROM stops WHERE stop_code = ?", new String[] { stopNumber });
+		if (result.getCount() == 0) {
+			throw new IllegalArgumentException(getString(R.string.invalid_stop_number));
+		}
+		result.moveToFirst();
+		return new GeoPoint(result.getInt(0), result.getInt(1));
 	}
 }
