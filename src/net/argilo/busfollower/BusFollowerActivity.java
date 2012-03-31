@@ -78,7 +78,7 @@ public class BusFollowerActivity extends MapActivity {
     	if (result != null) {
 			GeoPoint stopLocation = null;
 			try {
-				getStopLocation(result.getStopNumber());
+				stopLocation = getStopLocation(result.getStopNumber());
 			} catch (IllegalArgumentException e) {
 				// Ignore.
 			}
