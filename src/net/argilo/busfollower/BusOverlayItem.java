@@ -38,6 +38,8 @@ public class BusOverlayItem extends OverlayItem {
         		"\n" + context.getString(R.string.start_time) + " " + getHumanReadableTime(trip.getStartTime()) +
         		"\n" + context.getString(trip.isEstimated() ? R.string.estimated_arrival : R.string.scheduled_arrival) + 
         		" " + getHumanReadableTime(trip.getAdjustedScheduleTime()) +
+        		(trip.getGpsSpeed() != Float.NaN ? "\n" + context.getString(R.string.bus_speed) + " " + 
+        		Math.round(trip.getGpsSpeed() - 0.01) + " " + context.getString(R.string.kph) : "") +
         		"\n" + context.getString(R.string.bus_type) + " " + getBusTypeString(trip.getBusType()) +
         		(trip.isLastTrip() ? "\n" + context.getString(R.string.last_trip) : "");
 	}
