@@ -23,6 +23,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, "Begin database import.");
+
 		db.execSQL("CREATE TABLE stops (stop_id TEXT PRIMARY KEY, " +
 				"stop_code INT, stop_name TEXT, stop_lat INT, stop_lon INT);");
 		
@@ -72,6 +74,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+		
+        Log.d(TAG, "End database import.");
 	}
 
 	@Override

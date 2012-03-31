@@ -58,9 +58,7 @@ public class BusFollowerActivity extends MapActivity {
         
         dataFetcher = new OCTranspoDataFetcher(this);
         
-        Log.d(TAG, "Begin database import.");
         db = (new DatabaseHelper(this)).getReadableDatabase();
-        Log.d(TAG, "End database import.");
         
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
