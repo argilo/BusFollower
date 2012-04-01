@@ -61,7 +61,6 @@ public class StopChooserActivity extends Activity {
 				}
 				Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
 				if (cursor != null) {
-					StopChooserActivity.this.startManagingCursor(cursor);
 					cursor.moveToFirst();
 					return cursor;
 				}
