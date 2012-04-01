@@ -55,8 +55,13 @@ public class StopChooserActivity extends Activity {
 				ArrayList<String> params = new ArrayList<String>();
 				for (String piece : pieces) {
 					if (piece.length() > 0) {
-						query += " AND stop_name LIKE ?";
+						query += " AND (stop_name LIKE ?";
 						params.add("%" + piece + "%");
+						if (piece.matches("\\d\\d\\d?\\d?")) {
+							query += " OR stop_code LIKE ?";
+							params.add(piece + "%");
+						}
+						query += ")";
 					}
 				}
 				Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
