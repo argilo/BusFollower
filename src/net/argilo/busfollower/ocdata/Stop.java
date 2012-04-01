@@ -18,6 +18,11 @@ public class Stop implements Serializable {
 	private int longitude;
 	
 	public Stop(Context context, SQLiteDatabase db, String number) {
+		// Zero-pad the stop number to 4 digits.
+		while (number.length() < 4) {
+			number = "0" + number;
+		}
+
 		Cursor result = db.rawQuery("SELECT stop_name, stop_lat, stop_lon FROM stops WHERE stop_code = ?", new String[] { number });
 		if (result.getCount() == 0) {
 			throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
@@ -42,10 +47,6 @@ public class Stop implements Serializable {
 		latitude = avgLatitude / result.getCount();
 		longitude = avgLongitude / result.getCount();
 
-		// Zero-pad the stop number to 4 digits.
-		while (number.length() < 4) {
-			number = "0" + number;
-		}
 		this.number = number;
 	}
 	

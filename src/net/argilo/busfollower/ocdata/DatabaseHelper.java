@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "Begin database import.");
 
 		db.execSQL("CREATE TABLE stops (stop_id TEXT PRIMARY KEY, " +
-				"stop_code INT, stop_name TEXT, stop_lat INT, stop_lon INT);");
+				"stop_code TEXT, stop_name TEXT, stop_lat INT, stop_lon INT);");
 		
 		try {
 		    BufferedReader in = new BufferedReader(new InputStreamReader(context.getAssets().open("stops.txt")));
@@ -51,9 +51,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		        columns = csvColumns(line);
 
                 cv.put("stop_id", columns[stopIdCol]);
-		        try {
-	                cv.put("stop_code", Integer.parseInt(columns[stopCodeCol]));
-		        } catch (NumberFormatException e) {
+		        if (columns[stopCodeCol].matches("\\d\\d\\d\\d")) {
+	                cv.put("stop_code", columns[stopCodeCol]);
+		        } else {
 		        	cv.putNull("stop_code");
 		        }
                 cv.put("stop_name", columns[stopNameCol]);
