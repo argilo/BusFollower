@@ -5,15 +5,23 @@ import java.util.ArrayList;
 import net.argilo.busfollower.ocdata.DatabaseHelper;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.CursorToStringConverter;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public class StopChooserActivity extends Activity {
+	private static final String TAG = "StopChooserActivity";
+
 	private SQLiteDatabase db = null;
 	
     /** Called when the activity is first created. */
@@ -59,6 +67,19 @@ public class StopChooserActivity extends Activity {
 				}
 				
 				return null;
+			}
+		});
+		
+		stopSearchField.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				Log.d(TAG, "onEditorAction()");
+				if (actionId == EditorInfo.IME_ACTION_GO) {
+					StopChooserActivity.this.startActivity(new Intent(StopChooserActivity.this, BusFollowerActivity.class));
+					return true;
+				}
+				return false;
 			}
 		});
     }
