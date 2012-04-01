@@ -40,7 +40,7 @@ public class Stop implements Serializable {
 		}
 		avgLatitude /= result.getCount();
 		avgLongitude /= result.getCount();
-		location = new GeoPoint(avgLatitude, avgLongitude);
+		location = new SerializableGeoPoint(avgLatitude, avgLongitude);
 
 		// Zero-pad the stop number to 4 digits.
 		while (number.length() < 4) {
