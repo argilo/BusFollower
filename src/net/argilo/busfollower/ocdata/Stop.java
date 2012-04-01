@@ -1,5 +1,7 @@
 package net.argilo.busfollower.ocdata;
 
+import java.io.Serializable;
+
 import net.argilo.busfollower.R;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,29 +9,44 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.google.android.maps.GeoPoint;
 
-public class Stop {
-	private String number;
-	private String name;
-	private GeoPoint location;
+public class Stop implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private String number = null;
+	private String name = null;
+	private GeoPoint location = null;
 	
-	public static Stop getStop(Context context, SQLiteDatabase db, String stopNumber) throws IllegalArgumentException {
-		Cursor result = db.rawQuery("SELECT stop_code, stop_name, stop_lat, stop_lon FROM stops WHERE stop_code = ?", new String[] { stopNumber });
+	public Stop(Context context, SQLiteDatabase db, String number) {
+		Cursor result = db.rawQuery("SELECT stop_name, stop_lat, stop_lon FROM stops WHERE stop_code = ?", new String[] { number });
 		if (result.getCount() == 0) {
 			throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
 		}
+		
 		result.moveToFirst();
-		GeoPoint location = new GeoPoint(result.getInt(2), result.getInt(3));
-		return new Stop(result.getInt(0), result.getString(1), location);
-	}
-	
-	private Stop(int number, String name, GeoPoint location) {
-		this.number = String.valueOf(number);
-		// Zero-pad the stop number to 4 digits.
-		while (this.number.length() < 4) {
-			this.number = "0" + this.number;
+		if (result.getCount() == 1) {
+			// Only use the name from the stop database if there's a single location
+			// associated with the stop number. Otherwise we'll get it from the API later.
+			name = result.getString(0);
 		}
-		this.name = name;
-		this.location = location;
+
+		// Average out the stop locations in case there are multiple entries 
+		// (e.g. different platforms at a Transitway station)
+		int avgLatitude = 0;
+		int avgLongitude = 0;
+		while (!result.isAfterLast()) {
+			avgLatitude += result.getInt(1);
+			avgLongitude += result.getInt(2);
+			result.moveToNext();
+		}
+		avgLatitude /= result.getCount();
+		avgLongitude /= result.getCount();
+		location = new GeoPoint(avgLatitude, avgLongitude);
+
+		// Zero-pad the stop number to 4 digits.
+		while (number.length() < 4) {
+			number = "0" + number;
+		}
+		this.number = number;
 	}
 	
 	public String getNumber() {
@@ -38,6 +55,10 @@ public class Stop {
 	
 	public String getName() {
 		return name;
+	}
+	
+	void setName(String name) {
+		this.name = name;
 	}
 	
 	public GeoPoint getLocation() {

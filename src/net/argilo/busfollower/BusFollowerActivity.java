@@ -9,7 +9,6 @@ import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.RouteDirection;
-import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
 
 import com.google.android.maps.GeoPoint;
@@ -73,13 +72,7 @@ public class BusFollowerActivity extends MapActivity {
         }
         
     	if (result != null) {
-			Stop stop = null;
-			try {
-				stop = Stop.getStop(this, db, result.getStopNumber());
-			} catch (IllegalArgumentException e) {
-				// Ignore.
-			}
-			displayGetNextTripsForStopResult(result, stop);
+			displayGetNextTripsForStopResult(result);
     	} else {
 	        // Zoom to OC Transpo service area if it's our first time.
 	        MapController mapController = mapView.getController();
@@ -102,11 +95,9 @@ public class BusFollowerActivity extends MapActivity {
         		
         		new Thread(new Runnable() {
         			public void run() {
-                		Stop stop = null;
         				String errorString;
         				try {
-        					stop = Stop.getStop(BusFollowerActivity.this, db, stopNumber);
-        					result = dataFetcher.getNextTripsForStop(stopNumber, routeNumber);
+        					result = dataFetcher.getNextTripsForStop(BusFollowerActivity.this, db, stopNumber, routeNumber);
             				errorString = getErrorString(result.getError());
         				} catch (IOException e) {
         					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
@@ -135,7 +126,7 @@ public class BusFollowerActivity extends MapActivity {
         					return;
         				}
         				
-        				BusFollowerActivity.this.displayGetNextTripsForStopResult(result, stop);
+        				BusFollowerActivity.this.displayGetNextTripsForStopResult(result);
         				
         				mapView.post(new Runnable() {
         		        	public void run() {
@@ -172,7 +163,7 @@ public class BusFollowerActivity extends MapActivity {
 		outState.putString("routeNumber", routeNumberField.getText().toString());
 	}
 	
-	private void displayGetNextTripsForStopResult(GetNextTripsForStopResult result, Stop stop) {
+	private void displayGetNextTripsForStopResult(GetNextTripsForStopResult result) {
         List<Overlay> mapOverlays = mapView.getOverlays();
         mapOverlays.clear();
         Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);
@@ -183,10 +174,11 @@ public class BusFollowerActivity extends MapActivity {
         int minLongitude = Integer.MAX_VALUE;
         int maxLongitude = Integer.MIN_VALUE;
         
-        if (stop != null) {
-        	itemizedOverlay.addOverlay(new StopOverlayItem(stop, this));
-        	minLatitude = maxLatitude = stop.getLocation().getLatitudeE6();
-        	minLongitude = maxLongitude = stop.getLocation().getLongitudeE6();
+        GeoPoint stopLocation = result.getStop().getLocation();
+        if (stopLocation != null) {
+        	itemizedOverlay.addOverlay(new StopOverlayItem(result.getStop(), this));
+        	minLatitude = maxLatitude = stopLocation.getLatitudeE6();
+        	minLongitude = maxLongitude = stopLocation.getLongitudeE6();
         }
 
         for (RouteDirection rd : result.getRouteDirections()) {

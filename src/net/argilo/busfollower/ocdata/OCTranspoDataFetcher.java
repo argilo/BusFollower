@@ -18,6 +18,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 public class OCTranspoDataFetcher {
 	private final Context context;
@@ -30,7 +31,8 @@ public class OCTranspoDataFetcher {
         apiKey = context.getString(R.string.oc_transpo_application_key);
 	}
 	
-	public GetNextTripsForStopResult getNextTripsForStop(String stopNumber, String routeNumber) throws IOException, XmlPullParserException {
+	public GetNextTripsForStopResult getNextTripsForStop(Context context, SQLiteDatabase db, String stopNumber, String routeNumber)
+			throws IOException, XmlPullParserException, IllegalArgumentException {
 		validateStopNumber(stopNumber);
 		validateRouteNumber(routeNumber);
 		
@@ -52,7 +54,7 @@ public class OCTranspoDataFetcher {
 
 		xpp.setInput(response.getEntity().getContent(), "UTF-8");
 		xpp.next();
-		return new GetNextTripsForStopResult(xpp);
+		return new GetNextTripsForStopResult(context, db, xpp, stopNumber);
 	}
 	
 	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
