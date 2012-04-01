@@ -158,9 +158,18 @@ public class BusFollowerActivity extends MapActivity {
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
 		outState.putSerializable("result", result);
 		outState.putString("stopNumber", stopNumberField.getText().toString());
 		outState.putString("routeNumber", routeNumberField.getText().toString());
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		db.close();
 	}
 	
 	private void displayGetNextTripsForStopResult(GetNextTripsForStopResult result) {
