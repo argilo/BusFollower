@@ -14,7 +14,8 @@ public class Stop implements Serializable {
 
 	private String number = null;
 	private String name = null;
-	private GeoPoint location = null;
+	private int latitude;
+	private int longitude;
 	
 	public Stop(Context context, SQLiteDatabase db, String number) {
 		Cursor result = db.rawQuery("SELECT stop_name, stop_lat, stop_lon FROM stops WHERE stop_code = ?", new String[] { number });
@@ -38,9 +39,8 @@ public class Stop implements Serializable {
 			avgLongitude += result.getInt(2);
 			result.moveToNext();
 		}
-		avgLatitude /= result.getCount();
-		avgLongitude /= result.getCount();
-		location = new SerializableGeoPoint(avgLatitude, avgLongitude);
+		latitude = avgLatitude / result.getCount();
+		longitude = avgLongitude / result.getCount();
 
 		// Zero-pad the stop number to 4 digits.
 		while (number.length() < 4) {
@@ -62,6 +62,6 @@ public class Stop implements Serializable {
 	}
 	
 	public GeoPoint getLocation() {
-		return location;
+		return new GeoPoint(latitude, longitude);
 	}
 }
