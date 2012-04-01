@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BusFollower</string>
+
+    <string name="enter_stop">Enter a stop number or name:</string>
+    
     <string name="stop_number">Stop</string>
     <string name="route_number">Route</string>
     <string name="update">Update</string>
