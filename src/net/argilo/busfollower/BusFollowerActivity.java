@@ -1,6 +1,7 @@
 package net.argilo.busfollower;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -20,6 +21,7 @@ import com.google.android.maps.Overlay;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -28,8 +30,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FilterQueryProvider;
+import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.TextView;
 
 public class BusFollowerActivity extends MapActivity {
@@ -46,7 +52,7 @@ public class BusFollowerActivity extends MapActivity {
 	private GetNextTripsForStopResult result = null;
 
 	private MapView mapView = null;
-	private EditText stopNumberField = null;
+	private AutoCompleteTextView stopNumberField = null;
 	private EditText routeNumberField = null;
 	
     /** Called when the activity is first created. */
@@ -62,8 +68,45 @@ public class BusFollowerActivity extends MapActivity {
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
         
-		stopNumberField = (EditText) findViewById(R.id.stopNumber);
+		stopNumberField = (AutoCompleteTextView) findViewById(R.id.stopNumber);
 		routeNumberField = (EditText) findViewById(R.id.routeNumber);
+		
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, 
+				android.R.layout.simple_dropdown_item_1line, null, 
+				new String[] { "stop_desc" }, new int[] { android.R.id.text1 });
+		stopNumberField.setAdapter(adapter);
+		
+		adapter.setCursorToStringConverter(new CursorToStringConverter() {
+			@Override
+			public String convertToString(Cursor cursor) {
+				return cursor.getString(cursor.getColumnIndexOrThrow("stop_code"));
+			}
+		});
+		
+		adapter.setFilterQueryProvider(new FilterQueryProvider() {
+			@Override
+			public Cursor runQuery(CharSequence constraint) {
+				String constraintStr = (constraint != null ? constraint.toString() : "");
+				String[] pieces = constraintStr.split(" ");
+				
+				String query = "SELECT stop_id AS _id, stop_code, stop_code || \": \" || stop_name AS stop_desc FROM stops WHERE 1";
+				ArrayList<String> params = new ArrayList<String>();
+				for (String piece : pieces) {
+					if (piece.length() > 0) {
+						query += " AND stop_name LIKE ?";
+						params.add("%" + piece + "%");
+					}
+				}
+				Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
+				if (cursor != null) {
+					BusFollowerActivity.this.startManagingCursor(cursor);
+					cursor.moveToFirst();
+					return cursor;
+				}
+				
+				return null;
+			}
+		});
 		
         if (savedInstanceState != null) {
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
