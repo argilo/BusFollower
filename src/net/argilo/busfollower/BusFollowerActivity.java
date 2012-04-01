@@ -65,7 +65,10 @@ public class BusFollowerActivity extends MapActivity {
 		stopNumberField = (EditText) findViewById(R.id.stopNumber);
 		routeNumberField = (EditText) findViewById(R.id.routeNumber);
 		
-        if (savedInstanceState != null) {
+        String stopNumberFromIntent = getIntent().getStringExtra("stopNumber");
+        if (stopNumberFromIntent != null) {
+        	stopNumberField.setText(stopNumberFromIntent);
+        } else if (savedInstanceState != null) {
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
         	stopNumberField.setText(savedInstanceState.getString("stopNumber"));
         	routeNumberField.setText(savedInstanceState.getString("routeNumber"));

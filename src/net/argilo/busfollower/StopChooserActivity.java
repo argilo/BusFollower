@@ -31,7 +31,7 @@ public class StopChooserActivity extends Activity {
         setContentView(R.layout.stopchooser);
 
         db = (new DatabaseHelper(this)).getReadableDatabase();
-        AutoCompleteTextView stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
+        final AutoCompleteTextView stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
 
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, 
 				android.R.layout.simple_dropdown_item_1line, null, 
@@ -74,9 +74,10 @@ public class StopChooserActivity extends Activity {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
-				Log.d(TAG, "onEditorAction()");
 				if (actionId == EditorInfo.IME_ACTION_GO) {
-					StopChooserActivity.this.startActivity(new Intent(StopChooserActivity.this, BusFollowerActivity.class));
+					Intent intent = new Intent(StopChooserActivity.this, BusFollowerActivity.class);
+					intent.putExtra("stopNumber", stopSearchField.getText().toString());
+					StopChooserActivity.this.startActivity(intent);
 					return true;
 				}
 				return false;

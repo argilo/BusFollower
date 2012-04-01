@@ -23,10 +23,7 @@
             android:inputType="number"
             android:maxLength="4"
             android:imeOptions="actionNext"
-            android:nextFocusDown="@+id/routeNumber" >
-
-            <requestFocus />
-        </EditText>
+            android:nextFocusDown="@+id/routeNumber" />
 
         <TextView
             android:id="@+id/textView2"
@@ -42,8 +39,11 @@
             android:ems="10"
             android:inputType="number"
             android:maxLength="3" 
-            android:imeOptions="actionDone" />
+            android:imeOptions="actionDone" >
 
+            <requestFocus />
+        </EditText>
+        
         <Button
             android:id="@+id/updateButton"
             android:layout_width="wrap_content"
