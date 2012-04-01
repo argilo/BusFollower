@@ -51,7 +51,7 @@ public class StopChooserActivity extends Activity {
 				String constraintStr = (constraint != null ? constraint.toString() : "");
 				String[] pieces = constraintStr.split(" ");
 				
-				String query = "SELECT stop_id AS _id, stop_code, stop_code || \": \" || stop_name AS stop_desc FROM stops WHERE 1";
+				String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
 				ArrayList<String> params = new ArrayList<String>();
 				for (String piece : pieces) {
 					if (piece.length() > 0) {
