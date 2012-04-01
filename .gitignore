@@ -1,6 +1,8 @@
 /bin/
 /gen/
 /local.properties
+/secure.properties
+/res/values/secure-strings.xml
 /.project
 /.classpath
 pin_red.png

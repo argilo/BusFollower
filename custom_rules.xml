@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="custom_rules">
+    <!-- The secure.properties stores the Google and OC Transpo API keys, with
+         separate versions used for debug and release builds.  The file should
+         look like this:
+
+         debug.google_maps_api_key=APIKEY
+         debug.oc_transpo_application_id=APPID
+         debug.oc_transpo_application_key=APPKEY
+
+         release.google_maps_api_key=APIKEY
+         release.oc_transpo_application_id=APPID
+         release.oc_transpo_application_key=APPKEY
+    -->
+    <property file="secure.properties" />
+    
     <target name="-pre-build">
+        <echoxml file="res/values/secure-strings.xml">
+        	<resources>
+				<string name="google_maps_api_key">GOOGLE_MAPS_API_KEY</string>
+				<string name="oc_transpo_application_id">OC_TRANSPO_APPLICATION_ID</string>
+				<string name="oc_transpo_application_key">OC_TRANSPO_APPLICATION_KEY</string>
+			</resources>
+		</echoxml>
+		<if condition="${build.is.packaging.debug}">
+		    <then>
+				<replace file="res/values/secure-strings.xml" token="GOOGLE_MAPS_API_KEY" value="${debug.google_maps_api_key}"></replace>
+				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_ID" value="${debug.oc_transpo_application_id}"></replace>
+				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_KEY" value="${debug.oc_transpo_application_key}"></replace>
+			</then>
+			<else>
+				<replace file="res/values/secure-strings.xml" token="GOOGLE_MAPS_API_KEY" value="${release.google_maps_api_key}"></replace>
+				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_ID" value="${release.oc_transpo_application_id}"></replace>
+				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_KEY" value="${release.oc_transpo_application_key}"></replace>
+			</else>
+		</if>
+				
         <exec executable="inkscape">
             <arg value="-e" />
             <arg value="res/drawable-xhdpi/pin_red.png" />
