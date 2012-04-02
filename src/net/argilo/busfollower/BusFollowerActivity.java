@@ -59,6 +59,7 @@ public class BusFollowerActivity extends MapActivity {
         dataFetcher = new OCTranspoDataFetcher(this);
         
         db = (new DatabaseHelper(this)).getReadableDatabase();
+        // TODO: Catch & handle SQLiteException
         
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);

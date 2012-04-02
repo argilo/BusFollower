@@ -1,120 +1,61 @@
 package net.argilo.busfollower.ocdata;
 
-import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class DatabaseHelper {
     private static final String TAG = "DatabaseHelper";
-	private static final String DATABASE_NAME = "db";
+	private static final String DATABASE_FOLDER = "/data/data/net.argilo.busfollower/databases";
+	private static final String DATABASE_PATH = DATABASE_FOLDER + "/db";
 
 	Context context;
 	
 	public DatabaseHelper(Context context) {
-		super(context, DATABASE_NAME, null, 1);
 		this.context = context;
 	}
-
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG, "Begin database import.");
-
-		db.execSQL("CREATE TABLE stops (stop_id TEXT PRIMARY KEY, " +
-				"stop_code TEXT, stop_name TEXT, stop_lat INT, stop_lon INT);");
-		
+	
+	public SQLiteDatabase getReadableDatabase() throws SQLiteException {
 		try {
-		    BufferedReader in = new BufferedReader(new InputStreamReader(context.getAssets().open("stops.txt")));
-		    String line = in.readLine();
-		    String[] columns = csvColumns(line);
-		    int stopIdCol = -1, stopCodeCol = -1, stopNameCol = -1, stopLatCol = -1, stopLonCol = -1;
-		    for (int i = 0; i < columns.length; i++) {
-                if ("stop_id".equals(columns[i])) {
-                    stopIdCol = i;
-                } else if ("stop_code".equals(columns[i])) {
-		            stopCodeCol = i;
-		        } else if ("stop_name".equals(columns[i])) {
-		            stopNameCol = i;
-		        } else if ("stop_lat".equals(columns[i])) {
-		            stopLatCol = i;
-		        } else if ("stop_lon".equals(columns[i])) {
-		            stopLonCol = i;
-		        }
-		    }
-		    ContentValues cv = new ContentValues();
-		    while ((line = in.readLine()) != null) {
-		        columns = csvColumns(line);
-
-                cv.put("stop_id", columns[stopIdCol]);
-		        if (columns[stopCodeCol].matches("\\d\\d\\d\\d")) {
-	                cv.put("stop_code", columns[stopCodeCol]);
-		        } else {
-		        	cv.putNull("stop_code");
-		        }
-                cv.put("stop_name", normalizeStopName(columns[stopNameCol]));
-		        try {
-		        	cv.put("stop_lat", Util.latStringToMicroDegrees(columns[stopLatCol]));
-		        } catch (NumberFormatException e) {
-		        	cv.putNull("stop_name");
-		        }
-		        try {
-		        	cv.put("stop_lon", Util.lonStringToMicroDegrees(columns[stopLonCol]));
-		        } catch (NumberFormatException e) {
-		        	cv.putNull("stop_name");
-		        }
-
-                db.insert("stops", "stop_code", cv);
-		    }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-		
-        Log.d(TAG, "End database import.");
+			writeDatabaseIfNecessary();
+		} catch (IOException e) {
+			throw new SQLiteException("Couldn't write database file.");
+		}
+		return SQLiteDatabase.openDatabase(DATABASE_PATH, null, SQLiteDatabase.OPEN_READONLY);
 	}
 
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private String[] csvColumns(String line) {
-		String[] columns = line.split(",");
-		for (int i = 0; i < columns.length; i++) {
-			if (columns[i].length() >= 2 && columns[i].startsWith("\"") && columns[i].endsWith("\"")) {
-				// Strip off surrounding quotation marks.
-				columns[i] = columns[i].substring(1, columns[i].length() - 1);
-				// Unescape quotation marks within the string.
-				columns[i] = columns[i].replace("\"\"", "\"");
+	private void writeDatabaseIfNecessary() throws IOException {
+		File folder = new File(DATABASE_FOLDER);
+		if (!folder.exists()) {
+			if (!folder.mkdir()) {
+				throw new IOException("Couldn't create folder " + DATABASE_FOLDER);
 			}
 		}
-		return columns;
-	}
-	
-	private String normalizeStopName(String stopName) {
-		stopName = stopName.replace("''", "'");
-		stopName = stopName.replace("À", "A");
-		stopName = stopName.replace("Â", "A");
-		stopName = stopName.replace("Æ", "AE");
-		stopName = stopName.replace("Ç", "C");
-		stopName = stopName.replace("È", "E");
-		stopName = stopName.replace("É", "E");
-		stopName = stopName.replace("Ê", "E");
-		stopName = stopName.replace("Ë", "E");
-		stopName = stopName.replace("Î", "I");
-		stopName = stopName.replace("Ï", "I");
-		stopName = stopName.replace("Ô", "O");
-		stopName = stopName.replace("Ö", "O");
-		stopName = stopName.replace("Ù", "U");
-		stopName = stopName.replace("Û", "U");
-		stopName = stopName.replace("Ü", "U");
-		stopName = stopName.replace("Œ", "OE");
-		return stopName;
+		
+		File file = new File(DATABASE_PATH);
+		if (!file.exists()) {
+			Log.d(TAG, "Attempting to write database file.");
+		    InputStream is = context.getAssets().open("db");
+
+		    // Copy the database into the destination
+		    OutputStream os = new FileOutputStream(file);
+		    byte[] buffer = new byte[1024];
+		    int length;
+		    while ((length = is.read(buffer)) > 0){
+		        os.write(buffer, 0, length);
+		    }
+		    os.flush();
+
+		    os.close();
+		    is.close();
+			Log.d(TAG, "Successfully wrote database file.");
+		}
 	}
 }

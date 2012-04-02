@@ -37,6 +37,8 @@ public class StopChooserActivity extends Activity {
         setContentView(R.layout.stopchooser);
 
         db = (new DatabaseHelper(this)).getReadableDatabase();
+        // TODO: Catch & handle SQLiteException
+
         final AutoCompleteTextView stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
 
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, 
