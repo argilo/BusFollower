@@ -56,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		        } else {
 		        	cv.putNull("stop_code");
 		        }
-                cv.put("stop_name", columns[stopNameCol]);
+                cv.put("stop_name", normalizeStopName(columns[stopNameCol]));
 		        try {
 		        	cv.put("stop_lat", Util.latStringToMicroDegrees(columns[stopLatCol]));
 		        } catch (NumberFormatException e) {
@@ -95,5 +95,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 		}
 		return columns;
+	}
+	
+	private String normalizeStopName(String stopName) {
+		stopName = stopName.replace("''", "'");
+		stopName = stopName.replace("À", "A");
+		stopName = stopName.replace("Â", "A");
+		stopName = stopName.replace("Æ", "AE");
+		stopName = stopName.replace("Ç", "C");
+		stopName = stopName.replace("È", "E");
+		stopName = stopName.replace("É", "E");
+		stopName = stopName.replace("Ê", "E");
+		stopName = stopName.replace("Ë", "E");
+		stopName = stopName.replace("Î", "I");
+		stopName = stopName.replace("Ï", "I");
+		stopName = stopName.replace("Ô", "O");
+		stopName = stopName.replace("Ö", "O");
+		stopName = stopName.replace("Ù", "U");
+		stopName = stopName.replace("Û", "U");
+		stopName = stopName.replace("Ü", "U");
+		stopName = stopName.replace("Œ", "OE");
+		return stopName;
 	}
 }
