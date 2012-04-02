@@ -3,8 +3,11 @@ package net.argilo.busfollower;
 import java.util.ArrayList;
 
 import net.argilo.busfollower.ocdata.DatabaseHelper;
+import net.argilo.busfollower.ocdata.Stop;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -105,8 +108,32 @@ public class StopChooserActivity extends Activity {
 	}
 	
 	private void processEnteredStopNumber(String stopNumber) {
-		Intent intent = new Intent(StopChooserActivity.this, BusFollowerActivity.class);
-		intent.putExtra("stopNumber", stopNumber);
-		StopChooserActivity.this.startActivity(intent);
+		try {
+			Stop stop = new Stop(this, db, stopNumber);
+
+			Intent intent = new Intent(StopChooserActivity.this, BusFollowerActivity.class);
+			intent.putExtra("stop", stop);
+			StopChooserActivity.this.startActivity(intent);
+		} catch (IllegalArgumentException e) {
+			final String errorString = e.getMessage();
+			if (errorString != null) {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
+						builder.setTitle(R.string.error)
+						       .setMessage(errorString)
+						       .setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+						           public void onClick(DialogInterface dialog, int id) {
+						                dialog.cancel();
+						           }
+						       });
+						AlertDialog alert = builder.create();
+						alert.show();
+					}
+				});
+				return;
+			}
+		}
+		
 	}
 }

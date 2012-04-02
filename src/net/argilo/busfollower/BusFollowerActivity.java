@@ -9,6 +9,7 @@ import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.RouteDirection;
+import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
 
 import com.google.android.maps.GeoPoint;
@@ -65,9 +66,9 @@ public class BusFollowerActivity extends MapActivity {
 		stopNumberField = (EditText) findViewById(R.id.stopNumber);
 		routeNumberField = (EditText) findViewById(R.id.routeNumber);
 		
-        String stopNumberFromIntent = getIntent().getStringExtra("stopNumber");
-        if (stopNumberFromIntent != null) {
-        	stopNumberField.setText(stopNumberFromIntent);
+        Stop stopFromIntent = (Stop) getIntent().getSerializableExtra("stop");
+        if (stopFromIntent != null) {
+        	stopNumberField.setText(stopFromIntent.getNumber());
         } else if (savedInstanceState != null) {
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
         	stopNumberField.setText(savedInstanceState.getString("stopNumber"));

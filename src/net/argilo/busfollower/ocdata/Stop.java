@@ -17,7 +17,7 @@ public class Stop implements Serializable {
 	private int latitude;
 	private int longitude;
 	
-	public Stop(Context context, SQLiteDatabase db, String number) {
+	public Stop(Context context, SQLiteDatabase db, String number) throws IllegalArgumentException {
 		// Zero-pad the stop number to 4 digits.
 		while (number.length() < 4) {
 			number = "0" + number;
