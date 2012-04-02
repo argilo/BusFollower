@@ -36,6 +36,10 @@ def normalizeStopName(stopName):
 conn = sqlite3.connect(os.path.join('assets','db'))
 c = conn.cursor()
 
+c.execute('DROP TABLE IF EXISTS android_metadata')
+c.execute('CREATE TABLE android_metadata (locale TEXT)')
+c.execute('INSERT INTO android_metadata VALUES ("en_US")')
+
 c.execute('DROP TABLE IF EXISTS stops')
 c.execute('''CREATE TABLE stops (
 stop_id TEXT PRIMARY KEY,
