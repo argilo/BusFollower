@@ -11,7 +11,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
 import android.widget.SimpleCursorAdapter;
@@ -79,12 +82,17 @@ public class StopChooserActivity extends Activity {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_GO) {
-					Intent intent = new Intent(StopChooserActivity.this, BusFollowerActivity.class);
-					intent.putExtra("stopNumber", stopSearchField.getText().toString());
-					StopChooserActivity.this.startActivity(intent);
+					processEnteredStopNumber(stopSearchField.getText().toString());
 					return true;
 				}
 				return false;
+			}
+		});
+		
+		stopSearchField.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				processEnteredStopNumber(stopSearchField.getText().toString());
 			}
 		});
     }
@@ -94,5 +102,11 @@ public class StopChooserActivity extends Activity {
 		super.onDestroy();
 		
 		db.close();
+	}
+	
+	private void processEnteredStopNumber(String stopNumber) {
+		Intent intent = new Intent(StopChooserActivity.this, BusFollowerActivity.class);
+		intent.putExtra("stopNumber", stopNumber);
+		StopChooserActivity.this.startActivity(intent);
 	}
 }
