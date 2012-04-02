@@ -72,6 +72,7 @@ public class StopChooserActivity extends Activity {
 						query += ")";
 					}
 				}
+				query += " ORDER BY stop_code";
 				Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
 				if (cursor != null) {
 					cursor.moveToFirst();
