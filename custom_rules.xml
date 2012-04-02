@@ -34,6 +34,10 @@
 				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_KEY" value="${release.oc_transpo_application_key}"></replace>
 			</else>
 		</if>
+		
+		<exec executable="python">
+		    <arg value="gtfs/gen-db.py" />
+		</exec>
 				
         <exec executable="inkscape">
             <arg value="-e" />

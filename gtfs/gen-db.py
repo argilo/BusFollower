@@ -33,7 +33,7 @@ def normalizeStopName(stopName):
     stopName = stopName.replace("Œ", "OE")
     return stopName
 
-conn = sqlite3.connect(os.path.join('..','assets','db'))
+conn = sqlite3.connect(os.path.join('assets','db'))
 c = conn.cursor()
 
 c.execute('DROP TABLE IF EXISTS stops')
@@ -46,7 +46,7 @@ stop_lon INT
 )''')
 c.execute('CREATE INDEX stop_code ON stops(stop_code)')
 
-with open('stops.txt', encoding='utf-8') as f:
+with open(os.path.join('gtfs','stops.txt'), encoding='utf-8') as f:
     reader = csv.reader(f)
     columns = reader.__next__()
 
