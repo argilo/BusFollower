@@ -47,6 +47,8 @@ public class BusFollowerActivity extends MapActivity {
 	private OCTranspoDataFetcher dataFetcher;
 	private SQLiteDatabase db;
 	private GetNextTripsForStopResult result = null;
+	private Stop stop;
+	private Route route;
 
 	private MapView mapView = null;
 	private EditText stopNumberField = null;
@@ -69,16 +71,16 @@ public class BusFollowerActivity extends MapActivity {
 		stopNumberField = (EditText) findViewById(R.id.stopNumber);
 		routeNumberField = (EditText) findViewById(R.id.routeNumber);
 		
-        Stop stopFromIntent = (Stop) getIntent().getSerializableExtra("stop");
-        Route routeFromIntent = (Route) getIntent().getSerializableExtra("route");
-        if (stopFromIntent != null) {
-        	stopNumberField.setText(stopFromIntent.getNumber());
-        	routeNumberField.setText(routeFromIntent.getRouteNumber());
+        stop = (Stop) getIntent().getSerializableExtra("stop");
+        route = (Route) getIntent().getSerializableExtra("route");
+        if (stop != null) {
         } else if (savedInstanceState != null) {
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
-        	stopNumberField.setText(savedInstanceState.getString("stopNumber"));
-        	routeNumberField.setText(savedInstanceState.getString("routeNumber"));
+        	stop = (Stop) savedInstanceState.getSerializable("stop");
+        	route = (Route) savedInstanceState.getSerializable("route");
         }
+    	stopNumberField.setText(stop.getNumber());
+    	routeNumberField.setText(route.getRouteNumber());
         
     	if (result != null) {
 			displayGetNextTripsForStopResult(result);
@@ -170,8 +172,8 @@ public class BusFollowerActivity extends MapActivity {
 		super.onSaveInstanceState(outState);
 		
 		outState.putSerializable("result", result);
-		outState.putString("stopNumber", stopNumberField.getText().toString());
-		outState.putString("routeNumber", routeNumberField.getText().toString());
+		outState.putSerializable("stop", stop);
+		outState.putSerializable("route", route);
 	}
 	
 	@Override
@@ -200,17 +202,19 @@ public class BusFollowerActivity extends MapActivity {
         }
 
         for (RouteDirection rd : result.getRouteDirections()) {
-			for (Trip trip : rd.getTrips()) {
-				GeoPoint point = trip.getGeoPoint();
-				if (point != null) {
-					minLatitude = Math.min(minLatitude, point.getLatitudeE6());
-					maxLatitude = Math.max(maxLatitude, point.getLatitudeE6());
-					minLongitude = Math.min(minLongitude, point.getLongitudeE6());
-					maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
-					
-    		        itemizedOverlay.addOverlay(new BusOverlayItem(point, this, rd, trip));
+        	if (rd.getDirection().equals(route.getDirection())) {
+				for (Trip trip : rd.getTrips()) {
+					GeoPoint point = trip.getGeoPoint();
+					if (point != null) {
+						minLatitude = Math.min(minLatitude, point.getLatitudeE6());
+						maxLatitude = Math.max(maxLatitude, point.getLatitudeE6());
+						minLongitude = Math.min(minLongitude, point.getLongitudeE6());
+						maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
+						
+	    		        itemizedOverlay.addOverlay(new BusOverlayItem(point, this, rd, trip));
+					}
 				}
-			}
+        	}
 		}
         if (itemizedOverlay.size() > 0) {
         	mapOverlays.add(itemizedOverlay);
