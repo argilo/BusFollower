@@ -73,8 +73,7 @@ public class BusFollowerActivity extends MapActivity {
 		
         stop = (Stop) getIntent().getSerializableExtra("stop");
         route = (Route) getIntent().getSerializableExtra("route");
-        if (stop != null) {
-        } else if (savedInstanceState != null) {
+        if (savedInstanceState != null) {
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
         	stop = (Stop) savedInstanceState.getSerializable("stop");
         	route = (Route) savedInstanceState.getSerializable("route");
