@@ -119,12 +119,6 @@ public class BusFollowerActivity extends MapActivity {
     				}
     				
     				BusFollowerActivity.this.displayGetNextTripsForStopResult(result);
-    				
-    				mapView.post(new Runnable() {
-    		        	public void run() {
-            		        mapView.invalidate();
-    		        	}
-    		        });
     			}
     		}).start();
         }
@@ -196,6 +190,7 @@ public class BusFollowerActivity extends MapActivity {
 		            mapController.zoomToSpan(Math.max(MIN_ZOOM, (maxLatitude - minLatitude) * 110 / 100), Math.max(MIN_ZOOM, (maxLongitude - minLongitude) * 110 / 100));
 		            mapController.setCenter(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
 		        }
+		        mapView.invalidate();
         	}
         });
 	}
