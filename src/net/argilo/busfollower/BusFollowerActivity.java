@@ -59,8 +59,6 @@ public class BusFollowerActivity extends MapActivity {
 	private Route route;
 
 	private MapView mapView = null;
-	private EditText stopNumberField = null;
-	private EditText routeNumberField = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -76,94 +74,64 @@ public class BusFollowerActivity extends MapActivity {
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
         
-		stopNumberField = (EditText) findViewById(R.id.stopNumber);
-		routeNumberField = (EditText) findViewById(R.id.routeNumber);
-		
         stop = (Stop) getIntent().getSerializableExtra("stop");
         route = (Route) getIntent().getSerializableExtra("route");
         if (savedInstanceState != null) {
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
         	stop = (Stop) savedInstanceState.getSerializable("stop");
         	route = (Route) savedInstanceState.getSerializable("route");
-        }
-    	stopNumberField.setText(stop.getNumber());
-    	routeNumberField.setText(route.getNumber());
-        
-    	if (result != null) {
-			displayGetNextTripsForStopResult(result);
-    	} else {
-	        // Zoom to OC Transpo service area if it's our first time.
-	        MapController mapController = mapView.getController();
-	        mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
-	        mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
-    	}
-        
-        final Button updateButton = (Button) findViewById(R.id.updateButton);
-        updateButton.setOnClickListener(new View.OnClickListener() {
-        	@Override
-        	public void onClick(View v) {
-        		updateButton.setEnabled(false);
-        		
-        		// Hide the on-screen keyboard when the user presses the Update button.
-        		InputMethodManager imm = (InputMethodManager) BusFollowerActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        		imm.hideSoftInputFromWindow(updateButton.getWindowToken(), 0);
-        		
-        		new Thread(new Runnable() {
-        			public void run() {
-        				String errorString;
-        				try {
-        					result = dataFetcher.getNextTripsForStop(BusFollowerActivity.this, db, stop.getNumber(), route.getNumber());
-            				errorString = Util.getErrorString(BusFollowerActivity.this, result.getError());
-        				} catch (IOException e) {
-        					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
-        				} catch (XmlPullParserException e) {
-        					errorString = BusFollowerActivity.this.getString(R.string.invalid_response);
-        				} catch (IllegalArgumentException e) {
-        					errorString = e.getMessage();
-        				}
-        				final String errorStringFinal = errorString;
-        				if (errorString != null) {
-        					BusFollowerActivity.this.runOnUiThread(new Runnable() {
-        						public void run() {
-                					AlertDialog.Builder builder = new AlertDialog.Builder(BusFollowerActivity.this);
-                					builder.setTitle(R.string.error)
-                					       .setMessage(errorStringFinal)
-                					       .setNegativeButton(BusFollowerActivity.this.getString(R.string.ok), new DialogInterface.OnClickListener() {
-                					           public void onClick(DialogInterface dialog, int id) {
-                					                dialog.cancel();
-                					           }
-                					       });
-                					AlertDialog alert = builder.create();
-                					alert.show();
-                					updateButton.setEnabled(true);
-        						}
-        					});
-        					return;
-        				}
-        				
-        				BusFollowerActivity.this.displayGetNextTripsForStopResult(result);
-        				
-        				mapView.post(new Runnable() {
-        		        	public void run() {
-                		        mapView.invalidate();
-                		        updateButton.setEnabled(true);
-        		        	}
-        		        });
-        			}
-        		}).start();
+
+        	if (result != null) {
+    			displayGetNextTripsForStopResult(result);
+        	} else {
+    	        // Zoom to OC Transpo service area if it's our first time.
+    	        MapController mapController = mapView.getController();
+    	        mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
+    	        mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
         	}
-        });
-        
-        routeNumberField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					updateButton.performClick();
-					return true;
-				}
-				return false;
-			}
-		});
+        } else {
+    		new Thread(new Runnable() {
+    			public void run() {
+    				String errorString;
+    				try {
+    					result = dataFetcher.getNextTripsForStop(BusFollowerActivity.this, db, stop.getNumber(), route.getNumber());
+        				errorString = Util.getErrorString(BusFollowerActivity.this, result.getError());
+    				} catch (IOException e) {
+    					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
+    				} catch (XmlPullParserException e) {
+    					errorString = BusFollowerActivity.this.getString(R.string.invalid_response);
+    				} catch (IllegalArgumentException e) {
+    					errorString = e.getMessage();
+    				}
+    				final String errorStringFinal = errorString;
+    				if (errorString != null) {
+    					BusFollowerActivity.this.runOnUiThread(new Runnable() {
+    						public void run() {
+            					AlertDialog.Builder builder = new AlertDialog.Builder(BusFollowerActivity.this);
+            					builder.setTitle(R.string.error)
+            					       .setMessage(errorStringFinal)
+            					       .setNegativeButton(BusFollowerActivity.this.getString(R.string.ok), new DialogInterface.OnClickListener() {
+            					           public void onClick(DialogInterface dialog, int id) {
+            					                dialog.cancel();
+            					           }
+            					       });
+            					AlertDialog alert = builder.create();
+            					alert.show();
+    						}
+    					});
+    					return;
+    				}
+    				
+    				BusFollowerActivity.this.displayGetNextTripsForStopResult(result);
+    				
+    				mapView.post(new Runnable() {
+    		        	public void run() {
+            		        mapView.invalidate();
+    		        	}
+    		        });
+    			}
+    		}).start();
+        }
     }
     
 	@Override
