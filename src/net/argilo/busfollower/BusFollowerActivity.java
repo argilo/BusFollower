@@ -1,7 +1,10 @@
 package net.argilo.busfollower;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -234,11 +237,13 @@ public class BusFollowerActivity extends MapActivity {
 	}
 
     private class TripAdapter extends ArrayAdapter<Trip> {
+    	private Context context;
     	private int resourceId;
     	private ArrayList<Trip> trips;
     	
     	public TripAdapter(Context context, int resourceId, ArrayList<Trip> trips) {
     		super(context, resourceId, trips);
+    		this.context = context;
     		this.resourceId = resourceId;
     		this.trips = trips;
     	}
@@ -253,10 +258,26 @@ public class BusFollowerActivity extends MapActivity {
     		if (trip != null) {
     			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
     			TextView text2 = (TextView) v.findViewById(android.R.id.text2);
-    			text1.setText(trip.getDestination());
-    			text2.setText("Bleargh!!!");
+    			text1.setText(getHumanReadableTime(trip.getAdjustedScheduleTime()) + (trip.isEstimated() ? " (estimated)" : " (scheduled)"));
+    			text2.setText("Destination: " + trip.getDestination());
     		}
     		return v;
+    	}
+
+    	private String getHumanReadableTime(Date date) {
+    		StringBuffer result = new StringBuffer();
+    		
+    		// Relative time
+    		long difference = date.getTime() - Calendar.getInstance().getTimeInMillis();
+    		if (difference >= 0) {
+    			int differenceMinutes = (int) ((difference + 30000) / 60000);
+    			result.append(context.getResources().getQuantityString(R.plurals.inMinutes, differenceMinutes, differenceMinutes));
+    		} else {
+    			int differenceMinutes = (int) ((-difference + 30000) / 60000);
+    			result.append(context.getResources().getQuantityString(R.plurals.minutesAgo, differenceMinutes, differenceMinutes));
+    		}
+    		
+    		return result.toString();
     	}
     }
 }

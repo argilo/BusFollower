@@ -23,7 +23,11 @@
     <string name="bus_type">Bus type:</string>
     <string name="last_trip">This is the last trip.</string>
     
-	<plurals name="minutes">
+	<plurals name="inMinutes">
+	    <item quantity="one">In %d min</item>
+	    <item quantity="other">In %d mins</item>
+	</plurals>
+    	<plurals name="minutes">
 	    <item quantity="one">%d min</item>
 	    <item quantity="other">%d mins</item>
 	</plurals>
