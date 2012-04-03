@@ -1,6 +1,7 @@
 package net.argilo.busfollower;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -28,7 +29,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -158,11 +161,8 @@ public class BusFollowerActivity extends MapActivity {
 				return false;
 			}
 		});
-        
-        final ListView tripList = (ListView) findViewById(R.id.tripList);
-        tripList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] { "one", "two", "three" }));
     }
-
+    
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -202,9 +202,16 @@ public class BusFollowerActivity extends MapActivity {
         	minLongitude = maxLongitude = stopLocation.getLongitudeE6();
         }
 
-        for (RouteDirection rd : result.getRouteDirections()) {
+        for (final RouteDirection rd : result.getRouteDirections()) {
         	if (rd.getDirection().equals(route.getDirection())) {
-				for (Trip trip : rd.getTrips()) {
+                final ListView tripList = (ListView) findViewById(R.id.tripList);
+                runOnUiThread(new Runnable() {
+                	public void run() {
+                        tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, android.R.layout.simple_list_item_2, rd.getTrips()));
+                	}
+                });
+
+                for (Trip trip : rd.getTrips()) {
 					GeoPoint point = trip.getGeoPoint();
 					if (point != null) {
 						minLatitude = Math.min(minLatitude, point.getLatitudeE6());
@@ -225,5 +232,31 @@ public class BusFollowerActivity extends MapActivity {
             mapController.animateTo(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
         }		
 	}
-	
+
+    private class TripAdapter extends ArrayAdapter<Trip> {
+    	private int resourceId;
+    	private ArrayList<Trip> trips;
+    	
+    	public TripAdapter(Context context, int resourceId, ArrayList<Trip> trips) {
+    		super(context, resourceId, trips);
+    		this.resourceId = resourceId;
+    		this.trips = trips;
+    	}
+    	
+    	@Override
+    	public View getView(int position, View v, ViewGroup parent) {
+    		if (v == null) {
+    			LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    			v = li.inflate(resourceId, null);
+    		}
+    		Trip trip = trips.get(position);
+    		if (trip != null) {
+    			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
+    			TextView text2 = (TextView) v.findViewById(android.R.id.text2);
+    			text1.setText(trip.getDestination());
+    			text2.setText("Bleargh!!!");
+    		}
+    		return v;
+    	}
+    }
 }
