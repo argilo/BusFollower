@@ -101,14 +101,11 @@ public class BusFollowerActivity extends MapActivity {
         		InputMethodManager imm = (InputMethodManager) BusFollowerActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
         		imm.hideSoftInputFromWindow(updateButton.getWindowToken(), 0);
         		
-        		final String stopNumber = stopNumberField.getText().toString();
-        		final String routeNumber = routeNumberField.getText().toString();
-        		
         		new Thread(new Runnable() {
         			public void run() {
         				String errorString;
         				try {
-        					result = dataFetcher.getNextTripsForStop(BusFollowerActivity.this, db, stopNumber, routeNumber);
+        					result = dataFetcher.getNextTripsForStop(BusFollowerActivity.this, db, stop.getNumber(), route.getRouteNumber());
             				errorString = Util.getErrorString(BusFollowerActivity.this, result.getError());
         				} catch (IOException e) {
         					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
