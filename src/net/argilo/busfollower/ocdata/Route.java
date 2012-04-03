@@ -12,7 +12,7 @@ public class Route implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final String TAG = "Route";
 	
-	private String routeNumber = null;
+	private String number = null;
 	private String directionID = null;
 	private String direction = null;
 	private String heading = null;
@@ -25,7 +25,7 @@ public class Route implements Serializable {
 				continue;
 			}
 			if ("RouteNo".equalsIgnoreCase(tagName)) {
-				routeNumber = xpp.nextText();
+				number = xpp.nextText();
 			} else if ("DirectionID".equalsIgnoreCase(tagName)) {
 				directionID = xpp.nextText();
 			} else if ("Direction".equalsIgnoreCase(tagName)) {
@@ -39,8 +39,8 @@ public class Route implements Serializable {
 		}
 	}
 	
-	public String getRouteNumber() {
-		return routeNumber;
+	public String getNumber() {
+		return number;
 	}
 	
 	public String getDirectionID() {
@@ -58,8 +58,8 @@ public class Route implements Serializable {
 	@Override
 	public String toString() {
 		String result = "";
-		if (routeNumber != null) {
-			result += routeNumber;
+		if (number != null) {
+			result += number;
 		}
 		if (heading != null) {
 			result += "  " + heading;

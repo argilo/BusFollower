@@ -80,7 +80,7 @@ public class BusFollowerActivity extends MapActivity {
         	route = (Route) savedInstanceState.getSerializable("route");
         }
     	stopNumberField.setText(stop.getNumber());
-    	routeNumberField.setText(route.getRouteNumber());
+    	routeNumberField.setText(route.getNumber());
         
     	if (result != null) {
 			displayGetNextTripsForStopResult(result);
@@ -105,7 +105,7 @@ public class BusFollowerActivity extends MapActivity {
         			public void run() {
         				String errorString;
         				try {
-        					result = dataFetcher.getNextTripsForStop(BusFollowerActivity.this, db, stop.getNumber(), route.getRouteNumber());
+        					result = dataFetcher.getNextTripsForStop(BusFollowerActivity.this, db, stop.getNumber(), route.getNumber());
             				errorString = Util.getErrorString(BusFollowerActivity.this, result.getError());
         				} catch (IOException e) {
         					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
