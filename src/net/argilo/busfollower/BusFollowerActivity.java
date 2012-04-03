@@ -8,6 +8,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
+import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
@@ -69,8 +70,10 @@ public class BusFollowerActivity extends MapActivity {
 		routeNumberField = (EditText) findViewById(R.id.routeNumber);
 		
         Stop stopFromIntent = (Stop) getIntent().getSerializableExtra("stop");
+        Route routeFromIntent = (Route) getIntent().getSerializableExtra("route");
         if (stopFromIntent != null) {
         	stopNumberField.setText(stopFromIntent.getNumber());
+        	routeNumberField.setText(routeFromIntent.getRouteNumber());
         } else if (savedInstanceState != null) {
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
         	stopNumberField.setText(savedInstanceState.getString("stopNumber"));
