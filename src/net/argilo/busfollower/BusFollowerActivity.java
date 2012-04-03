@@ -45,12 +45,8 @@ import android.widget.TextView;
 
 public class BusFollowerActivity extends MapActivity {
 	private static final String TAG = "BusFollowerActivity";
-	
-	// Values taken from stops.txt.
-	private static int globalMinLatitude = 45130104; 
-	private static int globalMaxLatitude = 45519650;
-	private static int globalMinLongitude = -76040543;
-	private static int globalMaxLongitude = -75342690;
+	// The zoom level to use when there's only one point to display.
+	private static final int MIN_ZOOM = 10000;
 	
 	private OCTranspoDataFetcher dataFetcher;
 	private SQLiteDatabase db;
@@ -86,8 +82,8 @@ public class BusFollowerActivity extends MapActivity {
         	} else {
     	        // Zoom to OC Transpo service area if it's our first time.
     	        MapController mapController = mapView.getController();
-    	        mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
-    	        mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
+    	        mapController.zoomToSpan(MIN_ZOOM, MIN_ZOOM);
+    	        mapController.setCenter(stop.getLocation());
         	}
         } else {
     		new Thread(new Runnable() {
@@ -199,7 +195,7 @@ public class BusFollowerActivity extends MapActivity {
         	mapOverlays.add(itemizedOverlay);
         	
             MapController mapController = mapView.getController();
-            mapController.zoomToSpan(Math.max(10000, maxLatitude - minLatitude) * 11 / 10, Math.max(10000, maxLongitude - minLongitude) * 11 / 10);
+            mapController.zoomToSpan(Math.max(MIN_ZOOM, (maxLatitude - minLatitude) * 11 / 10), Math.max(MIN_ZOOM, (maxLongitude - minLongitude) * 11 / 10));
             mapController.animateTo(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
         }		
 	}
