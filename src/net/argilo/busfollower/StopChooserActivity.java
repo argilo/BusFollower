@@ -119,43 +119,48 @@ public class StopChooserActivity extends Activity {
 		db.close();
 	}
 	
-	private void processEnteredStopNumber(String stopNumber) {
-		Stop stop = null;
-		GetRouteSummaryForStopResult result = null;
-		String errorString = null;
-		try {
-			stop = new Stop(this, db, stopNumber);
-			result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
-			errorString = Util.getErrorString(this, result.getError());
-		} catch (IOException e) {
-			errorString = getString(R.string.server_error); 
-		} catch (XmlPullParserException e) {
-			errorString = getString(R.string.invalid_response);
-		} catch (IllegalArgumentException e) {
-			errorString = e.getMessage();
-		}
-		final String finalErrorString = errorString;
-		if (errorString != null) {
-			runOnUiThread(new Runnable() {
-				public void run() {
-					AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
-					builder.setTitle(R.string.error)
-					       .setMessage(finalErrorString)
-					       .setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					                dialog.cancel();
-					           }
-					       });
-					AlertDialog alert = builder.create();
-					alert.show();
+	private void processEnteredStopNumber(final String stopNumber) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Stop stop = null;
+				GetRouteSummaryForStopResult result = null;
+				String errorString = null;
+				try {
+					stop = new Stop(StopChooserActivity.this, db, stopNumber);
+					result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
+					errorString = Util.getErrorString(StopChooserActivity.this, result.getError());
+				} catch (IOException e) {
+					errorString = getString(R.string.server_error); 
+				} catch (XmlPullParserException e) {
+					errorString = getString(R.string.invalid_response);
+				} catch (IllegalArgumentException e) {
+					errorString = e.getMessage();
 				}
-			});
-			return;
-		} else {
-			Intent intent = new Intent(this, RouteChooserActivity.class);
-			intent.putExtra("stop", stop);
-			intent.putExtra("routes", result);
-			startActivity(intent);
-		}
+				final String finalErrorString = errorString;
+				if (errorString != null) {
+					runOnUiThread(new Runnable() {
+						public void run() {
+							AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
+							builder.setTitle(R.string.error)
+							       .setMessage(finalErrorString)
+							       .setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							                dialog.cancel();
+							           }
+							       });
+							AlertDialog alert = builder.create();
+							alert.show();
+						}
+					});
+					return;
+				} else {
+					Intent intent = new Intent(StopChooserActivity.this, RouteChooserActivity.class);
+					intent.putExtra("stop", stop);
+					intent.putExtra("routes", result);
+					startActivity(intent);
+				}
+			}
+		}).start();
 	}
 }
