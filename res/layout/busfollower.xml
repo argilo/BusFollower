@@ -52,6 +52,12 @@
 
     </LinearLayout>
 
+    <ListView
+        android:id="@+android:id/tripList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawSelectorOnTop="false" />
+
     <com.google.android.maps.MapView
         android:id="@+id/mapView"
         android:clickable="true"

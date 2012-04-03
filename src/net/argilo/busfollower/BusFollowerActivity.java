@@ -31,8 +31,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class BusFollowerActivity extends MapActivity {
@@ -156,6 +158,9 @@ public class BusFollowerActivity extends MapActivity {
 				return false;
 			}
 		});
+        
+        final ListView tripList = (ListView) findViewById(R.id.tripList);
+        tripList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] { "one", "two", "three" }));
     }
 
 	@Override
