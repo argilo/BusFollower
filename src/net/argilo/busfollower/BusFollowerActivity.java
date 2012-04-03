@@ -11,6 +11,7 @@ import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
+import net.argilo.busfollower.ocdata.Util;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -103,7 +104,7 @@ public class BusFollowerActivity extends MapActivity {
         				String errorString;
         				try {
         					result = dataFetcher.getNextTripsForStop(BusFollowerActivity.this, db, stopNumber, routeNumber);
-            				errorString = getErrorString(result.getError());
+            				errorString = Util.getErrorString(BusFollowerActivity.this, result.getError());
         				} catch (IOException e) {
         					errorString = BusFollowerActivity.this.getString(R.string.server_error); 
         				} catch (XmlPullParserException e) {
@@ -217,30 +218,4 @@ public class BusFollowerActivity extends MapActivity {
         }		
 	}
 	
-	private String getErrorString(String error) {
-		if ("".equals(error)) {
-			return null;
-		}
-		
-		try {
-			int errorNumber = Integer.parseInt(error);
-			switch (errorNumber) {
-			case 1:
-				return getString(R.string.invalid_api_key);
-			case 2:
-				return getString(R.string.unable_to_query_data_source);
-			case 10:
-			case 11:
-				return getString(R.string.invalid_stop_number);
-			case 12:
-				return getString(R.string.invalid_route_number);
-			default:
-				Log.w(TAG, "Unknown error code: " + error);
-				return null;
-			}
-		} catch (NumberFormatException e) {
-			Log.w(TAG, "Couldn't parse error code: " + error);
-			return null;
-		}
-	}
 }

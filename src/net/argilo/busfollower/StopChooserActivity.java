@@ -1,9 +1,15 @@
 package net.argilo.busfollower;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import net.argilo.busfollower.ocdata.DatabaseHelper;
+import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
+import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.Stop;
+import net.argilo.busfollower.ocdata.Util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +34,7 @@ import android.widget.TextView.OnEditorActionListener;
 public class StopChooserActivity extends Activity {
 	private static final String TAG = "StopChooserActivity";
 
+	private OCTranspoDataFetcher dataFetcher;
 	private SQLiteDatabase db = null;
 	
     /** Called when the activity is first created. */
@@ -35,6 +42,8 @@ public class StopChooserActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stopchooser);
+
+        dataFetcher = new OCTranspoDataFetcher(this);
 
         db = (new DatabaseHelper(this)).getReadableDatabase();
         // TODO: Catch & handle SQLiteException
@@ -111,32 +120,42 @@ public class StopChooserActivity extends Activity {
 	}
 	
 	private void processEnteredStopNumber(String stopNumber) {
+		Stop stop = null;
+		GetRouteSummaryForStopResult result = null;
+		String errorString = null;
 		try {
-			Stop stop = new Stop(this, db, stopNumber);
-
-			Intent intent = new Intent(StopChooserActivity.this, BusFollowerActivity.class);
-			intent.putExtra("stop", stop);
-			StopChooserActivity.this.startActivity(intent);
+			stop = new Stop(this, db, stopNumber);
+			result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
+			errorString = Util.getErrorString(this, result.getError());
+		} catch (IOException e) {
+			errorString = getString(R.string.server_error); 
+		} catch (XmlPullParserException e) {
+			errorString = getString(R.string.invalid_response);
 		} catch (IllegalArgumentException e) {
-			final String errorString = e.getMessage();
-			if (errorString != null) {
-				runOnUiThread(new Runnable() {
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
-						builder.setTitle(R.string.error)
-						       .setMessage(errorString)
-						       .setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-						           public void onClick(DialogInterface dialog, int id) {
-						                dialog.cancel();
-						           }
-						       });
-						AlertDialog alert = builder.create();
-						alert.show();
-					}
-				});
-				return;
-			}
+			errorString = e.getMessage();
 		}
-		
+		final String finalErrorString = errorString;
+		if (errorString != null) {
+			runOnUiThread(new Runnable() {
+				public void run() {
+					AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
+					builder.setTitle(R.string.error)
+					       .setMessage(finalErrorString)
+					       .setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					                dialog.cancel();
+					           }
+					       });
+					AlertDialog alert = builder.create();
+					alert.show();
+				}
+			});
+			return;
+		} else {
+			Intent intent = new Intent(this, RouteChooserActivity.class);
+			intent.putExtra("stop", stop);
+			intent.putExtra("routes", result);
+			startActivity(intent);
+		}
 	}
 }

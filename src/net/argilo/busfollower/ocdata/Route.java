@@ -1,13 +1,15 @@
 package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Log;
 
-public class Route {
+public class Route implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static final String TAG = "Route";
 	
 	private String routeNumber = null;
@@ -51,5 +53,17 @@ public class Route {
 	
 	public String getHeading() {
 		return heading;
+	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		if (routeNumber != null) {
+			result += routeNumber;
+		}
+		if (heading != null) {
+			result += "  " + heading;
+		}
+		return result;
 	}
 }
