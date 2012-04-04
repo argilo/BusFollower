@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
-import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
@@ -23,7 +22,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +30,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class BusFollowerActivity extends MapActivity {
-	private static final String TAG = "BusFollowerActivity";
 	// The zoom level to use when there's only one point to display.
 	private static final int MIN_ZOOM = 10000;
 	

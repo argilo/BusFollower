@@ -20,7 +20,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -34,8 +33,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 public class StopChooserActivity extends Activity {
-	private static final String TAG = "StopChooserActivity";
-
 	private SQLiteDatabase db = null;
 	
     /** Called when the activity is first created. */
