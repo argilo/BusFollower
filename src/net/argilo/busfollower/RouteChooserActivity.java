@@ -115,7 +115,6 @@ public class RouteChooserActivity extends ListActivity {
 			} else {
 				Intent intent = new Intent(RouteChooserActivity.this, BusFollowerActivity.class);
 				intent.putExtra("result", result);
-				intent.putExtra("stop", stop);
 				intent.putExtra("route", route);
 				startActivity(intent);
 			}

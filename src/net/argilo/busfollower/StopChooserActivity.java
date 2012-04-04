@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParserException;
 
 import net.argilo.busfollower.ocdata.DatabaseHelper;
+import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
+import net.argilo.busfollower.ocdata.Route;
+import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Util;
 
@@ -28,6 +31,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.TextView;
@@ -35,6 +39,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class StopChooserActivity extends ListActivity {
 	private SQLiteDatabase db = null;
+	private RecentQueryList recentQueryList = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -109,8 +114,13 @@ public class StopChooserActivity extends ListActivity {
 			}
 		});
 
-    	RecentQueryList recentQueryList = ((BusFollowerApplication) getApplicationContext()).getRecentQueryList();
+    	recentQueryList = ((BusFollowerApplication) getApplicationContext()).getRecentQueryList();
         setListAdapter(new ArrayAdapter<RecentQuery>(this, android.R.layout.simple_list_item_1, recentQueryList.getRecents()));
+    }
+    
+    @Override
+    public void onListItemClick(ListView parent, View v, int position, long id) {
+    	new FetchTripsTask().execute(recentQueryList.getRecents().get(position));
     }
     
 	@Override
@@ -169,4 +179,66 @@ public class StopChooserActivity extends ListActivity {
 			}
 		}
 	}
+
+	private class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsForStopResult> {
+		ProgressDialog progressDialog = null;
+		private Route route = null;
+		private String errorString = null;
+		
+		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(StopChooserActivity.this, "", StopChooserActivity.this.getString(R.string.loading));
+		}
+
+		@Override
+		protected GetNextTripsForStopResult doInBackground(RecentQuery... query) {
+			Stop stop = query[0].getStop();
+			route = query[0].getRoute();
+			GetNextTripsForStopResult result = null;
+			try {
+				result = OCTranspoDataFetcher.getNextTripsForStop(StopChooserActivity.this, db, stop.getNumber(), route.getNumber());
+				errorString = Util.getErrorString(StopChooserActivity.this, result.getError());
+				if (errorString == null) {
+					// Check whether there are any trips to display, since there's no
+					// point going to the map screen if there aren't.
+			        for (RouteDirection rd : result.getRouteDirections()) {
+			        	if (rd.getDirection().equals(route.getDirection())) {
+			        		if (rd.getTrips().isEmpty()) {
+								errorString = StopChooserActivity.this.getString(R.string.no_trips);
+			        		}
+			        	}
+			        }
+				}
+			} catch (IOException e) {
+				errorString = StopChooserActivity.this.getString(R.string.server_error); 
+			} catch (XmlPullParserException e) {
+				errorString = StopChooserActivity.this.getString(R.string.invalid_response);
+			} catch (IllegalArgumentException e) {
+				errorString = e.getMessage();
+			}
+			return result;
+		}
+    	
+		@Override
+		protected void onPostExecute(GetNextTripsForStopResult result) {
+			progressDialog.dismiss();
+			if (errorString != null) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
+				builder.setTitle(R.string.error)
+				.setMessage(errorString)
+				.setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+			} else {
+				Intent intent = new Intent(StopChooserActivity.this, BusFollowerActivity.class);
+				intent.putExtra("result", result);
+				intent.putExtra("route", route);
+				startActivity(intent);
+			}
+		}
+    }
 }
