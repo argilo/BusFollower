@@ -36,7 +36,6 @@ import android.widget.TextView.OnEditorActionListener;
 public class StopChooserActivity extends Activity {
 	private static final String TAG = "StopChooserActivity";
 
-	private OCTranspoDataFetcher dataFetcher;
 	private SQLiteDatabase db = null;
 	
     /** Called when the activity is first created. */
@@ -44,8 +43,6 @@ public class StopChooserActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stopchooser);
-
-        dataFetcher = new OCTranspoDataFetcher(this);
 
         db = (new DatabaseHelper(this)).getReadableDatabase();
         // TODO: Catch & handle SQLiteException
@@ -123,13 +120,13 @@ public class StopChooserActivity extends Activity {
 	}
 	
 	private class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
-		ProgressDialog dialog = null;
+		ProgressDialog progressDialog = null;
 		private Stop stop = null;
 		private String errorString = null;
 		
 		@Override
 		protected void onPreExecute() {
-			dialog = ProgressDialog.show(StopChooserActivity.this, "", StopChooserActivity.this.getString(R.string.loading));
+			progressDialog = ProgressDialog.show(StopChooserActivity.this, "", StopChooserActivity.this.getString(R.string.loading));
 		}
 		
 		@Override
@@ -137,7 +134,7 @@ public class StopChooserActivity extends Activity {
 			GetRouteSummaryForStopResult result = null;
 			try {
 				stop = new Stop(StopChooserActivity.this, db, stopNumber[0]);
-				result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
+				result = OCTranspoDataFetcher.getRouteSummaryForStop(StopChooserActivity.this, stop.getNumber());
 				errorString = Util.getErrorString(StopChooserActivity.this, result.getError());
 			} catch (IOException e) {
 				errorString = getString(R.string.server_error); 
@@ -151,7 +148,7 @@ public class StopChooserActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(GetRouteSummaryForStopResult result) {
-			dialog.dismiss();
+			progressDialog.dismiss();
 			if (errorString != null) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
 				builder.setTitle(R.string.error)
@@ -163,11 +160,10 @@ public class StopChooserActivity extends Activity {
 				});
 				AlertDialog alert = builder.create();
 				alert.show();
-				return;
 			} else {
 				Intent intent = new Intent(StopChooserActivity.this, RouteChooserActivity.class);
 				intent.putExtra("stop", stop);
-				intent.putExtra("routes", result);
+				intent.putExtra("result", result);
 				startActivity(intent);
 			}
 		}

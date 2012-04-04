@@ -21,27 +21,17 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 public class OCTranspoDataFetcher {
-	private final Context context;
-	private final String appID;
-	private final String apiKey;
-	
-	public OCTranspoDataFetcher(Context context) {
-		this.context = context;
-		appID = context.getString(R.string.oc_transpo_application_id);
-        apiKey = context.getString(R.string.oc_transpo_application_key);
-	}
-	
-	public GetNextTripsForStopResult getNextTripsForStop(Context context, SQLiteDatabase db, String stopNumber, String routeNumber)
+	public static GetNextTripsForStopResult getNextTripsForStop(Context context, SQLiteDatabase db, String stopNumber, String routeNumber)
 			throws IOException, XmlPullParserException, IllegalArgumentException {
-		validateStopNumber(stopNumber);
-		validateRouteNumber(routeNumber);
+		validateStopNumber(context, stopNumber);
+		validateRouteNumber(context, routeNumber);
 		
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost("https://api.octranspo1.com/GetNextTripsForStop");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
-		params.add(new BasicNameValuePair("appID", appID));
-		params.add(new BasicNameValuePair("apiKey", apiKey));
+		params.add(new BasicNameValuePair("appID", context.getString(R.string.oc_transpo_application_id)));
+		params.add(new BasicNameValuePair("apiKey", context.getString(R.string.oc_transpo_application_key)));
 		params.add(new BasicNameValuePair("routeNo", routeNumber));
 		params.add(new BasicNameValuePair("stopNo", stopNumber));
 		post.setEntity(new UrlEncodedFormEntity(params));
@@ -57,15 +47,15 @@ public class OCTranspoDataFetcher {
 		return new GetNextTripsForStopResult(context, db, xpp, stopNumber);
 	}
 	
-	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
-		validateStopNumber(stopNumber);
+	public static GetRouteSummaryForStopResult getRouteSummaryForStop(Context context, String stopNumber) throws IOException, XmlPullParserException {
+		validateStopNumber(context, stopNumber);
 
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost("https://api.octranspo1.com/GetRouteSummaryForStop");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
-		params.add(new BasicNameValuePair("appID", appID));
-		params.add(new BasicNameValuePair("apiKey", apiKey));
+		params.add(new BasicNameValuePair("appID", context.getString(R.string.oc_transpo_application_id)));
+		params.add(new BasicNameValuePair("apiKey", context.getString(R.string.oc_transpo_application_key)));
 		params.add(new BasicNameValuePair("stopNo", stopNumber));
 		post.setEntity(new UrlEncodedFormEntity(params));
 		
@@ -80,7 +70,7 @@ public class OCTranspoDataFetcher {
 		return new GetRouteSummaryForStopResult(xpp);
 	}
 	
-	private void validateStopNumber(String stopNumber) {
+	private static void validateStopNumber(Context context, String stopNumber) {
 		if (stopNumber.length() < 3 || stopNumber.length() > 4) {
 			throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
 		}
@@ -91,7 +81,7 @@ public class OCTranspoDataFetcher {
 		}
 	}
 	
-	private void validateRouteNumber(String routeNumber) {
+	private static void validateRouteNumber(Context context, String routeNumber) {
 		if (routeNumber.length() < 1 || routeNumber.length() > 3) {
 			throw new IllegalArgumentException(context.getString(R.string.invalid_route_number));
 		}
