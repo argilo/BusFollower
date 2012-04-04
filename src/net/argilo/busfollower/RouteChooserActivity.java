@@ -10,6 +10,7 @@ import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.Route;
+import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Util;
 
@@ -70,12 +71,23 @@ public class RouteChooserActivity extends ListActivity {
 		}
 
 		@Override
-		protected GetNextTripsForStopResult doInBackground(Route... route) {
-			this.route = route[0];
+		protected GetNextTripsForStopResult doInBackground(Route... params) {
+			route = params[0];
 			GetNextTripsForStopResult result = null;
 			try {
-				result = OCTranspoDataFetcher.getNextTripsForStop(RouteChooserActivity.this, db, stop.getNumber(), this.route.getNumber());
+				result = OCTranspoDataFetcher.getNextTripsForStop(RouteChooserActivity.this, db, stop.getNumber(), route.getNumber());
 				errorString = Util.getErrorString(RouteChooserActivity.this, result.getError());
+				if (errorString == null) {
+					// Check whether there are any trips to display, since there's no
+					// point going to the map screen if there aren't.
+			        for (RouteDirection rd : result.getRouteDirections()) {
+			        	if (rd.getDirection().equals(route.getDirection())) {
+			        		if (rd.getTrips().isEmpty()) {
+								errorString = RouteChooserActivity.this.getString(R.string.no_trips);
+			        		}
+			        	}
+			        }
+				}
 			} catch (IOException e) {
 				errorString = RouteChooserActivity.this.getString(R.string.server_error); 
 			} catch (XmlPullParserException e) {

@@ -134,8 +134,7 @@ public class BusFollowerActivity extends MapActivity {
         	mapOverlays.add(itemizedOverlay);
         	
             MapController mapController = mapView.getController();
-            // TODO: Find the right way to solve the map zoom issues and set 190 back to 110.
-            mapController.zoomToSpan(Math.max(MIN_ZOOM, (maxLatitude - minLatitude) * 190 / 100), Math.max(MIN_ZOOM, (maxLongitude - minLongitude) * 110 / 100));
+            mapController.zoomToSpan(Math.max(MIN_ZOOM, (maxLatitude - minLatitude) * 110 / 100), Math.max(MIN_ZOOM, (maxLongitude - minLongitude) * 110 / 100));
             mapController.setCenter(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
         }
         mapView.invalidate();
