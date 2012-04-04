@@ -66,4 +66,17 @@ public class Route implements Serializable {
 		}
 		return result;
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (other instanceof Route) {
+			Route otherRoute = (Route) other;
+			return number.equals(otherRoute.number) && direction.equals(otherRoute.direction);
+		} else {
+			return false;
+		}
+	}
 }

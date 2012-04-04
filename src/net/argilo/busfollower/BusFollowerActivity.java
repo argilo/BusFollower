@@ -9,7 +9,6 @@ import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
-import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
 
 import com.google.android.maps.GeoPoint;
@@ -35,7 +34,6 @@ public class BusFollowerActivity extends MapActivity {
 	
 	private SQLiteDatabase db;
 	private GetNextTripsForStopResult result = null;
-	private Stop stop;
 	private Route route;
 
 	private MapView mapView = null;
@@ -53,11 +51,9 @@ public class BusFollowerActivity extends MapActivity {
         mapView.setBuiltInZoomControls(true);
         
         result = (GetNextTripsForStopResult) getIntent().getSerializableExtra("result");
-        stop = (Stop) getIntent().getSerializableExtra("stop");
         route = (Route) getIntent().getSerializableExtra("route");
         if (savedInstanceState != null) {
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
-        	stop = (Stop) savedInstanceState.getSerializable("stop");
         	route = (Route) savedInstanceState.getSerializable("route");
 
         	if (result != null) {
@@ -66,9 +62,12 @@ public class BusFollowerActivity extends MapActivity {
     	        // Zoom to OC Transpo service area if it's our first time.
     	        MapController mapController = mapView.getController();
     	        mapController.zoomToSpan(MIN_ZOOM, MIN_ZOOM);
-    	        mapController.setCenter(stop.getLocation());
+    	        mapController.setCenter(result.getStop().getLocation());
         	}
         } else {
+        	RecentQueryList recentQueryList = ((BusFollowerApplication) getApplicationContext()).getRecentQueryList();
+        	recentQueryList.addOrUpdateRecent(result.getStop(), route);
+        	
         	displayGetNextTripsForStopResult(result);
         }
     }
@@ -83,7 +82,6 @@ public class BusFollowerActivity extends MapActivity {
 		super.onSaveInstanceState(outState);
 		
 		outState.putSerializable("result", result);
-		outState.putSerializable("stop", stop);
 		outState.putSerializable("route", route);
 	}
 	

@@ -11,8 +11,8 @@ import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Util;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
 import android.widget.SimpleCursorAdapter;
@@ -32,7 +33,7 @@ import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class StopChooserActivity extends Activity {
+public class StopChooserActivity extends ListActivity {
 	private SQLiteDatabase db = null;
 	
     /** Called when the activity is first created. */
@@ -107,6 +108,9 @@ public class StopChooserActivity extends Activity {
 				new FetchRoutesTask().execute(stopSearchField.getText().toString());
 			}
 		});
+
+    	RecentQueryList recentQueryList = ((BusFollowerApplication) getApplicationContext()).getRecentQueryList();
+        setListAdapter(new ArrayAdapter<RecentQuery>(this, android.R.layout.simple_list_item_1, recentQueryList.getRecents()));
     }
     
 	@Override

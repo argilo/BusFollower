@@ -65,4 +65,17 @@ public class Stop implements Serializable {
 	public GeoPoint getLocation() {
 		return new GeoPoint(latitude, longitude);
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (other instanceof Stop) {
+			Stop otherStop = (Stop) other;
+			return number.equals(otherStop.number);
+		} else {
+			return false;
+		}
+	}
 }

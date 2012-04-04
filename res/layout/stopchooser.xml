@@ -20,4 +20,15 @@
         <requestFocus />
     </AutoCompleteTextView>
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recent_queries" />
+    <ListView
+        android:id="@+android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:drawSelectorOnTop="false" />
+
 </LinearLayout>
