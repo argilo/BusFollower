@@ -17,6 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -84,6 +85,7 @@ public class StopChooserActivity extends Activity {
 				query += " ORDER BY stop_code";
 				Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
 				if (cursor != null) {
+					// TODO: Handle Cursor with CursorLoader / LoaderManager
 					cursor.moveToFirst();
 					return cursor;
 				}
@@ -97,7 +99,7 @@ public class StopChooserActivity extends Activity {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_GO) {
-					processEnteredStopNumber(stopSearchField.getText().toString());
+					new FetchRoutesTask().execute(stopSearchField.getText().toString());
 					return true;
 				}
 				return false;
@@ -107,7 +109,7 @@ public class StopChooserActivity extends Activity {
 		stopSearchField.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				processEnteredStopNumber(stopSearchField.getText().toString());
+				new FetchRoutesTask().execute(stopSearchField.getText().toString());
 			}
 		});
     }
@@ -119,48 +121,52 @@ public class StopChooserActivity extends Activity {
 		db.close();
 	}
 	
-	private void processEnteredStopNumber(final String stopNumber) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Stop stop = null;
-				GetRouteSummaryForStopResult result = null;
-				String errorString = null;
-				try {
-					stop = new Stop(StopChooserActivity.this, db, stopNumber);
-					result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
-					errorString = Util.getErrorString(StopChooserActivity.this, result.getError());
-				} catch (IOException e) {
-					errorString = getString(R.string.server_error); 
-				} catch (XmlPullParserException e) {
-					errorString = getString(R.string.invalid_response);
-				} catch (IllegalArgumentException e) {
-					errorString = e.getMessage();
-				}
-				final String finalErrorString = errorString;
-				if (errorString != null) {
-					runOnUiThread(new Runnable() {
-						public void run() {
-							AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
-							builder.setTitle(R.string.error)
-							       .setMessage(finalErrorString)
-							       .setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-							           public void onClick(DialogInterface dialog, int id) {
-							                dialog.cancel();
-							           }
-							       });
-							AlertDialog alert = builder.create();
-							alert.show();
-						}
-					});
-					return;
-				} else {
-					Intent intent = new Intent(StopChooserActivity.this, RouteChooserActivity.class);
-					intent.putExtra("stop", stop);
-					intent.putExtra("routes", result);
-					startActivity(intent);
-				}
+	private class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
+		private Stop stop = null;
+		private String errorString = null;
+		
+		@Override
+		protected void onPreExecute() {
+			
+		}
+		
+		@Override
+		protected GetRouteSummaryForStopResult doInBackground(String... stopNumber) {
+			GetRouteSummaryForStopResult result = null;
+			try {
+				stop = new Stop(StopChooserActivity.this, db, stopNumber[0]);
+				result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
+				errorString = Util.getErrorString(StopChooserActivity.this, result.getError());
+			} catch (IOException e) {
+				errorString = getString(R.string.server_error); 
+			} catch (XmlPullParserException e) {
+				errorString = getString(R.string.invalid_response);
+			} catch (IllegalArgumentException e) {
+				errorString = e.getMessage();
 			}
-		}).start();
+			return result;
+		}
+		
+		@Override
+		protected void onPostExecute(GetRouteSummaryForStopResult result) {
+			if (errorString != null) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
+				builder.setTitle(R.string.error)
+				.setMessage(errorString)
+				.setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+				return;
+			} else {
+				Intent intent = new Intent(StopChooserActivity.this, RouteChooserActivity.class);
+				intent.putExtra("stop", stop);
+				intent.putExtra("routes", result);
+				startActivity(intent);
+			}
+		}
 	}
 }
