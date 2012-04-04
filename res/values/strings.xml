@@ -4,6 +4,7 @@
 
     <string name="enter_stop">Enter a stop number or name:</string>
     <string name="choose_route">Choose a route:</string>
+    <string name="loading">Loading. Please wait&#8230;</string>
     
     <string name="stop_number">Stop</string>
     <string name="route_number">Route</string>

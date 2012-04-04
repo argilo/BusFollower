@@ -13,6 +13,7 @@ import net.argilo.busfollower.ocdata.Util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -122,12 +123,13 @@ public class StopChooserActivity extends Activity {
 	}
 	
 	private class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
+		ProgressDialog dialog = null;
 		private Stop stop = null;
 		private String errorString = null;
 		
 		@Override
 		protected void onPreExecute() {
-			
+			dialog = ProgressDialog.show(StopChooserActivity.this, "", StopChooserActivity.this.getString(R.string.loading));
 		}
 		
 		@Override
@@ -149,6 +151,7 @@ public class StopChooserActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(GetRouteSummaryForStopResult result) {
+			dialog.dismiss();
 			if (errorString != null) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(StopChooserActivity.this);
 				builder.setTitle(R.string.error)
