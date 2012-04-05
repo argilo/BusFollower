@@ -70,6 +70,9 @@ public class BusFollowerActivity extends MapActivity {
         	
         	displayGetNextTripsForStopResult(result);
         }
+        
+        setTitle(getString(R.string.stop_number) + " " + result.getStop().getNumber() +
+        		", " + getString(R.string.route_number) + " " + route.getNumber() + " " + route.getHeading());
     }
     
 	@Override

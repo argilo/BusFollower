@@ -154,7 +154,7 @@ public class StopChooserActivity extends ListActivity {
     			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
     			TextView text2 = (TextView) v.findViewById(android.R.id.text2);
     			text1.setText(query.getStop().getNumber() + " " + query.getStop().getName());
-    			text2.setText(context.getString(R.string.route_number) + ": " + query.getRoute().getNumber() + " " + query.getRoute().getHeading());
+    			text2.setText(context.getString(R.string.route_number) + " " + query.getRoute().getNumber() + " " + query.getRoute().getHeading());
     		}
     		return v;
     	}

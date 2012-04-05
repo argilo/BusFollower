@@ -34,6 +34,8 @@ public class RouteChooserActivity extends ListActivity {
         routes = result.getRoutes();
         
         setListAdapter(new ArrayAdapter<Route>(this, android.R.layout.simple_list_item_1, routes));
+        setTitle(getString(R.string.stop_number) + " " + stop.getNumber() + 
+        		(stop.getName() != null ? " " + stop.getName() : ""));
     }
     
     @Override

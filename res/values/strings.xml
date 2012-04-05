@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BusFollower</string>
+    <string name="app_name">Bus Follower</string>
 
     <string name="enter_stop">Enter a stop number or name:</string>
     <string name="recent_queries">Recent queries:</string>
