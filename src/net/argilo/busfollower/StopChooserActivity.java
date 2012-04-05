@@ -96,7 +96,8 @@ public class StopChooserActivity extends ListActivity {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_GO) {
+				if (actionId == EditorInfo.IME_ACTION_GO || 
+						(actionId == EditorInfo.IME_NULL && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
 					new FetchRoutesTask().execute(stopSearchField.getText().toString());
 					return true;
 				}
