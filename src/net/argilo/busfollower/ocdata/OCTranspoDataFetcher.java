@@ -27,7 +27,7 @@ public class OCTranspoDataFetcher {
 		validateRouteNumber(context, routeNumber);
 		
 		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("https://api.octranspo1.com/GetNextTripsForStop");
+		HttpPost post = new HttpPost("https://api.octranspo1.com/v1.1/GetNextTripsForStop");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
 		params.add(new BasicNameValuePair("appID", context.getString(R.string.oc_transpo_application_id)));
@@ -43,7 +43,10 @@ public class OCTranspoDataFetcher {
 		XmlPullParser xpp = factory.newPullParser();
 
 		xpp.setInput(response.getEntity().getContent(), "UTF-8");
-		xpp.next();
+		xpp.next(); // <soap:Envelope>
+		xpp.next(); //   <soap:Body>
+		xpp.next(); //     <GetRouteSummaryForStopResponse>
+		xpp.next(); //       <GetRouteSummaryForStopResult>
 		return new GetNextTripsForStopResult(context, db, xpp, stopNumber);
 	}
 	
@@ -51,7 +54,7 @@ public class OCTranspoDataFetcher {
 		validateStopNumber(context, stopNumber);
 
 		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("https://api.octranspo1.com/GetRouteSummaryForStop");
+		HttpPost post = new HttpPost("https://api.octranspo1.com/v1.1/GetRouteSummaryForStop");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
 		params.add(new BasicNameValuePair("appID", context.getString(R.string.oc_transpo_application_id)));
@@ -66,7 +69,10 @@ public class OCTranspoDataFetcher {
 		XmlPullParser xpp = factory.newPullParser();
 
 		xpp.setInput(response.getEntity().getContent(), "UTF-8");
-		xpp.next();
+		xpp.next(); // <soap:Envelope>
+		xpp.next(); //   <soap:Body>
+		xpp.next(); //     <GetRouteSummaryForStopResponse>
+		xpp.next(); //       <GetRouteSummaryForStopResult>
 		return new GetRouteSummaryForStopResult(xpp);
 	}
 	

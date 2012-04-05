@@ -35,7 +35,7 @@ public class Route implements Serializable {
 			} else {
 				Log.w(TAG, "Unrecognized start tag: " + tagName);
 			}
-			xpp.require(XmlPullParser.END_TAG, "", tagName);
+			xpp.require(XmlPullParser.END_TAG, null, tagName);
 		}
 	}
 	
