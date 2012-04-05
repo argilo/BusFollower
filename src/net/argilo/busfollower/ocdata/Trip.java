@@ -34,10 +34,6 @@ public class Trip implements Serializable {
 		
 		while (xpp.next() == XmlPullParser.START_TAG) {
 			String tagName = xpp.getName();
-			if ("node".equalsIgnoreCase(tagName)) {
-				// Handle XML that doesn't match the published API.
-				continue;
-			}
 			if ("TripDestination".equalsIgnoreCase(tagName)) {
 				destination = xpp.nextText();
 			} else if ("TripStartTime".equalsIgnoreCase(tagName)) {

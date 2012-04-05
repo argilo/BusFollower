@@ -31,10 +31,6 @@ public class GetRouteSummaryForStopResult implements Serializable {
 				while (xpp.next() == XmlPullParser.START_TAG) {
 					routes.add(new Route(xpp));
 				}
-				if ("Route".equals(xpp.getName())) {
-					// Handle XML that doesn't match the published API.
-					xpp.next();
-				}
 			} else {
 				Log.w(TAG, "Unrecognized start tag: " + tagName);
 			}

@@ -37,10 +37,6 @@ public class GetNextTripsForStopResult implements Serializable {
 				while (xpp.next() == XmlPullParser.START_TAG) {
 					routeDirections.add(new RouteDirection(xpp));
 				}
-				if ("RouteDirection".equals(xpp.getName())) {
-					// Handle XML that doesn't match the published API.
-					xpp.next();
-				}
 			} else {
 				Log.w(TAG, "Unrecognized start tag: " + tagName);
 			}

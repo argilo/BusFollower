@@ -20,10 +20,6 @@ public class Route implements Serializable {
 	public Route(XmlPullParser xpp) throws XmlPullParserException, IOException {
 		while (xpp.next() == XmlPullParser.START_TAG) {
 			String tagName = xpp.getName();
-			if ("node".equalsIgnoreCase(tagName)) {
-				// Handle XML that doesn't match the published API.
-				continue;
-			}
 			if ("RouteNo".equalsIgnoreCase(tagName)) {
 				number = xpp.nextText();
 			} else if ("DirectionID".equalsIgnoreCase(tagName)) {
