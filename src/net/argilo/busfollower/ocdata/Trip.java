@@ -47,7 +47,7 @@ public class Trip implements Serializable {
 					Log.w(TAG, "Couldn't parse AdjustmentAge.");
 				}
 			} else if ("LastTripOfSchedule".equalsIgnoreCase(tagName)) {
-				lastTripOfSchedule = "1".equalsIgnoreCase(xpp.nextText());
+				lastTripOfSchedule = "true".equalsIgnoreCase(xpp.nextText());
 			} else if ("BusType".equalsIgnoreCase(tagName)) {
 				busType = new BusType(xpp.nextText());
 			} else if ("GPSSpeed".equalsIgnoreCase(tagName)) {
