@@ -29,7 +29,9 @@ public class GetRouteSummaryForStopResult implements Serializable {
 				error = xpp.nextText();
 			} else if ("Routes".equalsIgnoreCase(tagName)) {
 				while (xpp.next() == XmlPullParser.START_TAG) {
+					xpp.require(XmlPullParser.START_TAG, null, "Route");
 					routes.add(new Route(xpp));
+					xpp.require(XmlPullParser.END_TAG, null, "Route");
 				}
 			} else {
 				Log.w(TAG, "Unrecognized start tag: " + tagName);

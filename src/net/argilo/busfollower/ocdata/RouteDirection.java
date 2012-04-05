@@ -39,7 +39,9 @@ public class RouteDirection implements Serializable {
 				requestProcessingTime = xpp.nextText();
 			} else if ("Trips".equalsIgnoreCase(tagName)) {
 				while (xpp.next() == XmlPullParser.START_TAG) {
+					xpp.require(XmlPullParser.START_TAG, null, "Trip");
 					trips.add(new Trip(xpp, this));
+					xpp.require(XmlPullParser.END_TAG, null, "Trip");
 				}
 			} else {
 				Log.w(TAG, "Unrecognized start tag: " + tagName);
