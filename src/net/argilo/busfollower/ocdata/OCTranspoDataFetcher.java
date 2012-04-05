@@ -1,6 +1,7 @@
 package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,12 +43,15 @@ public class OCTranspoDataFetcher {
 		factory.setNamespaceAware(true);
 		XmlPullParser xpp = factory.newPullParser();
 
-		xpp.setInput(response.getEntity().getContent(), "UTF-8");
+		InputStream in = response.getEntity().getContent();
+		xpp.setInput(in, "UTF-8");
 		xpp.next(); // <soap:Envelope>
 		xpp.next(); //   <soap:Body>
 		xpp.next(); //     <GetRouteSummaryForStopResponse>
 		xpp.next(); //       <GetRouteSummaryForStopResult>
-		return new GetNextTripsForStopResult(context, db, xpp, stopNumber);
+		GetNextTripsForStopResult result = new GetNextTripsForStopResult(context, db, xpp, stopNumber);
+		in.close();
+		return result;
 	}
 	
 	public static GetRouteSummaryForStopResult getRouteSummaryForStop(Context context, String stopNumber) throws IOException, XmlPullParserException {
@@ -68,12 +72,15 @@ public class OCTranspoDataFetcher {
 		factory.setNamespaceAware(true);
 		XmlPullParser xpp = factory.newPullParser();
 
-		xpp.setInput(response.getEntity().getContent(), "UTF-8");
+		InputStream in = response.getEntity().getContent();
+		xpp.setInput(in, "UTF-8");
 		xpp.next(); // <soap:Envelope>
 		xpp.next(); //   <soap:Body>
 		xpp.next(); //     <GetRouteSummaryForStopResponse>
 		xpp.next(); //       <GetRouteSummaryForStopResult>
-		return new GetRouteSummaryForStopResult(xpp);
+		GetRouteSummaryForStopResult result = new GetRouteSummaryForStopResult(xpp);
+		in.close();
+		return result;
 	}
 	
 	private static void validateStopNumber(Context context, String stopNumber) {
