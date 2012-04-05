@@ -39,7 +39,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class StopChooserActivity extends ListActivity {
 	private SQLiteDatabase db = null;
-	private RecentQueryList recentQueryList = null;
+	private RecentQueryAdapter recentQueryAdapter = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -115,13 +115,25 @@ public class StopChooserActivity extends ListActivity {
 			}
 		});
 
-    	recentQueryList = ((BusFollowerApplication) getApplicationContext()).getRecentQueryList();
-        setListAdapter(new RecentQueryAdapter(this, android.R.layout.simple_list_item_2, recentQueryList.getRecents()));
+    	recentQueryAdapter = new RecentQueryAdapter(this, android.R.layout.simple_list_item_2, RecentQueryList.loadRecents(this)); 
+        setListAdapter(recentQueryAdapter);
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	
+    	recentQueryAdapter.clear();
+
+    	ArrayList<RecentQuery> recentQueryList = RecentQueryList.loadRecents(this);
+    	for (RecentQuery recentQuery : recentQueryList) {
+    		recentQueryAdapter.add(recentQuery);
+    	}
     }
     
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
-    	new FetchTripsTask(this, db).execute(recentQueryList.getRecents().get(position));
+    	new FetchTripsTask(this, db).execute(recentQueryAdapter.getItem(position));
     }
     
 	@Override

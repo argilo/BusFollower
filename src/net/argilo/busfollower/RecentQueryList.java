@@ -17,12 +17,10 @@ public class RecentQueryList {
 	private static final String FILENAME = "recent_queries";
 	private static final int MAX_RECENT_QUERIES = 10;
 	
-	Context context;
-	private ArrayList<RecentQuery> recents = null;
-
 	@SuppressWarnings("unchecked")
-	public RecentQueryList(Context context) {
-		this.context = context;
+	public static synchronized ArrayList<RecentQuery> loadRecents(Context context) {
+		ArrayList<RecentQuery> recents;
+
 		try {
 			ObjectInputStream in = new ObjectInputStream(context.openFileInput(FILENAME));
 			recents = (ArrayList<RecentQuery>) in.readObject();
@@ -31,9 +29,13 @@ public class RecentQueryList {
 			// Start a new recent list.
 			recents = new ArrayList<RecentQuery>();
 		}
+		
+		return recents;
 	}
 	
-	public synchronized void addOrUpdateRecent(Stop stop, Route route) {
+	public static synchronized void addOrUpdateRecent(Context context, Stop stop, Route route) {
+		ArrayList<RecentQuery> recents = loadRecents(context);
+		
 		RecentQuery query = new RecentQuery(stop, route);
 		
 		boolean foundQuery = false;
@@ -69,18 +71,14 @@ public class RecentQueryList {
 		}
 	}
 
-	public ArrayList<RecentQuery> getRecents() {
-		return recents;
-	}
-	
-	private class QueryDateComparator implements Comparator<RecentQuery> {
+	private static class QueryDateComparator implements Comparator<RecentQuery> {
 		@Override
 		public int compare(RecentQuery lhs, RecentQuery rhs) {
 			return lhs.getLastQueried().compareTo(rhs.getLastQueried());
 		}
 	}
 
-	private class QueryStopRouteComparator implements Comparator<RecentQuery> {
+	private static class QueryStopRouteComparator implements Comparator<RecentQuery> {
 		@Override
 		public int compare(RecentQuery lhs, RecentQuery rhs) {
 			int lhsStopNumber = Integer.parseInt(lhs.getStop().getNumber());

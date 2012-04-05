@@ -65,9 +65,7 @@ public class BusFollowerActivity extends MapActivity {
     	        mapController.setCenter(result.getStop().getLocation());
         	}
         } else {
-        	RecentQueryList recentQueryList = ((BusFollowerApplication) getApplicationContext()).getRecentQueryList();
-        	recentQueryList.addOrUpdateRecent(result.getStop(), route);
-        	
+        	RecentQueryList.addOrUpdateRecent(this, result.getStop(), route);
         	displayGetNextTripsForStopResult(result);
         }
         
