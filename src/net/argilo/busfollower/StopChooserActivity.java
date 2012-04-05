@@ -14,6 +14,7 @@ import net.argilo.busfollower.ocdata.Util;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,7 +22,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -113,7 +116,7 @@ public class StopChooserActivity extends ListActivity {
 		});
 
     	recentQueryList = ((BusFollowerApplication) getApplicationContext()).getRecentQueryList();
-        setListAdapter(new ArrayAdapter<RecentQuery>(this, android.R.layout.simple_list_item_1, recentQueryList.getRecents()));
+        setListAdapter(new RecentQueryAdapter(this, android.R.layout.simple_list_item_2, recentQueryList.getRecents()));
     }
     
     @Override
@@ -127,6 +130,35 @@ public class StopChooserActivity extends ListActivity {
 		
 		db.close();
 	}
+	
+    private class RecentQueryAdapter extends ArrayAdapter<RecentQuery> {
+    	private Context context;
+    	private int resourceId;
+    	private ArrayList<RecentQuery> queries;
+    	
+    	public RecentQueryAdapter(Context context, int resourceId, ArrayList<RecentQuery> queries) {
+    		super(context, resourceId, queries);
+    		this.context = context;
+    		this.resourceId = resourceId;
+    		this.queries = queries;
+    	}
+    	
+    	@Override
+    	public View getView(int position, View v, ViewGroup parent) {
+    		if (v == null) {
+    			LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    			v = li.inflate(resourceId, null);
+    		}
+    		RecentQuery query = queries.get(position);
+    		if (query != null) {
+    			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
+    			TextView text2 = (TextView) v.findViewById(android.R.id.text2);
+    			text1.setText(query.getStop().getNumber() + " " + query.getStop().getName());
+    			text2.setText(context.getString(R.string.route_number) + ": " + query.getRoute().getNumber() + " " + query.getRoute().getHeading());
+    		}
+    		return v;
+    	}
+    }
 	
 	private class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
 		ProgressDialog progressDialog = null;

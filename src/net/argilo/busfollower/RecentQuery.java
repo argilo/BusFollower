@@ -54,9 +54,4 @@ public class RecentQuery implements Serializable {
 			return false;
 		}
 	}
-	
-	@Override
-	public String toString() {
-		return stop.getNumber() + " " + stop.getName() + " " + route.getNumber() + " " + route.getHeading();
-	}
 }
