@@ -116,7 +116,9 @@ public class BusFollowerActivity extends MapActivity {
                 ListView tripList = (ListView) findViewById(R.id.tripList);
                 tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, android.R.layout.simple_list_item_2, rd.getTrips()));
 
+                int number = 0;
                 for (Trip trip : rd.getTrips()) {
+                	number++;
 					GeoPoint point = trip.getGeoPoint();
 					if (point != null) {
 						minLatitude = Math.min(minLatitude, point.getLatitudeE6());
@@ -124,7 +126,7 @@ public class BusFollowerActivity extends MapActivity {
 						minLongitude = Math.min(minLongitude, point.getLongitudeE6());
 						maxLongitude = Math.max(maxLongitude, point.getLongitudeE6());
 						
-	    		        itemizedOverlay.addOverlay(new BusOverlayItem(point, BusFollowerActivity.this, rd, trip));
+	    		        itemizedOverlay.addOverlay(new BusOverlayItem(point, BusFollowerActivity.this, rd, trip, number));
 					}
 				}
         	}

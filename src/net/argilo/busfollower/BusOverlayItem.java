@@ -10,26 +10,46 @@ import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Trip;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
 public class BusOverlayItem extends OverlayItem {
+	private static final String TAG = "OverlayItem";
+	
 	Context context;
 	RouteDirection rd;
 	Trip trip;
+	int number;
 	
-	public BusOverlayItem(GeoPoint point, Context context, RouteDirection rd, Trip trip) {
+	public BusOverlayItem(GeoPoint point, Context context, RouteDirection rd, Trip trip, int number) {
 		super(point, rd.getRouteNumber() + " " + rd.getRouteLabel(), "");
 		this.context = context;
 		this.rd = rd;
 		this.trip = trip;
+		this.number = number;
 	}
 
 	@Override
 	public String getSnippet() {
 		return getBusInformationString(rd, trip);
+	}
+	
+	@Override
+	public Drawable getMarker(int stateBitset) {
+		int pinId;
+		try {
+			pinId = R.drawable.class.getField("pin_red_" + number).getInt(null);
+		} catch (Exception e) {
+			Log.e(TAG, "Couldn't find numbered pin.");
+			pinId = R.drawable.pin_red;
+		}
+		Drawable drawable = context.getResources().getDrawable(pinId);
+		drawable.setBounds(-drawable.getIntrinsicWidth() / 2, -drawable.getIntrinsicHeight(), drawable.getIntrinsicWidth() / 2, 0);
+		return drawable;
 	}
 	
 	private String getBusInformationString(RouteDirection rd, Trip trip) {
