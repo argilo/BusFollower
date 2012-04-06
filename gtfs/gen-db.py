@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import os
 import sqlite3
 import csv
@@ -50,9 +52,9 @@ stop_lon INT
 )''')
 c.execute('CREATE INDEX stop_code ON stops(stop_code)')
 
-with open(os.path.join('gtfs','stops.txt'), encoding='utf-8') as f:
+with open(os.path.join('gtfs','stops.txt')) as f:
     reader = csv.reader(f)
-    columns = reader.__next__()
+    columns = reader.next()
 
     stopIdCol = columns.index('stop_id')
     stopCodeCol = columns.index('stop_code')
