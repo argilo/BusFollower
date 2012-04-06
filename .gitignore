@@ -7,4 +7,5 @@
 /.classpath
 pin_*.png
 stop.png
+/gtfs/*.txt
 /assets/db
