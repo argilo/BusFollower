@@ -56,7 +56,7 @@ for stop_id, stop in schedule.stops.items():
               normalizeStopCode(stop.stop_code), \
               normalizeStopName(stop.stop_name), \
               int(0.5 + 1000000 * stop.stop_lat), \
-              int(0.5 + 1000000 * stop.stop_lon)]
+              int(-0.5 + 1000000 * stop.stop_lon)]
     c.execute('INSERT INTO stops VALUES (?,?,?,?,?)', values)
 
 conn.commit()
