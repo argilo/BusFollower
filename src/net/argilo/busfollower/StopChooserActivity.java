@@ -24,12 +24,14 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -51,6 +53,7 @@ public class StopChooserActivity extends ListActivity {
         // TODO: Catch & handle SQLiteException
 
         final AutoCompleteTextView stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
+        final Button chooseMapButton = (Button) findViewById(R.id.chooseMap);
 
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, 
 				android.R.layout.simple_dropdown_item_1line, null, 
@@ -112,6 +115,14 @@ public class StopChooserActivity extends ListActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				new FetchRoutesTask().execute(stopSearchField.getText().toString());
+			}
+		});
+		
+		chooseMapButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(StopChooserActivity.this, MapChooserActivity.class);
+				startActivity(intent);
 			}
 		});
 
