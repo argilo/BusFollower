@@ -14,6 +14,7 @@
     <string name="server_error">The server could not be reached. Please check your network connection.</string>
     <string name="invalid_response">The server returned an unexpected response.  Please try again later.</string>
     <string name="no_trips">There are no upcoming trips for this route.</string>
+    <string name="no_routes">There are no routes for this stop.</string>
     <string name="ok">OK</string>
     
 	<string name="direction">Direction:</string>

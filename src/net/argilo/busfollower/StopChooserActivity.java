@@ -179,7 +179,7 @@ public class StopChooserActivity extends ListActivity {
 		
 		@Override
 		protected void onPreExecute() {
-			progressDialog = ProgressDialog.show(StopChooserActivity.this, "", StopChooserActivity.this.getString(R.string.loading));
+			progressDialog = ProgressDialog.show(StopChooserActivity.this, "", getString(R.string.loading));
 		}
 		
 		@Override
@@ -189,6 +189,11 @@ public class StopChooserActivity extends ListActivity {
 				stop = new Stop(StopChooserActivity.this, db, stopNumber[0]);
 				result = OCTranspoDataFetcher.getRouteSummaryForStop(StopChooserActivity.this, stop.getNumber());
 				errorString = Util.getErrorString(StopChooserActivity.this, result.getError());
+				if (errorString == null) {
+					if(result.getRoutes().isEmpty()) {
+						errorString = getString(R.string.no_routes);
+					}
+				}
 			} catch (IOException e) {
 				errorString = getString(R.string.server_error); 
 			} catch (XmlPullParserException e) {
