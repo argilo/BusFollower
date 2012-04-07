@@ -44,20 +44,30 @@ stop_id TEXT PRIMARY KEY,
 stop_code TEXT,
 stop_name TEXT,
 stop_lat INT,
-stop_lon INT
+stop_lon INT,
+total_departures INT
 )''')
 c.execute('CREATE INDEX stop_code ON stops(stop_code)')
 
 loader = transitfeed.Loader(os.path.join('gtfs','google_transit.zip'))
 schedule = loader.Load()
 
+days_active = {}
+for service_period_id, service_period in schedule.service_periods.items():
+    days_active[service_period_id] = len(service_period.ActiveDates())
+
 for stop_id, stop in schedule.stops.items():
+    total_departures = 0
+    for trip in stop.GetTrips():
+        total_departures += days_active[trip.service_id]
+    
     values = [stop.stop_id, \
               normalizeStopCode(stop.stop_code), \
               normalizeStopName(stop.stop_name), \
               int(0.5 + 1000000 * stop.stop_lat), \
-              int(-0.5 + 1000000 * stop.stop_lon)]
-    c.execute('INSERT INTO stops VALUES (?,?,?,?,?)', values)
+              int(-0.5 + 1000000 * stop.stop_lon),
+              total_departures]
+    c.execute('INSERT INTO stops VALUES (?,?,?,?,?,?)', values)
 
 conn.commit()
 c.close()
