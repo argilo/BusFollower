@@ -50,6 +50,13 @@ public class Stop implements Serializable {
 		this.number = number;
 	}
 	
+	public Stop(String number, String name, int latitude, int longitude) {
+		this.number = number;
+		this.name = name;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
+	
 	public String getNumber() {
 		return number;
 	}
