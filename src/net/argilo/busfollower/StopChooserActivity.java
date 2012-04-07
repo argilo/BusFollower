@@ -83,7 +83,7 @@ public class StopChooserActivity extends ListActivity {
 						query += ")";
 					}
 				}
-				query += " ORDER BY stop_code";
+				query += " ORDER BY total_departures DESC";
 				Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
 				if (cursor != null) {
 					// TODO: Handle Cursor with CursorLoader / LoaderManager
