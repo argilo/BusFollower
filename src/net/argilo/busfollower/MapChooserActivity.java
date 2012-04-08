@@ -79,6 +79,13 @@ public class MapChooserActivity extends MapActivity {
     	
     	myLocationOverlay.disableMyLocation();
     }
+    
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		db.close();
+	}
         
 	@Override
 	protected boolean isRouteDisplayed() {
