@@ -8,10 +8,12 @@ import com.google.android.maps.OverlayItem;
 
 public class StopOverlayItem extends OverlayItem {
 	private Context context;
+	private Stop stop;
 
 	public StopOverlayItem(Stop stop, Context context) {
 		super(stop.getLocation(), context.getString(R.string.stop_number) + " " + stop.getNumber(), stop.getName());
 		this.context = context;
+		this.stop = stop;
 	}
 
 	@Override
@@ -19,5 +21,9 @@ public class StopOverlayItem extends OverlayItem {
 		Drawable drawable = context.getResources().getDrawable(R.drawable.stop);
 		drawable.setBounds(-drawable.getIntrinsicWidth() / 2, -drawable.getIntrinsicHeight(), drawable.getIntrinsicWidth() / 2, 0);
 		return drawable;
+	}
+	
+	public Stop getStop() {
+		return stop;
 	}
 }

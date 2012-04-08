@@ -97,7 +97,7 @@ public class BusFollowerActivity extends MapActivity {
         List<Overlay> mapOverlays = mapView.getOverlays();
         mapOverlays.clear();
         Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);
-        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, BusFollowerActivity.this);
+        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, BusFollowerActivity.this, db);
         
         int minLatitude = Integer.MAX_VALUE;
         int maxLatitude = Integer.MIN_VALUE;

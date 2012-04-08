@@ -17,6 +17,8 @@
     <string name="no_trips">There are no upcoming trips for this route.</string>
     <string name="no_routes">There are no routes for this stop.</string>
     <string name="ok">OK</string>
+    <string name="open">Open</string>
+    <string name="cancel">Cancel</string>
     
 	<string name="direction">Direction:</string>
 	<string name="destination">Destination:</string>

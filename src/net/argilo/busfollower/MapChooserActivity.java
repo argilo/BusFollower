@@ -59,7 +59,7 @@ public class MapChooserActivity extends MapActivity {
 				return null;
 			}
 	        Drawable drawable = getResources().getDrawable(R.drawable.stop);
-	        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, MapChooserActivity.this);
+	        BusFollowerItemizedOverlay itemizedOverlay = new BusFollowerItemizedOverlay(drawable, MapChooserActivity.this, db);
 	        
 	        int centerLatitude = mapView.getMapCenter().getLatitudeE6();
 	        int centerLongitude = mapView.getMapCenter().getLongitudeE6();
