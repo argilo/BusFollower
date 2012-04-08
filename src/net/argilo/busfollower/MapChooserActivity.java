@@ -4,13 +4,9 @@ import java.util.List;
 
 import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.Stop;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,14 +14,14 @@ import android.util.Log;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
 public class MapChooserActivity extends MapActivity {
 	private static final String TAG = "MapChooserActivity";
 	private SQLiteDatabase db;
 	private StopsMapView mapView = null;
-	private LocationManager locationManager;
-	private LocationListener locationListener;
+	private MyLocationOverlay myLocationOverlay = null;
 	
 	// Values taken from stops.txt.
 	private static int globalMinLatitude = 45130104; 
@@ -54,6 +50,9 @@ public class MapChooserActivity extends MapActivity {
         MapController mapController = mapView.getController();
         mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
         mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
+        
+        myLocationOverlay = new MyLocationOverlay(this, mapView);
+        mapView.getOverlays().add(myLocationOverlay);
 
 		new DisplayStopsTask().execute();
     }
@@ -62,40 +61,21 @@ public class MapChooserActivity extends MapActivity {
     protected void onResume() {
     	super.onResume();
     	
-    	// Acquire a reference to the system Location Manager
-    	locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-    	// Define a listener that responds to location updates
-    	locationListener = new LocationListener() {
-    		public void onLocationChanged(Location location) {
-    			// Called when a new location is found by the network location provider.
-    			Log.d(TAG, "onLocationChanged(" + location + ")");
-    		}
-
-    		public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-    		public void onProviderEnabled(String provider) {}
-
-    		public void onProviderDisabled(String provider) {}
-    	};
-
-    	// Register the listener with the Location Manager to receive location updates
-    	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-    	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    	myLocationOverlay.enableMyLocation();
     }
     
     @Override
     protected void onPause() {
     	super.onPause();
     	
-    	locationManager.removeUpdates(locationListener);
+    	myLocationOverlay.disableMyLocation();
     }
         
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
-
+	
 	private class DisplayStopsTask extends AsyncTask<Void, Void, BusFollowerItemizedOverlay> {
 		@Override
 		protected BusFollowerItemizedOverlay doInBackground(Void... params) {
@@ -147,7 +127,12 @@ public class MapChooserActivity extends MapActivity {
 		@Override
 		protected void onPostExecute(BusFollowerItemizedOverlay itemizedOverlay) {
 	        List<Overlay> mapOverlays = mapView.getOverlays();
-	        mapOverlays.clear();
+	        // Remove the existing BusFollowerItemizedOverlay, if any.
+	        for (Overlay overlay : mapOverlays) {
+	        	if (overlay instanceof BusFollowerItemizedOverlay) {
+	        		mapOverlays.remove(overlay);
+	        	}
+	        }
 	        if ((itemizedOverlay != null) && (itemizedOverlay.size() > 0)) {
 	        	mapOverlays.add(itemizedOverlay);
 	        }
