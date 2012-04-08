@@ -49,20 +49,25 @@ public class MapChooserActivity extends MapActivity {
 			}
         });
         
-        final MapController mapController = mapView.getController();
-        mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
-        mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
-        
         myLocationOverlay = new MyLocationOverlay(this, mapView);
-        myLocationOverlay.runOnFirstFix(new Runnable() {
-			@Override
-			public void run() {
-				mapController.setZoom(MIN_ZOOM_LEVEL);
-				mapController.setCenter(myLocationOverlay.getMyLocation());
-			}
-        });
         mapView.getOverlays().add(myLocationOverlay);
 
+        final MapController mapController = mapView.getController();
+        if (savedInstanceState != null) {
+        	mapController.setZoom(savedInstanceState.getInt("mapZoom"));
+        	mapController.setCenter(new GeoPoint(savedInstanceState.getInt("mapCenterLatitude"), savedInstanceState.getInt("mapCenterLongitude")));
+        } else {
+        	mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
+        	mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
+            myLocationOverlay.runOnFirstFix(new Runnable() {
+    			@Override
+    			public void run() {
+    				mapController.setZoom(MIN_ZOOM_LEVEL);
+    				mapController.setCenter(myLocationOverlay.getMyLocation());
+    			}
+            });
+        }
+        
 		new DisplayStopsTask().execute();
     }
     
@@ -85,6 +90,16 @@ public class MapChooserActivity extends MapActivity {
 		super.onDestroy();
 		
 		db.close();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		GeoPoint mapCenter = mapView.getMapCenter();
+		outState.putInt("mapCenterLatitude", mapCenter.getLatitudeE6());
+		outState.putInt("mapCenterLongitude", mapCenter.getLongitudeE6());
+		outState.putInt("mapZoom", mapView.getZoomLevel());
 	}
         
 	@Override
