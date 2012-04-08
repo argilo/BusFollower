@@ -4,9 +4,13 @@ import java.util.List;
 
 import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.Stop;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +24,8 @@ public class MapChooserActivity extends MapActivity {
 	private static final String TAG = "MapChooserActivity";
 	private SQLiteDatabase db;
 	private StopsMapView mapView = null;
+	private LocationManager locationManager;
+	private LocationListener locationListener;
 	
 	// Values taken from stops.txt.
 	private static int globalMinLatitude = 45130104; 
@@ -50,6 +56,39 @@ public class MapChooserActivity extends MapActivity {
         mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
 
 		new DisplayStopsTask().execute();
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	
+    	// Acquire a reference to the system Location Manager
+    	locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+    	// Define a listener that responds to location updates
+    	locationListener = new LocationListener() {
+    		public void onLocationChanged(Location location) {
+    			// Called when a new location is found by the network location provider.
+    			Log.d(TAG, "onLocationChanged(" + location + ")");
+    		}
+
+    		public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+    		public void onProviderEnabled(String provider) {}
+
+    		public void onProviderDisabled(String provider) {}
+    	};
+
+    	// Register the listener with the Location Manager to receive location updates
+    	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+    	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	
+    	locationManager.removeUpdates(locationListener);
     }
         
 	@Override
