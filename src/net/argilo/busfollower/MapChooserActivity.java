@@ -19,8 +19,13 @@ import com.google.android.maps.Overlay;
 public class MapChooserActivity extends MapActivity {
 	private static final String TAG = "MapChooserActivity";
 	private SQLiteDatabase db;
-
 	private StopsMapView mapView = null;
+	
+	// Values taken from stops.txt.
+	private static int globalMinLatitude = 45130104; 
+	private static int globalMaxLatitude = 45519650;
+	private static int globalMinLongitude = -76040543;
+	private static int globalMaxLongitude = -75342690;
 
 	/** Called when the activity is first created. */
     @Override
@@ -41,8 +46,8 @@ public class MapChooserActivity extends MapActivity {
         });
         
         MapController mapController = mapView.getController();
-        mapController.setCenter(new GeoPoint(45409538,-75703354));
-        mapController.zoomToSpan(100000, 100000);
+        mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
+        mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
 
 		new DisplayStopsTask().execute();
     }
