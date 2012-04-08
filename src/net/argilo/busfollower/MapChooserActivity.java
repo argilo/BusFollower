@@ -19,6 +19,8 @@ import com.google.android.maps.Overlay;
 
 public class MapChooserActivity extends MapActivity {
 	private static final String TAG = "MapChooserActivity";
+	private static final int MIN_ZOOM_LEVEL = 17; // The minimum zoom level at which stops will be displayed.
+	
 	private SQLiteDatabase db;
 	private StopsMapView mapView = null;
 	private MyLocationOverlay myLocationOverlay = null;
@@ -47,11 +49,18 @@ public class MapChooserActivity extends MapActivity {
 			}
         });
         
-        MapController mapController = mapView.getController();
+        final MapController mapController = mapView.getController();
         mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
         mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
         
         myLocationOverlay = new MyLocationOverlay(this, mapView);
+        myLocationOverlay.runOnFirstFix(new Runnable() {
+			@Override
+			public void run() {
+				mapController.setZoom(MIN_ZOOM_LEVEL);
+				mapController.setCenter(myLocationOverlay.getMyLocation());
+			}
+        });
         mapView.getOverlays().add(myLocationOverlay);
 
 		new DisplayStopsTask().execute();
@@ -79,7 +88,7 @@ public class MapChooserActivity extends MapActivity {
 	private class DisplayStopsTask extends AsyncTask<Void, Void, BusFollowerItemizedOverlay> {
 		@Override
 		protected BusFollowerItemizedOverlay doInBackground(Void... params) {
-			if (mapView.getZoomLevel() < 17) {
+			if (mapView.getZoomLevel() < MIN_ZOOM_LEVEL) {
 				return null;
 			}
 	        Drawable drawable = getResources().getDrawable(R.drawable.stop);
