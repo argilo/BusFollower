@@ -3,7 +3,7 @@
     <string name="app_name">Bus Follower</string>
 
     <string name="enter_stop">Enter a stop number or name:</string>
-    <string name="choose_from_map">Choose a stop from the map</string>
+    <string name="choose_from_map">Map</string>
     <string name="recent_queries">Recent queries:</string>
     <string name="choose_route">Choose a route:</string>
     <string name="loading">Loading. Please wait&#8230;</string>
