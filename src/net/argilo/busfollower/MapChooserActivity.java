@@ -73,7 +73,7 @@ public class MapChooserActivity extends MapActivity {
     			@Override
     			public void run() {
     				mapController.setZoom(MIN_ZOOM_LEVEL);
-    				mapController.animateTo(myLocationOverlay.getMyLocation());
+    				mapController.setCenter(myLocationOverlay.getMyLocation());
     				new DisplayStopsTask().execute();
     			}
             });
