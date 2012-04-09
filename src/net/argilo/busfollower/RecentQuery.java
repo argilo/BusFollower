@@ -9,11 +9,15 @@ import net.argilo.busfollower.ocdata.Stop;
 public class RecentQuery implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Stop stop;
-	private Route route;
-	private int timesQueried;
-	private Date lastQueried;
+	private Stop stop = null;
+	private Route route = null;
+	private int timesQueried = -1;
+	private Date lastQueried = null;
 	
+	public RecentQuery(Stop stop) {
+		this.stop = stop;
+	}
+
 	public RecentQuery(Stop stop, Route route) {
 		this.stop = stop;
 		this.route = route;

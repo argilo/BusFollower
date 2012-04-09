@@ -3,13 +3,16 @@ package net.argilo.busfollower;
 import java.util.ArrayList;
 
 import net.argilo.busfollower.ocdata.DatabaseHelper;
+import net.argilo.busfollower.ocdata.Stop;
 
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,7 +118,7 @@ public class StopChooserActivity extends ListActivity {
 			}
 		});
 
-    	recentQueryAdapter = new RecentQueryAdapter(this, android.R.layout.simple_list_item_2, RecentQueryList.loadRecents(this)); 
+    	recentQueryAdapter = new RecentQueryAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<RecentQuery>());
         setListAdapter(recentQueryAdapter);
     }
     
@@ -126,14 +129,26 @@ public class StopChooserActivity extends ListActivity {
     	recentQueryAdapter.clear();
 
     	ArrayList<RecentQuery> recentQueryList = RecentQueryList.loadRecents(this);
+    	Stop lastStop = null;
     	for (RecentQuery recentQuery : recentQueryList) {
+    		Stop thisStop = recentQuery.getStop();
+    		if (!thisStop.equals(lastStop)) {
+    			// Add a stop heading that will group all routes departing from this stop.
+    			recentQueryAdapter.add(new RecentQuery(thisStop));
+    			lastStop = thisStop;
+    		}
     		recentQueryAdapter.add(recentQuery);
     	}
     }
     
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
-    	new FetchTripsTask(this, db).execute(recentQueryAdapter.getItem(position));
+    	RecentQuery query = recentQueryAdapter.getItem(position);
+    	if (query.getRoute() == null) {
+			new FetchRoutesTask(StopChooserActivity.this, db).execute(query.getStop().getNumber());
+    	} else {
+    		new FetchTripsTask(this, db).execute(query);
+    	}
     }
     
 	@Override
@@ -157,17 +172,28 @@ public class StopChooserActivity extends ListActivity {
     	
     	@Override
     	public View getView(int position, View v, ViewGroup parent) {
+    		RecentQuery query = queries.get(position);
+
     		if (v == null) {
     			LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     			v = li.inflate(resourceId, null);
     		}
-    		RecentQuery query = queries.get(position);
-    		if (query != null) {
-    			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
-    			TextView text2 = (TextView) v.findViewById(android.R.id.text2);
-    			text1.setText(query.getStop().getNumber() + " " + query.getStop().getName());
-    			text2.setText(context.getString(R.string.route_number) + " " + query.getRoute().getNumber() + " " + query.getRoute().getHeading());
-    		}
+
+			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
+			text1.setSingleLine();
+			text1.setEllipsize(TextUtils.TruncateAt.END);
+			if (query.getRoute() == null) {
+				// Stop number heading
+    			text1.setBackgroundColor(Color.DKGRAY);
+    			text1.setText(context.getString(R.string.stop_number) + " " + 
+    					query.getStop().getNumber() + " " + query.getStop().getName());
+			} else {
+				// Route number
+    			text1.setBackgroundColor(Color.BLACK);
+				text1.setText("    " + context.getString(R.string.route_number) + " " + 
+						query.getRoute().getNumber() + " " + query.getRoute().getHeading());
+			}
+			
     		return v;
     	}
     }
