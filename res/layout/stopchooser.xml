@@ -14,11 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:imeOptions="actionGo" >
-
-        <requestFocus />
-    </AutoCompleteTextView>
-
+        android:imeOptions="actionGo" />
     <Button
         android:id="@+id/chooseMap"
         android:layout_width="wrap_content"
