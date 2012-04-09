@@ -40,14 +40,7 @@ public class BusOverlayItem extends OverlayItem {
 	
 	@Override
 	public Drawable getMarker(int stateBitset) {
-		int pinId;
-		try {
-			pinId = R.drawable.class.getField("pin_red_" + number).getInt(null);
-		} catch (Exception e) {
-			Log.e(TAG, "Couldn't find numbered pin.");
-			pinId = R.drawable.pin_red;
-		}
-		Drawable drawable = context.getResources().getDrawable(pinId);
+		Drawable drawable = Util.getNumberedPin(context, number);
 		drawable.setBounds(-drawable.getIntrinsicWidth() / 2, -drawable.getIntrinsicHeight(), drawable.getIntrinsicWidth() / 2, 0);
 		return drawable;
 	}

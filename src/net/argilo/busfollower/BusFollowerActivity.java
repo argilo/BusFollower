@@ -21,14 +21,17 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class BusFollowerActivity extends MapActivity {
+	private static final String TAG = "BusFollowerActivity";
 	// The zoom level to use when there's only one point to display.
 	private static final int MIN_ZOOM = 10000;
 	
@@ -114,7 +117,7 @@ public class BusFollowerActivity extends MapActivity {
         for (RouteDirection rd : result.getRouteDirections()) {
         	if (rd.getDirection().equals(route.getDirection())) {
                 ListView tripList = (ListView) findViewById(R.id.tripList);
-                tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, android.R.layout.simple_list_item_2, rd.getTrips()));
+                tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, R.layout.tripitem, rd.getTrips()));
 
                 int number = 0;
                 for (Trip trip : rd.getTrips()) {
@@ -163,8 +166,14 @@ public class BusFollowerActivity extends MapActivity {
     		if (trip != null) {
     			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
     			TextView text2 = (TextView) v.findViewById(android.R.id.text2);
+    			ImageView busPin = (ImageView) v.findViewById(R.id.busPin);
     			text1.setText(getHumanReadableTime(trip.getAdjustedScheduleTime()) + (trip.isEstimated() ? " (estimated)" : " (scheduled)"));
     			text2.setText("Destination: " + trip.getDestination());
+    			if (trip.getGeoPoint() == null) {
+    				busPin.setImageDrawable(null);
+    			} else {
+    				busPin.setImageDrawable(Util.getNumberedPin(BusFollowerActivity.this, position + 1));
+    			}
     		}
     		return v;
     	}
