@@ -4,6 +4,8 @@ import java.util.List;
 
 import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.Stop;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -57,17 +59,25 @@ public class MapChooserActivity extends MapActivity {
         	mapController.setZoom(savedInstanceState.getInt("mapZoom"));
         	mapController.setCenter(new GeoPoint(savedInstanceState.getInt("mapCenterLatitude"), savedInstanceState.getInt("mapCenterLongitude")));
         } else {
-        	mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
-        	mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
+        	SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        	int mapZoom = settings.getInt("mapZoom", -1);
+        	if (mapZoom != -1) {
+        		mapController.setZoom(mapZoom);
+            	mapController.setCenter(new GeoPoint(settings.getInt("mapCenterLatitude", 0), settings.getInt("mapCenterLongitude", 0)));
+        	} else {
+        		// If it's our first time running, initially show OC Transpo's service area.
+	        	mapController.zoomToSpan((globalMaxLatitude - globalMinLatitude), (globalMaxLongitude - globalMinLongitude));
+	        	mapController.setCenter(new GeoPoint((globalMaxLatitude + globalMinLatitude) / 2, (globalMaxLongitude + globalMinLongitude) / 2));
+        	}
             myLocationOverlay.runOnFirstFix(new Runnable() {
     			@Override
     			public void run() {
     				mapController.setZoom(MIN_ZOOM_LEVEL);
     				mapController.setCenter(myLocationOverlay.getMyLocation());
+    				new DisplayStopsTask().execute();
     			}
             });
         }
-        
 		new DisplayStopsTask().execute();
     }
     
@@ -83,6 +93,14 @@ public class MapChooserActivity extends MapActivity {
     	super.onPause();
     	
     	myLocationOverlay.disableMyLocation();
+		
+		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		GeoPoint mapCenter = mapView.getMapCenter();
+		editor.putInt("mapCenterLatitude", mapCenter.getLatitudeE6());
+		editor.putInt("mapCenterLongitude", mapCenter.getLongitudeE6());
+		editor.putInt("mapZoom", mapView.getZoomLevel());
+		editor.commit();
     }
     
 	@Override
