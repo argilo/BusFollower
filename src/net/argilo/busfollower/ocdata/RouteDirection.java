@@ -2,11 +2,10 @@ package net.argilo.busfollower.ocdata;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -67,10 +66,22 @@ public class RouteDirection implements Serializable {
 	}
 	
 	public Date getRequestProcessingTime() {
+		if (requestProcessingTime == null || requestProcessingTime.length() < 14) {
+			return null;
+		}
 		try {
-			DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-			return format.parse(requestProcessingTime);
-		} catch (ParseException e) {
+			// Parse the request processing time as current local time in Ottawa.
+			int year      = Integer.parseInt(requestProcessingTime.substring(0, 4));
+			int month     = Integer.parseInt(requestProcessingTime.substring(4, 6)) - 1;
+			int day       = Integer.parseInt(requestProcessingTime.substring(6, 8));
+			int hourOfDay = Integer.parseInt(requestProcessingTime.substring(8, 10));
+			int minute    = Integer.parseInt(requestProcessingTime.substring(10, 12));
+			int second    = Integer.parseInt(requestProcessingTime.substring(12, 14));
+			
+			Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Toronto"));
+			calendar.set(year, month, day, hourOfDay, minute, second);
+			return calendar.getTime();
+		} catch (NumberFormatException e) {
 			Log.w(TAG, "Couldn't parse RequestProcessingTime: " + requestProcessingTime);
 			return null;
 		}
