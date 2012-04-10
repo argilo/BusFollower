@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -105,7 +106,18 @@ public class BusFollowerActivity extends MapActivity {
 	    return true;
 	}
 	
-	private void displayGetNextTripsForStopResult(final GetNextTripsForStopResult result) {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menu_refresh:
+				new FetchTripsTask(this, db).execute(new RecentQuery(result.getStop(), route));
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	void displayGetNextTripsForStopResult(final GetNextTripsForStopResult result) {
         List<Overlay> mapOverlays = mapView.getOverlays();
         mapOverlays.clear();
         Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);

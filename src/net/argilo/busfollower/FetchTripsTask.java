@@ -81,10 +81,16 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 			AlertDialog alert = builder.create();
 			alert.show();
 		} else {
-			Intent intent = new Intent(context, BusFollowerActivity.class);
-			intent.putExtra("result", result);
-			intent.putExtra("route", route);
-			context.startActivity(intent);
+			if (context instanceof BusFollowerActivity) {
+				// Don't launch the BusFollowerActivity if it's the one that
+				// requested the update. Just display the update.
+				((BusFollowerActivity) context).displayGetNextTripsForStopResult(result);
+			} else {
+				Intent intent = new Intent(context, BusFollowerActivity.class);
+				intent.putExtra("result", result);
+				intent.putExtra("route", route);
+				context.startActivity(intent);
+			}
 		}
 	}
 }
