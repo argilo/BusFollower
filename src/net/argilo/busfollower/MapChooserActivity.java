@@ -5,6 +5,7 @@ import java.util.List;
 import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.Stop;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -42,6 +44,8 @@ public class MapChooserActivity extends MapActivity {
         db = (new DatabaseHelper(this)).getReadableDatabase();
         // TODO: Catch & handle SQLiteException
         
+        Util.setDisplayHomeAsUpEnabled(this, true);
+
         mapView = (StopsMapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
         mapView.addMapMoveListener(new StopsMapView.MapMoveListener() {
@@ -110,6 +114,20 @@ public class MapChooserActivity extends MapActivity {
 		db.close();
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, StopChooserActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
