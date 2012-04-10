@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -80,7 +81,7 @@ public class Trip implements Serializable {
 	}
 	
 	public Date getStartTime() {
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Toronto"));
 		if (routeDirection.getRequestProcessingTime() != null) {
 			calendar.setTime(routeDirection.getRequestProcessingTime());
 		}
