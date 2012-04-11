@@ -81,24 +81,39 @@ public class Trip implements Serializable {
 	}
 	
 	public Date getStartTime() {
+		// Start time is measured from "noon minus 12h" (effectively midnight, except for days
+		// on which daylight savings time changes occur) at the beginning of the service date.
+
+		// Start with the request processing time (or the current time, if it's unavailable),
+		// which should be within a few hours of the start time.
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Toronto"));
 		if (routeDirection.getRequestProcessingTime() != null) {
 			calendar.setTime(routeDirection.getRequestProcessingTime());
 		}
 		
 		int colonIndex = startTime.indexOf(":");
-		int hour = Integer.parseInt(startTime.substring(0, colonIndex)) % 24;
-		int minute = Integer.parseInt(startTime.substring(colonIndex + 1));
+		int hours = Integer.parseInt(startTime.substring(0, colonIndex));
+		int minutes = Integer.parseInt(startTime.substring(colonIndex + 1));
 		
-		// Since we're only given the time and not the date, search within
-		// an eight hour window to ensure we get the date right.
+		// Subtracting the start time should put us within a few hours of the beginning of
+		// the service date.
+		calendar.add(Calendar.HOUR, -hours);
+		calendar.add(Calendar.MINUTE, -minutes);
 		
-		calendar.add(Calendar.HOUR, -8);
-		for (int i = -8; i <= 8; i++) {
-			if (calendar.get(Calendar.HOUR_OF_DAY) == hour) break;
+		// Now scan forward until we get to noon.
+		while (calendar.get(Calendar.HOUR_OF_DAY) != 12) {
 			calendar.add(Calendar.HOUR, 1);
 		}
-		calendar.set(Calendar.MINUTE, minute);
+		calendar.set(Calendar.MINUTE, 0);
+		
+		// Subtract twelve hours.
+		calendar.add(Calendar.HOUR, -12);
+		
+		// Add in the start time.
+		calendar.add(Calendar.HOUR, hours);
+		calendar.add(Calendar.MINUTE, minutes);
+		
+		// Set the seconds and milliseconds to zero.
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
 		
