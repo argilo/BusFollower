@@ -9,6 +9,7 @@ import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
+import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
 
 import com.google.android.maps.GeoPoint;
@@ -17,7 +18,9 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -28,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -192,7 +196,8 @@ public class BusFollowerActivity extends MapActivity {
     			LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     			v = li.inflate(resourceId, null);
     		}
-    		Trip trip = trips.get(position);
+    		final Trip trip = trips.get(position);
+			final RouteDirection rd = trip.getRouteDirection();
     		if (trip != null) {
     			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
     			TextView text2 = (TextView) v.findViewById(android.R.id.text2);
@@ -204,6 +209,20 @@ public class BusFollowerActivity extends MapActivity {
     			} else {
     				busPin.setImageDrawable(Util.getNumberedPin(BusFollowerActivity.this, position + 1));
     			}
+    			v.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+						dialog.setTitle(rd.getRouteNumber() + " " + rd.getRouteLabel());
+						dialog.setMessage(Util.getBusInformationString(context, rd, trip));
+						dialog.setNegativeButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+						dialog.show();
+					}
+    			});
     		}
     		return v;
     	}

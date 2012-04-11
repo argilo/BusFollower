@@ -146,4 +146,8 @@ public class Trip implements Serializable {
 			return new GeoPoint(latitude, longitude);
 		}
 	}
+	
+	public RouteDirection getRouteDirection() {
+		return routeDirection;
+	}
 }
