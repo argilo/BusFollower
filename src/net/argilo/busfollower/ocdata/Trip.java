@@ -105,6 +105,8 @@ public class Trip implements Serializable {
 			calendar.add(Calendar.HOUR, 1);
 		}
 		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 		
 		// Subtract twelve hours.
 		calendar.add(Calendar.HOUR, -12);
@@ -112,10 +114,6 @@ public class Trip implements Serializable {
 		// Add in the start time.
 		calendar.add(Calendar.HOUR, hours);
 		calendar.add(Calendar.MINUTE, minutes);
-		
-		// Set the seconds and milliseconds to zero.
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
 		
 		return calendar.getTime();
 	}
