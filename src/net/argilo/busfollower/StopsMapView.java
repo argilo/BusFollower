@@ -10,9 +10,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapView;
 
-public class StopsMapView extends MapView {
+public class StopsMapView extends DoubleTapZoomMapView {
 	private static final String TAG = "StopsMapView";
 	private GeoPoint oldCenterPoint = null;
 	private int oldZoomLevel = -1;

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="false" />
 
-    <com.google.android.maps.MapView
+    <net.argilo.busfollower.DoubleTapZoomMapView
         android:id="@+id/mapView"
         android:clickable="true"
         android:layout_width="fill_parent"
