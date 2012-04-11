@@ -14,6 +14,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -22,12 +25,15 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 public class OCTranspoDataFetcher {
+	private static final int TIMEOUT_CONNECTION = 10000;
+	private static final int TIMEOUT_SOCKET = 10000;
+	
 	public static GetNextTripsForStopResult getNextTripsForStop(Context context, SQLiteDatabase db, String stopNumber, String routeNumber)
 			throws IOException, XmlPullParserException, IllegalArgumentException {
 		validateStopNumber(context, stopNumber);
 		validateRouteNumber(context, routeNumber);
 		
-		HttpClient client = new DefaultHttpClient();
+		HttpClient client = new DefaultHttpClient(getHttpParams());
 		HttpPost post = new HttpPost("https://api.octranspo1.com/v1.1/GetNextTripsForStop");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
@@ -57,7 +63,7 @@ public class OCTranspoDataFetcher {
 	public static GetRouteSummaryForStopResult getRouteSummaryForStop(Context context, String stopNumber) throws IOException, XmlPullParserException {
 		validateStopNumber(context, stopNumber);
 
-		HttpClient client = new DefaultHttpClient();
+		HttpClient client = new DefaultHttpClient(getHttpParams());
 		HttpPost post = new HttpPost("https://api.octranspo1.com/v1.1/GetRouteSummaryForStop");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
@@ -81,6 +87,13 @@ public class OCTranspoDataFetcher {
 		GetRouteSummaryForStopResult result = new GetRouteSummaryForStopResult(xpp);
 		in.close();
 		return result;
+	}
+	
+	private static HttpParams getHttpParams() {
+		HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_CONNECTION);
+		HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_SOCKET);
+		return httpParams;
 	}
 	
 	private static void validateStopNumber(Context context, String stopNumber) {
