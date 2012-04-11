@@ -25,15 +25,24 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 public class OCTranspoDataFetcher {
-	private static final int TIMEOUT_CONNECTION = 10000;
-	private static final int TIMEOUT_SOCKET = 10000;
+	private static final int TIMEOUT_CONNECTION = 15000;
+	private static final int TIMEOUT_SOCKET = 15000;
 	
-	public static GetNextTripsForStopResult getNextTripsForStop(Context context, SQLiteDatabase db, String stopNumber, String routeNumber)
+	private Context context;
+	private SQLiteDatabase db;
+	private HttpClient httpClient = null;
+	
+	public OCTranspoDataFetcher(Context context, SQLiteDatabase db) {
+		this.context = context;
+		this.db = db;
+	}
+	
+	public GetNextTripsForStopResult getNextTripsForStop(String stopNumber, String routeNumber)
 			throws IOException, XmlPullParserException, IllegalArgumentException {
-		validateStopNumber(context, stopNumber);
-		validateRouteNumber(context, routeNumber);
+		validateStopNumber(stopNumber);
+		validateRouteNumber(routeNumber);
 		
-		HttpClient client = new DefaultHttpClient(getHttpParams());
+		httpClient = new DefaultHttpClient(getHttpParams());
 		HttpPost post = new HttpPost("https://api.octranspo1.com/v1.1/GetNextTripsForStop");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
@@ -43,7 +52,7 @@ public class OCTranspoDataFetcher {
 		params.add(new BasicNameValuePair("stopNo", stopNumber));
 		post.setEntity(new UrlEncodedFormEntity(params));
 		
-		HttpResponse response = client.execute(post);
+		HttpResponse response = httpClient.execute(post);
 		
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -60,10 +69,10 @@ public class OCTranspoDataFetcher {
 		return result;
 	}
 	
-	public static GetRouteSummaryForStopResult getRouteSummaryForStop(Context context, String stopNumber) throws IOException, XmlPullParserException {
-		validateStopNumber(context, stopNumber);
+	public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
+		validateStopNumber(stopNumber);
 
-		HttpClient client = new DefaultHttpClient(getHttpParams());
+		httpClient = new DefaultHttpClient(getHttpParams());
 		HttpPost post = new HttpPost("https://api.octranspo1.com/v1.1/GetRouteSummaryForStop");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
@@ -72,7 +81,7 @@ public class OCTranspoDataFetcher {
 		params.add(new BasicNameValuePair("stopNo", stopNumber));
 		post.setEntity(new UrlEncodedFormEntity(params));
 		
-		HttpResponse response = client.execute(post);
+		HttpResponse response = httpClient.execute(post);
 		
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -89,14 +98,26 @@ public class OCTranspoDataFetcher {
 		return result;
 	}
 	
-	private static HttpParams getHttpParams() {
+	public void abortRequest() {
+		if (httpClient != null) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// This must not be done on the main thread.
+					httpClient.getConnectionManager().shutdown();
+				}
+			}).start();
+		}
+	}
+	
+	private HttpParams getHttpParams() {
 		HttpParams httpParams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_CONNECTION);
 		HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_SOCKET);
 		return httpParams;
 	}
 	
-	private static void validateStopNumber(Context context, String stopNumber) {
+	private void validateStopNumber(String stopNumber) {
 		if (stopNumber.length() < 3 || stopNumber.length() > 4) {
 			throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
 		}
@@ -107,7 +128,7 @@ public class OCTranspoDataFetcher {
 		}
 	}
 	
-	private static void validateRouteNumber(Context context, String routeNumber) {
+	private void validateRouteNumber(String routeNumber) {
 		if (routeNumber.length() < 1 || routeNumber.length() > 3) {
 			throw new IllegalArgumentException(context.getString(R.string.invalid_route_number));
 		}

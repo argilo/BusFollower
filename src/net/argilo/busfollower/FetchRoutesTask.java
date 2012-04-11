@@ -23,6 +23,7 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 	ProgressDialog progressDialog = null;
 	private Stop stop = null;
 	private String errorString = null;
+	OCTranspoDataFetcher dataFetcher = null;
 	
 	public FetchRoutesTask(Context context, SQLiteDatabase db) {
 		super();
@@ -32,7 +33,15 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 
 	@Override
 	protected void onPreExecute() {
-		progressDialog = ProgressDialog.show(context, "", context.getString(R.string.loading));
+		progressDialog = ProgressDialog.show(context, "", context.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				if (dataFetcher != null) {
+					cancel(false);
+					dataFetcher.abortRequest();
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -40,7 +49,8 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 		GetRouteSummaryForStopResult result = null;
 		try {
 			stop = new Stop(context, db, stopNumber[0]);
-			result = OCTranspoDataFetcher.getRouteSummaryForStop(context, stop.getNumber());
+			dataFetcher = new OCTranspoDataFetcher(context, db);
+			result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
 			errorString = Util.getErrorString(context, result.getError());
 			if (errorString == null) {
 				if(result.getRoutes().isEmpty()) {
@@ -53,6 +63,8 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 			errorString = context.getString(R.string.invalid_response);
 		} catch (IllegalArgumentException e) {
 			errorString = e.getMessage();
+		} catch (IllegalStateException e) {
+			// The user cancelled the request by pressing the back button.
 		}
 		return result;
 	}
@@ -60,6 +72,9 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 	@Override
 	protected void onPostExecute(GetRouteSummaryForStopResult result) {
 		progressDialog.dismiss();
+		if (isCancelled()) {
+			return;
+		}
 		if (errorString != null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setTitle(R.string.error)

@@ -25,6 +25,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 	ProgressDialog progressDialog = null;
 	private Route route = null;
 	private String errorString = null;
+	OCTranspoDataFetcher dataFetcher = null;
 	
 	public FetchTripsTask(Context context, SQLiteDatabase db) {
 		super();
@@ -34,7 +35,15 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 	
 	@Override
 	protected void onPreExecute() {
-		progressDialog = ProgressDialog.show(context, "", context.getString(R.string.loading));
+		progressDialog = ProgressDialog.show(context, "", context.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				if (dataFetcher != null) {
+					cancel(false);
+					dataFetcher.abortRequest();
+				}
+			}
+		});
 	}
 
 	@Override
@@ -43,7 +52,8 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 		route = query[0].getRoute();
 		GetNextTripsForStopResult result = null;
 		try {
-			result = OCTranspoDataFetcher.getNextTripsForStop(context, db, stop.getNumber(), route.getNumber());
+			dataFetcher = new OCTranspoDataFetcher(context, db); 
+			result = dataFetcher.getNextTripsForStop(stop.getNumber(), route.getNumber());
 			errorString = Util.getErrorString(context, result.getError());
 			if (errorString == null) {
 				// Check whether there are any trips to display, since there's no
@@ -62,6 +72,8 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 			errorString = context.getString(R.string.invalid_response);
 		} catch (IllegalArgumentException e) {
 			errorString = e.getMessage();
+		} catch (IllegalStateException e) {
+			// The user cancelled the request by pressing the back button.
 		}
 		return result;
 	}
@@ -69,6 +81,9 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 	@Override
 	protected void onPostExecute(GetNextTripsForStopResult result) {
 		progressDialog.dismiss();
+		if (isCancelled()) {
+			return;
+		}
 		if (errorString != null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setTitle(R.string.error)
