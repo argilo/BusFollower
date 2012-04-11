@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import net.argilo.busfollower.ocdata.BusType;
 import net.argilo.busfollower.ocdata.RouteDirection;
@@ -84,6 +85,7 @@ public class Util {
 	private static String getHumanReadableTime(Context context, Date date) {
 		StringBuffer result = new StringBuffer();
 		DateFormat formatter = android.text.format.DateFormat.getTimeFormat(context);
+		formatter.setTimeZone(TimeZone.getTimeZone("America/Toronto"));
 		result.append(formatter.format(date));
 		result.append(" (");
 		
