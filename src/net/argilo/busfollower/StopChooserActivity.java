@@ -184,12 +184,10 @@ public class StopChooserActivity extends ListActivity {
 			text1.setEllipsize(TextUtils.TruncateAt.END);
 			if (query.getRoute() == null) {
 				// Stop number heading
-    			text1.setBackgroundColor(Color.DKGRAY);
     			text1.setText(context.getString(R.string.stop_number) + " " + 
     					query.getStop().getNumber() + " " + query.getStop().getName());
 			} else {
 				// Route number
-    			text1.setBackgroundColor(Color.BLACK);
 				text1.setText("    " + context.getString(R.string.route_number) + " " + 
 						query.getRoute().getNumber() + " " + query.getRoute().getHeading());
 			}
