@@ -35,6 +35,7 @@
 			</else>
 		</if>
 		
+		<mkdir dir="assets" />
 		<exec executable="python">
 		    <arg value="gtfs/gen-db.py" />
 		</exec>
