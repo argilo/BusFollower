@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -184,11 +185,13 @@ public class StopChooserActivity extends ListActivity {
 			text1.setEllipsize(TextUtils.TruncateAt.END);
 			if (query.getRoute() == null) {
 				// Stop number heading
+				text1.setTypeface(null, Typeface.BOLD);
     			text1.setText(context.getString(R.string.stop_number) + " " + 
     					query.getStop().getNumber() + " " + query.getStop().getName());
 			} else {
 				// Route number
-				text1.setText("    " + context.getString(R.string.route_number) + " " + 
+				text1.setTypeface(null, Typeface.NORMAL);
+				text1.setText(" \u00BB " + context.getString(R.string.route_number) + " " + 
 						query.getRoute().getNumber() + " " + query.getRoute().getHeading());
 			}
 			
