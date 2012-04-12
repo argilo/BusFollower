@@ -19,7 +19,7 @@ public class StopOverlayItem extends OverlayItem {
 	@Override
 	public Drawable getMarker(int stateBitset) {
 		Drawable drawable = context.getResources().getDrawable(R.drawable.stop);
-		drawable.setBounds(-drawable.getIntrinsicWidth() / 2, -drawable.getIntrinsicHeight(), drawable.getIntrinsicWidth() / 2, 0);
+		drawable.setBounds(0, -drawable.getIntrinsicHeight(), drawable.getIntrinsicWidth(), 0);
 		return drawable;
 	}
 	
