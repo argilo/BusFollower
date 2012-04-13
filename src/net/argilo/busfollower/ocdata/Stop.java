@@ -46,6 +46,7 @@ public class Stop implements Serializable {
 		}
 		latitude = avgLatitude / result.getCount();
 		longitude = avgLongitude / result.getCount();
+		result.close();
 
 		this.number = number;
 	}
