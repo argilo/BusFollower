@@ -17,12 +17,14 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.CursorToStringConverter;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -35,10 +37,12 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 public class StopChooserActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+	private static final String TAG = "StopChooserActivity";
+	
 	private SQLiteDatabase db = null;
 	private RecentQueryAdapter recentQueryAdapter = null;
 	private SimpleCursorAdapter adapter = null;
-	private String constraintStr = "";
+	private AutoCompleteTextView stopSearchField = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -49,7 +53,7 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
         db = (new DatabaseHelper(this)).getReadableDatabase();
         // TODO: Catch & handle SQLiteException
                 
-        final AutoCompleteTextView stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
+        stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
         final Button chooseMapButton = (Button) findViewById(R.id.chooseMap);
 
 		adapter = new SimpleCursorAdapter(this, 
@@ -64,13 +68,23 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
 			}
 		});
 		
-		stopSearchField.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                constraintStr = stopSearchField.getText().toString();
-                getSupportLoaderManager().restartLoader(0, null, StopChooserActivity.this);
-                return false;
-            }
+		stopSearchField.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+				// Do nothing.
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				// Do nothing.
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if (stopSearchField.enoughToFilter()) {
+					getSupportLoaderManager().restartLoader(0, null, StopChooserActivity.this);
+				}
+			}
 		});
 		
 		stopSearchField.setOnEditorActionListener(new OnEditorActionListener() {
@@ -195,6 +209,8 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
         return new CursorLoader(this) {
             @Override
             public Cursor loadInBackground() {
+            	Log.d(TAG, "Loading cursor in background.");
+            	String constraintStr = stopSearchField.getText().toString();
                 String[] pieces = constraintStr.split(" ");
 
                 String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
@@ -214,9 +230,11 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
                 Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
                 if (cursor != null) {
                     cursor.moveToFirst();
+                	Log.d(TAG, "Done loading cursor in background.");
                     return cursor;
                 }
 
+                Log.d(TAG, "Cursor was null.");
                 return null;
             }
         };
