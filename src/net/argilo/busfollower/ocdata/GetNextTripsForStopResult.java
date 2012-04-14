@@ -44,12 +44,6 @@ public class GetNextTripsForStopResult implements Serializable {
 			}
 			xpp.require(XmlPullParser.END_TAG, null, tagName);
 		}
-		
-		// Get the stop name from the API result if Stop's constructor couldn't decide
-		// on one.
-		if (stop.getName() == null) {
-			stop.setName(stopLabel);
-		}
 	}
 	
 	public Stop getStop() {

@@ -1,6 +1,7 @@
 package net.argilo.busfollower.ocdata;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import net.argilo.busfollower.R;
 import android.content.Context;
@@ -30,13 +31,35 @@ public class Stop implements Serializable {
 		
 		result.moveToFirst();
 		if (result.getCount() == 1) {
-			// Only use the name from the stop database if there's a single location
-			// associated with the stop number. Otherwise we'll get it from the API later.
 			name = result.getString(0);
+		} else {
+			// There are multiple names for this stop, so try to pick out
+			// what's common to all of them.
+			ArrayList<String> namesSoFar = new ArrayList<String>();
+			while (!result.isAfterLast()) {
+				String currentName = result.getString(0);
+				currentName = currentName.replaceAll("  ", " ");
+				currentName = currentName.replaceAll(" ?[12345][ABCD]", "");
+				currentName = currentName.replaceAll(" [NESW]\\.", "");
+				if (namesSoFar.contains(currentName)) {
+					// If we're seeing the same name for a second time, use that.
+					name = currentName;
+					break;
+				}
+				namesSoFar.add(currentName);
+				result.moveToNext();
+			}
+			// We couldn't find a common name. As a last resort, use the first name
+			// from the database.
+			if (name == null) {
+				result.moveToFirst();
+				name = result.getString(0);
+			}
 		}
 
 		// Average out the stop locations in case there are multiple entries 
 		// (e.g. different platforms at a Transitway station)
+		result.moveToFirst();
 		int avgLatitude = 0;
 		int avgLongitude = 0;
 		while (!result.isAfterLast()) {
@@ -64,10 +87,6 @@ public class Stop implements Serializable {
 	
 	public String getName() {
 		return name;
-	}
-	
-	void setName(String name) {
-		this.name = name;
 	}
 	
 	public GeoPoint getLocation() {
