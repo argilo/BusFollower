@@ -5,19 +5,24 @@ import java.util.ArrayList;
 import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.Stop;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -25,16 +30,15 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.FilterQueryProvider;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class StopChooserActivity extends ListActivity {
+public class StopChooserActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	private SQLiteDatabase db = null;
 	private RecentQueryAdapter recentQueryAdapter = null;
+	private SimpleCursorAdapter adapter = null;
+	private String constraintStr = "";
 	
     /** Called when the activity is first created. */
     @Override
@@ -44,13 +48,13 @@ public class StopChooserActivity extends ListActivity {
 
         db = (new DatabaseHelper(this)).getReadableDatabase();
         // TODO: Catch & handle SQLiteException
-
+                
         final AutoCompleteTextView stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
         final Button chooseMapButton = (Button) findViewById(R.id.chooseMap);
 
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, 
+		adapter = new SimpleCursorAdapter(this, 
 				android.R.layout.simple_dropdown_item_1line, null, 
-				new String[] { "stop_desc" }, new int[] { android.R.id.text1 });
+				new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
 		stopSearchField.setAdapter(adapter);
 		
 		adapter.setCursorToStringConverter(new CursorToStringConverter() {
@@ -60,35 +64,13 @@ public class StopChooserActivity extends ListActivity {
 			}
 		});
 		
-		adapter.setFilterQueryProvider(new FilterQueryProvider() {
-			@Override
-			public Cursor runQuery(CharSequence constraint) {
-				String constraintStr = (constraint != null ? constraint.toString() : "");
-				String[] pieces = constraintStr.split(" ");
-				
-				String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
-				ArrayList<String> params = new ArrayList<String>();
-				for (String piece : pieces) {
-					if (piece.length() > 0) {
-						query += " AND (stop_name LIKE ?";
-						params.add("%" + piece + "%");
-						if (piece.matches("\\d\\d\\d?\\d?")) {
-							query += " OR stop_code LIKE ?";
-							params.add(piece + "%");
-						}
-						query += ")";
-					}
-				}
-				query += " ORDER BY total_departures DESC";
-				Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
-				if (cursor != null) {
-					// TODO: Handle Cursor with CursorLoader / LoaderManager
-					cursor.moveToFirst();
-					return cursor;
-				}
-				
-				return null;
-			}
+		stopSearchField.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                constraintStr = stopSearchField.getText().toString();
+                getSupportLoaderManager().restartLoader(0, null, StopChooserActivity.this);
+                return false;
+            }
 		});
 		
 		stopSearchField.setOnEditorActionListener(new OnEditorActionListener() {
@@ -119,8 +101,25 @@ public class StopChooserActivity extends ListActivity {
 			}
 		});
 
-    	recentQueryAdapter = new RecentQueryAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<RecentQuery>());
-        setListAdapter(recentQueryAdapter);
+    	ListView recentList = (ListView) findViewById(R.id.recentList);
+        recentQueryAdapter = new RecentQueryAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<RecentQuery>());
+    	recentList.setAdapter(recentQueryAdapter);
+
+    	recentList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                RecentQuery query = recentQueryAdapter.getItem(position);
+                if (query.getRoute() == null) {
+                    new FetchRoutesTask(StopChooserActivity.this, db).execute(query.getStop().getNumber());
+                } else {
+                    new FetchTripsTask(StopChooserActivity.this, db).execute(query);
+                }
+            }
+    	});
+    	
+        // Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getSupportLoaderManager().initLoader(0, null, this);
     }
     
     @Override
@@ -139,16 +138,6 @@ public class StopChooserActivity extends ListActivity {
     			lastStop = thisStop;
     		}
     		recentQueryAdapter.add(recentQuery);
-    	}
-    }
-    
-    @Override
-    public void onListItemClick(ListView parent, View v, int position, long id) {
-    	RecentQuery query = recentQueryAdapter.getItem(position);
-    	if (query.getRoute() == null) {
-			new FetchRoutesTask(StopChooserActivity.this, db).execute(query.getStop().getNumber());
-    	} else {
-    		new FetchTripsTask(this, db).execute(query);
     	}
     }
     
@@ -197,5 +186,54 @@ public class StopChooserActivity extends ListActivity {
 			
     		return v;
     	}
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // This is called when a new Loader needs to be created.  This
+        // sample only has one Loader, so we don't care about the ID.
+        return new CursorLoader(this) {
+            @Override
+            public Cursor loadInBackground() {
+                String[] pieces = constraintStr.split(" ");
+
+                String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
+                ArrayList<String> params = new ArrayList<String>();
+                for (String piece : pieces) {
+                    if (piece.length() > 0) {
+                        query += " AND (stop_name LIKE ?";
+                        params.add("%" + piece + "%");
+                        if (piece.matches("\\d\\d\\d?\\d?")) {
+                            query += " OR stop_code LIKE ?";
+                            params.add(piece + "%");
+                        }
+                        query += ")";
+                    }
+                }
+                query += " ORDER BY total_departures DESC";
+                Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    return cursor;
+                }
+
+                return null;
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // Swap the new cursor in.  (The framework will take care of closing the
+        // old cursor once we return.)
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // This is called when the last Cursor provided to onLoadFinished()
+        // above is about to be closed.  We need to make sure we are no
+        // longer using it.
+        adapter.swapCursor(null);       
     }
 }
