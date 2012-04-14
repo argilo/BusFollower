@@ -244,7 +244,7 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
-        adapter.swapCursor(data);
+        adapter.changeCursor(data);
     }
 
     @Override
@@ -252,6 +252,6 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
         // This is called when the last Cursor provided to onLoadFinished()
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
-        adapter.swapCursor(null);       
+        adapter.changeCursor(null);       
     }
 }
