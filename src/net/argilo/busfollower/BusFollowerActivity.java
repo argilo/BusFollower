@@ -9,7 +9,6 @@ import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
-import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
 
 import com.google.android.maps.GeoPoint;
@@ -31,12 +30,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class BusFollowerActivity extends MapActivity {
 	private static final String TAG = "BusFollowerActivity";
@@ -48,6 +48,7 @@ public class BusFollowerActivity extends MapActivity {
 	private Route route;
 
 	private MapView mapView = null;
+	private ListView tripList = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -62,6 +63,24 @@ public class BusFollowerActivity extends MapActivity {
 
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.setBuiltInZoomControls(true);
+        
+        tripList = (ListView) findViewById(R.id.tripList);
+		tripList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Trip trip = (Trip) tripList.getAdapter().getItem(position);
+				RouteDirection rd = trip.getRouteDirection();
+				AlertDialog.Builder dialog = new AlertDialog.Builder(BusFollowerActivity.this);
+				dialog.setTitle(rd.getRouteNumber() + " " + rd.getRouteLabel());
+				dialog.setMessage(Util.getBusInformationString(BusFollowerActivity.this, rd, trip));
+				dialog.setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+				dialog.show();
+			}
+		});
         
         result = (GetNextTripsForStopResult) getIntent().getSerializableExtra("result");
         route = (Route) getIntent().getSerializableExtra("route");
@@ -150,7 +169,6 @@ public class BusFollowerActivity extends MapActivity {
 
         for (RouteDirection rd : result.getRouteDirections()) {
         	if (rd.getDirection().equals(route.getDirection())) {
-                ListView tripList = (ListView) findViewById(R.id.tripList);
                 tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, R.layout.tripitem, rd.getTrips()));
 
                 int number = 0;
@@ -197,7 +215,6 @@ public class BusFollowerActivity extends MapActivity {
     			v = li.inflate(resourceId, null);
     		}
     		final Trip trip = trips.get(position);
-			final RouteDirection rd = trip.getRouteDirection();
     		if (trip != null) {
     			TextView text1 = (TextView) v.findViewById(android.R.id.text1);
     			TextView text2 = (TextView) v.findViewById(android.R.id.text2);
@@ -209,20 +226,6 @@ public class BusFollowerActivity extends MapActivity {
     			} else {
     				busPin.setImageDrawable(Util.getNumberedPin(BusFollowerActivity.this, position + 1));
     			}
-    			v.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-						dialog.setTitle(rd.getRouteNumber() + " " + rd.getRouteLabel());
-						dialog.setMessage(Util.getBusInformationString(context, rd, trip));
-						dialog.setNegativeButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
-						dialog.show();
-					}
-    			});
     		}
     		return v;
     	}
