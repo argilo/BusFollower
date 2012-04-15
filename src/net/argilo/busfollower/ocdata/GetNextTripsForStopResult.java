@@ -16,13 +16,13 @@ public class GetNextTripsForStopResult implements Serializable {
 	private static final String TAG = "GetNextTripForStopResult";
 
 	private Stop stop = null;
+	private String stopLabel = null;
 	private String error = null;
 	private ArrayList<RouteDirection> routeDirections = new ArrayList<RouteDirection>();
 	
 	public GetNextTripsForStopResult(Context context, SQLiteDatabase db, XmlPullParser xpp, String stopNumber)
 			throws XmlPullParserException, IOException, IllegalArgumentException {
 		stop = new Stop(context, db, stopNumber);
-		String stopLabel = null;
 		
 		while (xpp.next() == XmlPullParser.START_TAG) {
 			String tagName = xpp.getName();
@@ -50,6 +50,10 @@ public class GetNextTripsForStopResult implements Serializable {
 		return stop;
 	}
 	
+	public String getStopLabel() {
+		return stopLabel;
+	}
+
 	public String getError() {
 		return error;
 	}
