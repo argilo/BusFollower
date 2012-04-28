@@ -25,6 +25,7 @@ public class MapChooserActivity extends MapActivity {
 	private static final int MIN_ZOOM_LEVEL = 17; // The minimum zoom level at which stops will be displayed.
 	
 	private SQLiteDatabase db;
+	private static FetchRoutesTask task = null;
 	private StopsMapView mapView = null;
 	private MyLocationOverlay myLocationOverlay = null;
 	
@@ -58,6 +59,10 @@ public class MapChooserActivity extends MapActivity {
 
         final MapController mapController = mapView.getController();
         if (savedInstanceState != null) {
+        	if (task != null) {
+        		// Let the AsyncTask know we're back.
+        		task.setActivityContext(this);
+        	}
         	mapController.setZoom(savedInstanceState.getInt("mapZoom"));
         	mapController.setCenter(new GeoPoint(savedInstanceState.getInt("mapCenterLatitude"), savedInstanceState.getInt("mapCenterLongitude")));
         } else {
@@ -123,12 +128,17 @@ public class MapChooserActivity extends MapActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		
+		if (task != null) {
+			// Let the AsyncTask know we're gone.
+			task.setActivityContext(null);
+		}
+
 		GeoPoint mapCenter = mapView.getMapCenter();
 		outState.putInt("mapCenterLatitude", mapCenter.getLatitudeE6());
 		outState.putInt("mapCenterLongitude", mapCenter.getLongitudeE6());
 		outState.putInt("mapZoom", mapView.getZoomLevel());
 	}
-        
+	
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -196,5 +206,9 @@ public class MapChooserActivity extends MapActivity {
 	        }
 	        mapView.invalidate();
 		}
+	}
+	
+	public void setFetchRoutesTask(FetchRoutesTask task) {
+		MapChooserActivity.task = task;
 	}
 }

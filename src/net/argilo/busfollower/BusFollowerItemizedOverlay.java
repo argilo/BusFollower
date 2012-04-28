@@ -40,7 +40,9 @@ public class BusFollowerItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			dialog.setPositiveButton(context.getString(R.string.open), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					dialog.dismiss();
-					new FetchRoutesTask(context, db).execute(stop.getNumber());
+					FetchRoutesTask task = new FetchRoutesTask(context, db);
+					((MapChooserActivity) context).setFetchRoutesTask(task);
+					task.execute(stop.getNumber());
 				}
 			});
 			dialog.setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {

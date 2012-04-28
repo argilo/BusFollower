@@ -39,6 +39,8 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
 	private static final String TAG = "StopChooserActivity";
 	
 	private SQLiteDatabase db = null;
+	private static FetchRoutesTask fetchRoutesTask = null;
+	private static FetchTripsTask fetchTripsTask = null;
 	private RecentQueryAdapter recentQueryAdapter = null;
 	private SimpleCursorAdapter adapter = null;
 	private AutoCompleteTextView stopSearchField = null;
@@ -53,6 +55,16 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
                 
         stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
         final Button chooseMapButton = (Button) findViewById(R.id.chooseMap);
+        
+        if (savedInstanceState != null) {
+    		// Let the AsyncTasks know we're back.
+        	if (fetchRoutesTask != null) {
+        		fetchRoutesTask.setActivityContext(this);
+        	}
+        	if (fetchTripsTask != null) {
+        		fetchTripsTask.setActivityContext(this);
+        	}
+        }
 
 		adapter = new SimpleCursorAdapter(this, 
 				android.R.layout.simple_dropdown_item_1line, null, 
@@ -91,7 +103,8 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_GO || 
 						(actionId == EditorInfo.IME_NULL && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-					new FetchRoutesTask(StopChooserActivity.this, db).execute(stopSearchField.getText().toString());
+					fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
+					fetchRoutesTask.execute(stopSearchField.getText().toString());
 					return true;
 				}
 				return false;
@@ -101,7 +114,8 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
 		stopSearchField.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				new FetchRoutesTask(StopChooserActivity.this, db).execute(stopSearchField.getText().toString());
+				fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
+				fetchRoutesTask.execute(stopSearchField.getText().toString());
 			}
 		});
 		
@@ -122,9 +136,11 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 RecentQuery query = recentQueryAdapter.getItem(position);
                 if (query.getRoute() == null) {
-                    new FetchRoutesTask(StopChooserActivity.this, db).execute(query.getStop().getNumber());
+                    fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
+                    fetchRoutesTask.execute(query.getStop().getNumber());
                 } else {
-                    new FetchTripsTask(StopChooserActivity.this, db).execute(query);
+                    fetchTripsTask = new FetchTripsTask(StopChooserActivity.this, db);
+                    fetchTripsTask.execute(query);
                 }
             }
     	});
@@ -152,6 +168,19 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
     		recentQueryAdapter.add(recentQuery);
     	}
     }
+    
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		// Let the AsyncTasks know we're gone.
+		if (fetchRoutesTask != null) {
+			fetchRoutesTask.setActivityContext(null);
+		}
+		if (fetchTripsTask != null) {
+			fetchTripsTask.setActivityContext(null);
+		}
+	}
     
     private class RecentQueryAdapter extends ArrayAdapter<RecentQuery> {
     	private Context context;

@@ -17,6 +17,7 @@ import android.widget.ListView;
 
 public class RouteChooserActivity extends ListActivity {
 	private SQLiteDatabase db = null;
+	private static FetchTripsTask task = null;
 
 	private Stop stop;
 	private ArrayList<Route> routes;
@@ -38,12 +39,20 @@ public class RouteChooserActivity extends ListActivity {
         setListAdapter(new ArrayAdapter<Route>(this, android.R.layout.simple_list_item_1, routes));
         setTitle(getString(R.string.stop_number) + " " + stop.getNumber() + 
         		(stop.getName() != null ? " " + stop.getName() : ""));
+        
+        if (savedInstanceState != null) {
+        	if (task != null) {
+        		// Let the AsyncTask know we're back.
+        		task.setActivityContext(this);
+        	}
+        }
     }
     
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
     	// Here we just use RecentQuery as a convenience, since it can hold a stop and route.
-    	new FetchTripsTask(this, db).execute(new RecentQuery(stop, routes.get(position)));
+    	task = new FetchTripsTask(this, db);
+    	task.execute(new RecentQuery(stop, routes.get(position)));
     }
     
 	@Override
@@ -57,6 +66,16 @@ public class RouteChooserActivity extends ListActivity {
 	            return true;
 			default:
 				return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		if (task != null) {
+			// Let the AsyncTask know we're gone.
+			task.setActivityContext(null);
 		}
 	}
 }
