@@ -92,7 +92,8 @@ public class BusFollowerActivity extends MapActivity {
         	route = (Route) savedInstanceState.getSerializable("route");
 
         	if (result != null) {
-    			displayGetNextTripsForStopResult();
+        		// A configuration change has occurred. Don't reset zoom & center.
+    			displayGetNextTripsForStopResult(false);
         	} else {
     	        // Zoom to OC Transpo service area if it's our first time.
     	        MapController mapController = mapView.getController();
@@ -101,7 +102,8 @@ public class BusFollowerActivity extends MapActivity {
         	}
         } else {
         	RecentQueryList.addOrUpdateRecent(this, result.getStop(), route);
-        	displayGetNextTripsForStopResult();
+        	// We're arriving from another activity, so set zoom & center.
+        	displayGetNextTripsForStopResult(true);
         }
         
         setTitle(getString(R.string.stop_number) + " " + result.getStop().getNumber() +
@@ -150,7 +152,7 @@ public class BusFollowerActivity extends MapActivity {
 		}
 	}
 	
-	private void displayGetNextTripsForStopResult() {
+	private void displayGetNextTripsForStopResult(boolean zoomAndCenter) {
         List<Overlay> mapOverlays = mapView.getOverlays();
         mapOverlays.clear();
         Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);
@@ -190,16 +192,19 @@ public class BusFollowerActivity extends MapActivity {
         if (itemizedOverlay.size() > 0) {
         	mapOverlays.add(itemizedOverlay);
         	
-            MapController mapController = mapView.getController();
-            mapController.zoomToSpan(Math.max(MIN_ZOOM, (maxLatitude - minLatitude) * 110 / 100), Math.max(MIN_ZOOM, (maxLongitude - minLongitude) * 110 / 100));
-            mapController.setCenter(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
+        	if (zoomAndCenter) {
+	            MapController mapController = mapView.getController();
+	            mapController.zoomToSpan(Math.max(MIN_ZOOM, (maxLatitude - minLatitude) * 110 / 100), Math.max(MIN_ZOOM, (maxLongitude - minLongitude) * 110 / 100));
+	            mapController.setCenter(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
+        	}
         }
         mapView.invalidate();
 	}
 	
 	public void setResult(GetNextTripsForStopResult result) {
 		this.result = result;
-		displayGetNextTripsForStopResult();
+		// The user requested a refresh. Don't reset zoom & center.
+		displayGetNextTripsForStopResult(false);
 	}
 
     private class TripAdapter extends ArrayAdapter<Trip> {
