@@ -18,7 +18,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
-	Context context = null;
+	Context activityContext = null;
+	Context applicationContext = null;
 	SQLiteDatabase db = null;
 	ProgressDialog progressDialog = null;
 	private Stop stop = null;
@@ -27,13 +28,14 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 	
 	public FetchRoutesTask(Context context, SQLiteDatabase db) {
 		super();
-		this.context = context;
+		activityContext = context;
+		applicationContext = context.getApplicationContext(); 
 		this.db = db;
 	}
 
 	@Override
 	protected void onPreExecute() {
-		progressDialog = ProgressDialog.show(context, "", context.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
+		progressDialog = ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				if (dataFetcher != null) {
@@ -48,19 +50,19 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 	protected GetRouteSummaryForStopResult doInBackground(String... stopNumber) {
 		GetRouteSummaryForStopResult result = null;
 		try {
-			stop = new Stop(context, db, stopNumber[0]);
-			dataFetcher = new OCTranspoDataFetcher(context, db);
+			stop = new Stop(applicationContext, db, stopNumber[0]);
+			dataFetcher = new OCTranspoDataFetcher(applicationContext, db);
 			result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
-			errorString = Util.getErrorString(context, result.getError());
+			errorString = Util.getErrorString(applicationContext, result.getError());
 			if (errorString == null) {
 				if(result.getRoutes().isEmpty()) {
-					errorString = context.getString(R.string.no_routes);
+					errorString = applicationContext.getString(R.string.no_routes);
 				}
 			}
 		} catch (IOException e) {
-			errorString = context.getString(R.string.server_error); 
+			errorString = applicationContext.getString(R.string.server_error); 
 		} catch (XmlPullParserException e) {
-			errorString = context.getString(R.string.invalid_response);
+			errorString = applicationContext.getString(R.string.invalid_response);
 		} catch (IllegalArgumentException e) {
 			errorString = e.getMessage();
 		} catch (IllegalStateException e) {
@@ -76,10 +78,10 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 			return;
 		}
 		if (errorString != null) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			AlertDialog.Builder builder = new AlertDialog.Builder(activityContext);
 			builder.setTitle(R.string.error)
 			.setMessage(errorString)
-			.setNegativeButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+			.setNegativeButton(applicationContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					dialog.cancel();
 				}
@@ -87,10 +89,10 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 			AlertDialog alert = builder.create();
 			alert.show();
 		} else {
-			Intent intent = new Intent(context, RouteChooserActivity.class);
+			Intent intent = new Intent(activityContext, RouteChooserActivity.class);
 			intent.putExtra("stop", stop);
 			intent.putExtra("result", result);
-			context.startActivity(intent);
+			activityContext.startActivity(intent);
 		}
 	}
 }

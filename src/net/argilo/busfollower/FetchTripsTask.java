@@ -20,7 +20,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsForStopResult> {
-	Context context = null;
+	Context activityContext = null;
+	Context applicationContext = null;
 	SQLiteDatabase db = null;
 	ProgressDialog progressDialog = null;
 	private Route route = null;
@@ -29,13 +30,14 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 	
 	public FetchTripsTask(Context context, SQLiteDatabase db) {
 		super();
-		this.context = context;
+		activityContext = context;
+		applicationContext = context.getApplicationContext(); 
 		this.db = db;
 	}
 	
 	@Override
 	protected void onPreExecute() {
-		progressDialog = ProgressDialog.show(context, "", context.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
+		progressDialog = ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				if (dataFetcher != null) {
@@ -52,24 +54,24 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 		route = query[0].getRoute();
 		GetNextTripsForStopResult result = null;
 		try {
-			dataFetcher = new OCTranspoDataFetcher(context, db); 
+			dataFetcher = new OCTranspoDataFetcher(applicationContext, db); 
 			result = dataFetcher.getNextTripsForStop(stop.getNumber(), route.getNumber());
-			errorString = Util.getErrorString(context, result.getError());
+			errorString = Util.getErrorString(applicationContext, result.getError());
 			if (errorString == null) {
 				// Check whether there are any trips to display, since there's no
 				// point going to the map screen if there aren't.
 		        for (RouteDirection rd : result.getRouteDirections()) {
 		        	if (rd.getDirection().equals(route.getDirection())) {
 		        		if (rd.getTrips().isEmpty()) {
-							errorString = context.getString(R.string.no_trips);
+							errorString = applicationContext.getString(R.string.no_trips);
 		        		}
 		        	}
 		        }
 			}
 		} catch (IOException e) {
-			errorString = context.getString(R.string.server_error); 
+			errorString = applicationContext.getString(R.string.server_error); 
 		} catch (XmlPullParserException e) {
-			errorString = context.getString(R.string.invalid_response);
+			errorString = applicationContext.getString(R.string.invalid_response);
 		} catch (IllegalArgumentException e) {
 			errorString = e.getMessage();
 		} catch (IllegalStateException e) {
@@ -85,10 +87,10 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 			return;
 		}
 		if (errorString != null) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			AlertDialog.Builder builder = new AlertDialog.Builder(activityContext);
 			builder.setTitle(R.string.error)
 			.setMessage(errorString)
-			.setNegativeButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+			.setNegativeButton(applicationContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					dialog.cancel();
 				}
@@ -96,15 +98,15 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 			AlertDialog alert = builder.create();
 			alert.show();
 		} else {
-			if (context instanceof BusFollowerActivity) {
+			if (activityContext instanceof BusFollowerActivity) {
 				// Don't launch the BusFollowerActivity if it's the one that
 				// requested the update. Just display the update.
-				((BusFollowerActivity) context).displayGetNextTripsForStopResult(result);
+				((BusFollowerActivity) activityContext).displayGetNextTripsForStopResult(result);
 			} else {
-				Intent intent = new Intent(context, BusFollowerActivity.class);
+				Intent intent = new Intent(activityContext, BusFollowerActivity.class);
 				intent.putExtra("result", result);
 				intent.putExtra("route", route);
-				context.startActivity(intent);
+				activityContext.startActivity(intent);
 			}
 		}
 	}
