@@ -13,7 +13,7 @@
    height="22.6875"
    id="svg3817"
    version="1.1"
-   inkscape:version="0.48.2 r9819"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="pin_red_1.svg"
    inkscape:export-filename="C:\Users\Clayton\workspace\BusFollower\res\drawable-xhdpi\pin_red.png"
    inkscape:export-xdpi="30"
@@ -28,15 +28,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.627417"
-     inkscape:cx="-11.484722"
-     inkscape:cy="12.111239"
+     inkscape:cx="1.559702"
+     inkscape:cy="15.140777"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:current-layer="svg3817"
+     showgrid="false"
+     inkscape:window-width="1615"
+     inkscape:window-height="1026"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
      inkscape:window-maximized="1"
      units="px"
      fit-margin-top="0"
@@ -61,7 +61,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -76,17 +76,17 @@
        id="path3835"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="csssssc" />
-    <flowRoot
+    <text
        xml:space="preserve"
-       id="flowRoot4894"
-       style="font-size:110px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="matrix(0.09774437,0,0,0.09774437,-0.57518928,1023.5425)"><flowRegion
-         id="flowRegion4896"><rect
-           id="rect4898"
-           width="144"
-           height="108"
-           x="72"
-           y="84"
-           style="font-size:110px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
-         id="flowPara4900">1</flowPara></flowRoot>  </g>
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="13.76256"
+       y="1041.0862"
+       id="text3093"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3095"
+         x="13.76256"
+         y="1041.0862"
+         transform="matrix(2.654423,0,0,1,-13.595612,0)">1</tspan></text>
+  </g>
 </svg>
