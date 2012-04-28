@@ -92,7 +92,7 @@ public class BusFollowerActivity extends MapActivity {
         	route = (Route) savedInstanceState.getSerializable("route");
 
         	if (result != null) {
-    			displayGetNextTripsForStopResult(result);
+    			displayGetNextTripsForStopResult();
         	} else {
     	        // Zoom to OC Transpo service area if it's our first time.
     	        MapController mapController = mapView.getController();
@@ -101,7 +101,7 @@ public class BusFollowerActivity extends MapActivity {
         	}
         } else {
         	RecentQueryList.addOrUpdateRecent(this, result.getStop(), route);
-        	displayGetNextTripsForStopResult(result);
+        	displayGetNextTripsForStopResult();
         }
         
         setTitle(getString(R.string.stop_number) + " " + result.getStop().getNumber() +
@@ -150,7 +150,7 @@ public class BusFollowerActivity extends MapActivity {
 		}
 	}
 	
-	void displayGetNextTripsForStopResult(final GetNextTripsForStopResult result) {
+	private void displayGetNextTripsForStopResult() {
         List<Overlay> mapOverlays = mapView.getOverlays();
         mapOverlays.clear();
         Drawable drawable = BusFollowerActivity.this.getResources().getDrawable(R.drawable.pin_red);
@@ -195,6 +195,11 @@ public class BusFollowerActivity extends MapActivity {
             mapController.setCenter(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
         }
         mapView.invalidate();
+	}
+	
+	public void setResult(GetNextTripsForStopResult result) {
+		this.result = result;
+		displayGetNextTripsForStopResult();
 	}
 
     private class TripAdapter extends ArrayAdapter<Trip> {

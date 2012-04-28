@@ -98,7 +98,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 			if (activityContext instanceof BusFollowerActivity) {
 				// Don't launch the BusFollowerActivity if it's the one that
 				// requested the update. Just display the update.
-				((BusFollowerActivity) activityContext).displayGetNextTripsForStopResult(result);
+				((BusFollowerActivity) activityContext).setResult(result);
 			} else {
 				Intent intent = new Intent(activityContext, BusFollowerActivity.class);
 				intent.putExtra("result", result);
