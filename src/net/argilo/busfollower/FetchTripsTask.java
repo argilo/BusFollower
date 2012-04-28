@@ -27,6 +27,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 	private Route route = null;
 	private String errorString = null;
 	OCTranspoDataFetcher dataFetcher = null;
+	private boolean finished = false;
 	
 	public FetchTripsTask(Context context, SQLiteDatabase db) {
 		super();
@@ -37,15 +38,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 	
 	@Override
 	protected void onPreExecute() {
-		progressDialog = ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				if (dataFetcher != null) {
-					cancel(false);
-					dataFetcher.abortRequest();
-				}
-			}
-		});
+		progressDialog = createProgressDialog();
 	}
 
 	@Override
@@ -82,6 +75,10 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 	
 	@Override
 	protected void onPostExecute(GetNextTripsForStopResult result) {
+		finished = true;
+		if (activityContext == null) {
+			return;
+		}
 		progressDialog.dismiss();
 		if (isCancelled()) {
 			return;
@@ -109,5 +106,29 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 				activityContext.startActivity(intent);
 			}
 		}
+	}
+	
+	public void setActivityContext(Context context) {
+		activityContext = context;
+		if (context == null) {
+			progressDialog = null;
+		} else {
+			if (!finished) {
+				progressDialog = createProgressDialog();
+			}
+		}
+	}
+	
+	private ProgressDialog createProgressDialog() {
+		ProgressDialog progressDialog = ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				if (dataFetcher != null) {
+					cancel(false);
+					dataFetcher.abortRequest();
+				}
+			}
+		});
+		return progressDialog;
 	}
 }

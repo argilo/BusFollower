@@ -2,7 +2,6 @@ package net.argilo.busfollower;
 
 import java.util.ArrayList;
 
-import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.Stop;
@@ -28,8 +27,7 @@ public class RouteChooserActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routechooser);
 
-        db = (new DatabaseHelper(this)).getReadableDatabase();
-        // TODO: Catch & handle SQLiteException
+        db = ((BusFollowerApplication) getApplication()).getDatabase();
 
         Util.setDisplayHomeAsUpEnabled(this, true);
 
@@ -48,13 +46,6 @@ public class RouteChooserActivity extends ListActivity {
     	new FetchTripsTask(this, db).execute(new RecentQuery(stop, routes.get(position)));
     }
     
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		
-		db.close();
-	}
-	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

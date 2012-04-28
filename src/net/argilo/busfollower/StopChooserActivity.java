@@ -2,7 +2,6 @@ package net.argilo.busfollower;
 
 import java.util.ArrayList;
 
-import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.Stop;
 
 import android.content.Context;
@@ -50,8 +49,7 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stopchooser);
 
-        db = (new DatabaseHelper(this)).getReadableDatabase();
-        // TODO: Catch & handle SQLiteException
+        db = ((BusFollowerApplication) getApplication()).getDatabase();
                 
         stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
         final Button chooseMapButton = (Button) findViewById(R.id.chooseMap);
@@ -155,13 +153,6 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
     	}
     }
     
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		
-		db.close();
-	}
-	
     private class RecentQueryAdapter extends ArrayAdapter<RecentQuery> {
     	private Context context;
     	private int resourceId;

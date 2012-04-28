@@ -2,7 +2,6 @@ package net.argilo.busfollower;
 
 import java.util.List;
 
-import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.Stop;
 import android.content.Context;
 import android.content.Intent;
@@ -41,8 +40,7 @@ public class MapChooserActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapchooser);
         
-        db = (new DatabaseHelper(this)).getReadableDatabase();
-        // TODO: Catch & handle SQLiteException
+        db = ((BusFollowerApplication) getApplication()).getDatabase();
         
         Util.setDisplayHomeAsUpEnabled(this, true);
 
@@ -107,13 +105,6 @@ public class MapChooserActivity extends MapActivity {
 		editor.commit();
     }
     
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		
-		db.close();
-	}
-	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

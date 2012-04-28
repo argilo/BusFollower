@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import net.argilo.busfollower.ocdata.DatabaseHelper;
 import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
@@ -44,6 +43,7 @@ public class BusFollowerActivity extends MapActivity {
 	private static final int MIN_ZOOM = 10000;
 	
 	private SQLiteDatabase db;
+	private static FetchTripsTask task;
 	private GetNextTripsForStopResult result = null;
 	private Route route;
 
@@ -56,8 +56,7 @@ public class BusFollowerActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.busfollower);
         
-        db = (new DatabaseHelper(this)).getReadableDatabase();
-        // TODO: Catch & handle SQLiteException
+        db = ((BusFollowerApplication) getApplication()).getDatabase();
         
         Util.setDisplayHomeAsUpEnabled(this, true);
 
@@ -85,6 +84,10 @@ public class BusFollowerActivity extends MapActivity {
         result = (GetNextTripsForStopResult) getIntent().getSerializableExtra("result");
         route = (Route) getIntent().getSerializableExtra("route");
         if (savedInstanceState != null) {
+        	if (task != null) {
+        		// Let the AsyncTask know we're back.
+        		task.setActivityContext(this);
+        	}
         	result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
         	route = (Route) savedInstanceState.getSerializable("route");
 
@@ -114,15 +117,12 @@ public class BusFollowerActivity extends MapActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		
+		if (task != null) {
+			// Let the AsyncTask know we're gone.
+			task.setActivityContext(null);
+		}
 		outState.putSerializable("result", result);
 		outState.putSerializable("route", route);
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		
-		db.close();
 	}
 	
 	@Override
@@ -142,7 +142,8 @@ public class BusFollowerActivity extends MapActivity {
 	            startActivity(intent);
 	            return true;
 			case R.id.menu_refresh:
-				new FetchTripsTask(this, db).execute(new RecentQuery(result.getStop(), route));
+				task = new FetchTripsTask(this, db);
+				task.execute(new RecentQuery(result.getStop(), route));
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
