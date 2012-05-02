@@ -98,7 +98,7 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
 		if (context == null) {
 			progressDialog = null;
 		} else {
-			if (!finished) {
+			if (!finished && !isCancelled()) {
 				progressDialog = createProgressDialog();
 			}
 		}

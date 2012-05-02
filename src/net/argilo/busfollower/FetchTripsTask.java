@@ -113,7 +113,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
 		if (context == null) {
 			progressDialog = null;
 		} else {
-			if (!finished) {
+			if (!finished && !isCancelled()) {
 				progressDialog = createProgressDialog();
 			}
 		}
