@@ -46,7 +46,14 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
         <srcfiles dir="svg" includes="*"/>
     </uptodate>
     
-    <target name="-pre-build" depends="xmlBuild,dbBuild,pngBuild" />
+    <target name="-pre-build" depends="fileChecks,xmlBuild,dbBuild,pngBuild" />
+    
+    <target name="fileChecks" description="check for file that are needed to build">
+        <available file="secure.properties" property="secure.properties.present" />
+        <available file="gtfs/google_transit.zip" property="gtfs.present" />
+        <fail unless="secure.properties.present">The secure.properties file is missing. Please create it according to the instructions in custom_rules.xml.</fail>
+        <fail unless="gtfs.present">GTFS data is missing. Please download it from http://www.octranspo1.com/files/google_transit.zip and place it in the gtfs folder.</fail>
+    </target>
     
     <target name="xmlBuild" description="put correct keys into xml files depending on build type">
         <echoxml file="res/values/secure-strings.xml">
