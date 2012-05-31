@@ -1,3 +1,5 @@
+# coding=utf-8
+
 #
 # Copyright 2012 Clayton Smith
 #
@@ -17,8 +19,6 @@
 # along with Ottawa Bus Follower; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-
-# coding=utf-8
 
 import transitfeed
 import os
