@@ -11,6 +11,9 @@
          release.google_maps_api_key=APIKEY
          release.oc_transpo_application_id=APPID
          release.oc_transpo_application_key=APPKEY
+
+         key.store.password=STOREPASS
+         key.alias.password=ALIASPASS
     -->
     <property file="secure.properties" />
     <uptodate targetfile="assets/db" srcfile="gtfs/google_transit.zip" property="dbBuild.notRequired"/>
