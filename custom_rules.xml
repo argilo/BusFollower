@@ -14,6 +14,9 @@
     -->
     <property file="secure.properties" />
     <uptodate targetfile="assets/db" srcfile="gtfs/google_transit.zip" property="dbBuild.notRequired"/>
+    <uptodate property="pngBuild.notRequired" targetfile="res/drawable-mdpi/launcher_icon.png">
+        <srcfiles dir="svg" includes="*.svg"/>
+    </uptodate>
     
     <target name="-pre-build" depends="xmlBuild,dbBuild,pngBuild" />
     
@@ -46,7 +49,7 @@
 		</exec>
 	</target>
 	
-    <target name="pngBuild" description="convert svg to png">			
+    <target name="pngBuild" unless="pngBuild.notRequired" description="convert svg to png">			
 		<exec executable="python">
 		    <arg value="svg/gen-png.py" />
 		</exec>
