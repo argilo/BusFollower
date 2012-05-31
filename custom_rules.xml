@@ -11,10 +11,23 @@
          release.google_maps_api_key=APIKEY
          release.oc_transpo_application_id=APPID
          release.oc_transpo_application_key=APPKEY
+
+         key.store.password=STOREPASS
+         key.alias.password=ALIASPASS
     -->
     <property file="secure.properties" />
     
-    <target name="-pre-build">
+    <uptodate targetfile="assets/db" property="dbBuild.notRequired">
+        <srcfiles dir="gtfs" includes="*"/>
+    </uptodate>
+    
+    <uptodate targetfile="res/drawable-mdpi/launcher_icon.png" property="pngBuild.notRequired">
+        <srcfiles dir="svg" includes="*"/>
+    </uptodate>
+    
+    <target name="-pre-build" depends="xmlBuild,dbBuild,pngBuild" />
+    
+    <target name="xmlBuild" description="put correct keys into xml files depending on build type">
         <echoxml file="res/values/secure-strings.xml">
         	<resources>
 				<string name="google_maps_api_key">GOOGLE_MAPS_API_KEY</string>
@@ -34,12 +47,16 @@
 				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_KEY" value="${release.oc_transpo_application_key}"></replace>
 			</else>
 		</if>
-		
+	</target>
+	
+    <target name="dbBuild" unless="dbBuild.notRequired" description="build sqlite database from gtfs data">
 		<mkdir dir="assets" />
 		<exec executable="python">
 		    <arg value="gtfs/gen-db.py" />
 		</exec>
-				
+	</target>
+	
+    <target name="pngBuild" unless="pngBuild.notRequired" description="convert svg to png">			
 		<exec executable="python">
 		    <arg value="svg/gen-png.py" />
 		</exec>

@@ -7,3 +7,5 @@ for filename in os.listdir('svg'):
         os.system('inkscape -e res/drawable-hdpi/' + prefix + '.png -d 240 svg/' + prefix + '.svg')
         os.system('inkscape -e res/drawable-mdpi/' + prefix + '.png -d 160 svg/' + prefix + '.svg')
         os.system('inkscape -e res/drawable-ldpi/' + prefix + '.png -d 120 svg/' + prefix + '.svg')
+    if filename == 'launcher_icon.svg':
+        os.system('inkscape -e google-play-icon.png -h 512 -w 512 svg/' + prefix + '.svg')
