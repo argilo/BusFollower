@@ -16,9 +16,13 @@
          key.alias.password=ALIASPASS
     -->
     <property file="secure.properties" />
-    <uptodate targetfile="assets/db" srcfile="gtfs/google_transit.zip" property="dbBuild.notRequired"/>
-    <uptodate property="pngBuild.notRequired" targetfile="res/drawable-mdpi/launcher_icon.png">
-        <srcfiles dir="svg" includes="*.svg"/>
+    
+    <uptodate targetfile="assets/db" property="dbBuild.notRequired">
+        <srcfiles dir="gtfs" includes="*"/>
+    </uptodate>
+    
+    <uptodate targetfile="res/drawable-mdpi/launcher_icon.png" property="pngBuild.notRequired">
+        <srcfiles dir="svg" includes="*"/>
     </uptodate>
     
     <target name="-pre-build" depends="xmlBuild,dbBuild,pngBuild" />
