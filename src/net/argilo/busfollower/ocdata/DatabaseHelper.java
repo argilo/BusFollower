@@ -37,7 +37,7 @@ public class DatabaseHelper {
 	private static final String DATABASE_FOLDER = "/data/data/net.argilo.busfollower/databases";
 	private static final String DATABASE_PATH = DATABASE_FOLDER + "/db";
 	private static final String DATABASE_PREFS = "DbPrefsFile";
-	private static final int DATABASE_VERSION = 8; // Increment this whenever the DB is changed
+	private static final int DATABASE_VERSION = 9; // Increment this whenever the DB is changed
 
 	Context context;
 	
