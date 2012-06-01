@@ -24,6 +24,8 @@
 /res/values/secure-strings.xml
 /.project
 /.classpath
+/.settings
+/lint.xml
 pin_*.png
 stop.png
 launcher_icon.png
