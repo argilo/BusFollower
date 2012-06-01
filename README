@@ -19,8 +19,12 @@
 #
 
 Ottawa Bus Follower
+===================
+
 Author: Clayton Smith
 Email: <argilo@gmail.com>
+
+https://play.google.com/store/apps/details?id=net.argilo.busfollower
 
 Tired of freezing in the cold waiting for a bus that's late?  This app
 will let you stay warm inside until your bus is near.  It displays the
@@ -42,6 +46,7 @@ Build dependencies:
 * Ant
 * Inkscape
 * Python 2.x
+* SQLite
 * GoogleTransitDataFeed:
     http://code.google.com/p/googletransitdatafeed/wiki/TransitFeedDistribution
 * GTFS data from OC Transpo:
