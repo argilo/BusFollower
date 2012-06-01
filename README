@@ -17,3 +17,32 @@
 # along with Ottawa Bus Follower; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
+
+Ottawa Bus Follower
+Author: Clayton Smith
+Email: <argilo@gmail.com>
+
+Tired of freezing in the cold waiting for a bus that's late?  This app
+will let you stay warm inside until your bus is near.  It displays the
+locations and estimated arrival times of Ottawa buses using GPS data
+supplied by OC Transpo.
+
+To begin, search for a stop by number or name, or choose one from the
+map.  Then choose the bus route you're interested in, and you'll see
+data for the next three arrivals at that stop.  You can refresh the
+results at any time to stay up to date.  Tapping on a bus will bring
+up more information about it.
+
+This is an open source project release under the GPL.  Source code is
+available at https://github.com/argilo/BusFollower.  Contributions are
+welcome!
+
+Build dependencies:
+* Android SDK 15
+* Ant
+* Inkscape
+* Python 2.x
+* GoogleTransitDataFeed:
+    http://code.google.com/p/googletransitdatafeed/wiki/TransitFeedDistribution
+* GTFS data from OC Transpo:
+    http://www.octranspo1.com/files/google_transit.zip
