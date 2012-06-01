@@ -84,7 +84,8 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
 		</exec>
 	</target>
 	
-    <target name="pngBuild" unless="pngBuild.notRequired" description="convert svg to png">			
+    <target name="pngBuild" unless="pngBuild.notRequired" description="convert svg to png">
+        <mkdir dir="res/drawable-ldpi" />			
 		<exec executable="python">
 		    <arg value="svg/gen-png.py" />
 		</exec>
