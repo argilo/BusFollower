@@ -37,9 +37,17 @@ data for the next three arrivals at that stop.  You can refresh the
 results at any time to stay up to date.  Tapping on a bus will bring
 up more information about it.
 
-This is an open source project release under the GPL.  Source code is
-available at https://github.com/argilo/BusFollower.  Contributions are
-welcome!
+Please note that OC Transpo does not yet supply GPS information for
+all buses, and that you will see GPS information only for buses that
+have begun their trip toward your stop.  These are limitations of OC
+Transpo's systems, and there is little my app an do about them.  When
+GPS data is not available, scheduled arrival times will appear instead
+of estimated times.
+
+This is an open source project released under the GPL.  Source code is
+available at https://github.com/argilo/BusFollower.  Issues are
+tracked at https://github.com/argilo/BusFollower/issues.  Bug reports
+and code contributions are welcome!
 
 Build dependencies:
 * Android SDK 15
