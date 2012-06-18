@@ -57,37 +57,37 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     
     <target name="xmlBuild" description="put correct keys into xml files depending on build type">
         <echoxml file="res/values/secure-strings.xml">
-        	<resources>
-				<string name="google_maps_api_key">GOOGLE_MAPS_API_KEY</string>
-				<string name="oc_transpo_application_id">OC_TRANSPO_APPLICATION_ID</string>
-				<string name="oc_transpo_application_key">OC_TRANSPO_APPLICATION_KEY</string>
-			</resources>
-		</echoxml>
-		<if condition="${build.is.packaging.debug}">
-		    <then>
-				<replace file="res/values/secure-strings.xml" token="GOOGLE_MAPS_API_KEY" value="${debug.google_maps_api_key}"></replace>
-				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_ID" value="${debug.oc_transpo_application_id}"></replace>
-				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_KEY" value="${debug.oc_transpo_application_key}"></replace>
-			</then>
-			<else>
-				<replace file="res/values/secure-strings.xml" token="GOOGLE_MAPS_API_KEY" value="${release.google_maps_api_key}"></replace>
-				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_ID" value="${release.oc_transpo_application_id}"></replace>
-				<replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_KEY" value="${release.oc_transpo_application_key}"></replace>
-			</else>
-		</if>
-	</target>
-	
+            <resources>
+                <string name="google_maps_api_key">GOOGLE_MAPS_API_KEY</string>
+                <string name="oc_transpo_application_id">OC_TRANSPO_APPLICATION_ID</string>
+                <string name="oc_transpo_application_key">OC_TRANSPO_APPLICATION_KEY</string>
+            </resources>
+        </echoxml>
+        <if condition="${build.is.packaging.debug}">
+            <then>
+                <replace file="res/values/secure-strings.xml" token="GOOGLE_MAPS_API_KEY" value="${debug.google_maps_api_key}"></replace>
+                <replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_ID" value="${debug.oc_transpo_application_id}"></replace>
+                <replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_KEY" value="${debug.oc_transpo_application_key}"></replace>
+            </then>
+            <else>
+                <replace file="res/values/secure-strings.xml" token="GOOGLE_MAPS_API_KEY" value="${release.google_maps_api_key}"></replace>
+                <replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_ID" value="${release.oc_transpo_application_id}"></replace>
+                <replace file="res/values/secure-strings.xml" token="OC_TRANSPO_APPLICATION_KEY" value="${release.oc_transpo_application_key}"></replace>
+            </else>
+        </if>
+    </target>
+    
     <target name="dbBuild" unless="dbBuild.notRequired" description="build sqlite database from gtfs data">
-		<mkdir dir="assets" />
-		<exec executable="python">
-		    <arg value="gtfs/gen-db.py" />
-		</exec>
-	</target>
-	
+        <mkdir dir="assets" />
+        <exec executable="python">
+            <arg value="gtfs/gen-db.py" />
+        </exec>
+    </target>
+    
     <target name="pngBuild" unless="pngBuild.notRequired" description="convert svg to png">
-        <mkdir dir="res/drawable-ldpi" />			
-		<exec executable="python">
-		    <arg value="svg/gen-png.py" />
-		</exec>
+        <mkdir dir="res/drawable-ldpi" />
+        <exec executable="python">
+            <arg value="svg/gen-png.py" />
+        </exec>
     </target>
 </project>

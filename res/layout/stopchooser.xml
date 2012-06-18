@@ -30,24 +30,24 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enter_stop" />
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:orientation="horizontal"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent">
-	    <AutoCompleteTextView
-	        android:id="@+id/stopSearch"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:singleLine="true"
-	        android:imeOptions="actionGo" />
-	    <Button
-	        android:id="@+id/chooseMap"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="0"
-	        android:text="@string/choose_from_map" />
-	</LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <AutoCompleteTextView
+            android:id="@+id/stopSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:imeOptions="actionGo" />
+        <Button
+            android:id="@+id/chooseMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/choose_from_map" />
+    </LinearLayout>
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"

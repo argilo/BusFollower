@@ -32,11 +32,11 @@ import android.view.MotionEvent;
 import com.google.android.maps.GeoPoint;
 
 public class StopsMapView extends DoubleTapZoomMapView {
-	private static final String TAG = "StopsMapView";
-	private GeoPoint oldCenterPoint = null;
-	private int oldZoomLevel = -1;
-	private List<MapMoveListener> mapMoveListeners = new ArrayList<MapMoveListener>();
-	
+    private static final String TAG = "StopsMapView";
+    private GeoPoint oldCenterPoint = null;
+    private int oldZoomLevel = -1;
+    private List<MapMoveListener> mapMoveListeners = new ArrayList<MapMoveListener>();
+    
     public StopsMapView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
@@ -51,40 +51,40 @@ public class StopsMapView extends DoubleTapZoomMapView {
     
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-    	if (ev.getAction() == MotionEvent.ACTION_UP) {
-    		GeoPoint newCenterPoint = this.getMapCenter();
-    		if (oldCenterPoint == null || oldCenterPoint.getLatitudeE6() != newCenterPoint.getLatitudeE6()
-    				|| oldCenterPoint.getLongitudeE6() != newCenterPoint.getLongitudeE6()) {
-    			Log.d(TAG, "New center point: " + newCenterPoint.getLatitudeE6() + "," + newCenterPoint.getLongitudeE6());
-    			fireMapMoveEvent();
-    			oldCenterPoint = newCenterPoint;
-    		}
-    	}
-    	return super.onTouchEvent(ev);
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            GeoPoint newCenterPoint = this.getMapCenter();
+            if (oldCenterPoint == null || oldCenterPoint.getLatitudeE6() != newCenterPoint.getLatitudeE6()
+                    || oldCenterPoint.getLongitudeE6() != newCenterPoint.getLongitudeE6()) {
+                Log.d(TAG, "New center point: " + newCenterPoint.getLatitudeE6() + "," + newCenterPoint.getLongitudeE6());
+                fireMapMoveEvent();
+                oldCenterPoint = newCenterPoint;
+            }
+        }
+        return super.onTouchEvent(ev);
     }
     
     @Override
     public void dispatchDraw(Canvas canvas) {
-    	super.dispatchDraw(canvas);
-    	int newZoomLevel = getZoomLevel();
-    	if (newZoomLevel != oldZoomLevel) {
-    		Log.d(TAG, "New zoom level: " + newZoomLevel);
-    		fireMapMoveEvent();
-    		oldZoomLevel = newZoomLevel;
-    	}
+        super.dispatchDraw(canvas);
+        int newZoomLevel = getZoomLevel();
+        if (newZoomLevel != oldZoomLevel) {
+            Log.d(TAG, "New zoom level: " + newZoomLevel);
+            fireMapMoveEvent();
+            oldZoomLevel = newZoomLevel;
+        }
     }
     
     public void addMapMoveListener(MapMoveListener listener) {
-    	mapMoveListeners.add(listener);
+        mapMoveListeners.add(listener);
     }
     
     private void fireMapMoveEvent() {
-    	for (MapMoveListener listener : mapMoveListeners) {
-    		listener.onMapMove();
-    	}
+        for (MapMoveListener listener : mapMoveListeners) {
+            listener.onMapMove();
+        }
     }
     
     public interface MapMoveListener {
-    	public void onMapMove();
+        public void onMapMove();
     }
 }

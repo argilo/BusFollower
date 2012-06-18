@@ -42,8 +42,8 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="cancel">Cancel</string>
     <string name="menu_refresh">Refresh</string>
     
-	<string name="direction">Direction:</string>
-	<string name="destination">Destination:</string>
+    <string name="direction">Direction:</string>
+    <string name="destination">Destination:</string>
     <string name="start_time">Start time:</string>
     <string name="estimated_arrival">Estimated arrival:</string>
     <string name="scheduled_arrival">Scheduled arrival:</string>
@@ -52,20 +52,20 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="bus_type">Bus type:</string>
     <string name="last_trip">This is the last trip.</string>
     
-	<plurals name="inMinutes">
-	    <item quantity="one">In %d min</item>
-	    <item quantity="other">In %d mins</item>
-	</plurals>
-    	<plurals name="minutes">
-	    <item quantity="one">%d min</item>
-	    <item quantity="other">%d mins</item>
-	</plurals>
-	<plurals name="minutesAgo">
-	    <item quantity="one">%d min ago</item>
-	    <item quantity="other">%d mins ago</item>
-	</plurals>
-	
-	<string name="length_40">40-foot</string>
+    <plurals name="inMinutes">
+        <item quantity="one">In %d min</item>
+        <item quantity="other">In %d mins</item>
+    </plurals>
+        <plurals name="minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+    <plurals name="minutesAgo">
+        <item quantity="one">%d min ago</item>
+        <item quantity="other">%d mins ago</item>
+    </plurals>
+    
+    <string name="length_40">40-foot</string>
     <string name="length_60">60-foot</string>
     <string name="bike_rack">bike rack</string>
     <string name="hybrid">hybrid</string>
@@ -73,6 +73,6 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     
     <string name="invalid_api_key">Invalid API key</string>
     <string name="unable_to_query_data_source">Unable to query data source</string>
-	<string name="invalid_stop_number">Invalid stop number</string>
-	<string name="invalid_route_number">Invalid route number</string>
+    <string name="invalid_stop_number">Invalid stop number</string>
+    <string name="invalid_route_number">Invalid route number</string>
 </resources>
