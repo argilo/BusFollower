@@ -50,7 +50,7 @@ public class MapChooserActivity extends MapActivity {
     private MyLocationOverlay myLocationOverlay = null;
     
     // Values taken from stops.txt.
-    private static int globalMinLatitude = 45130104; 
+    private static int globalMinLatitude = 45130104;
     private static int globalMaxLatitude = 45519650;
     private static int globalMinLongitude = -76040543;
     private static int globalMaxLongitude = -75342690;
@@ -187,8 +187,8 @@ public class MapChooserActivity extends MapActivity {
             Log.d(TAG, "Before rawQuery");
             long startTime = System.currentTimeMillis();
             Cursor cursor = db.rawQuery("SELECT stop_code, stop_name, stop_lat, stop_lon FROM stops " +
-                    "WHERE stop_lat > ? AND stop_lat < ? AND stop_lon > ? AND stop_lon < ? " + 
-                    "ORDER BY total_departures DESC", 
+                    "WHERE stop_lat > ? AND stop_lat < ? AND stop_lon > ? AND stop_lon < ? " +
+                    "ORDER BY total_departures DESC",
                     new String[] { minLatitude, maxLatitude, minLongitude, maxLongitude });
             Log.d(TAG, "After rawQuery " + (System.currentTimeMillis() - startTime));
             if (cursor != null) {

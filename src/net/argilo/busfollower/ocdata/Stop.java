@@ -77,7 +77,7 @@ public class Stop implements Serializable {
             }
         }
 
-        // Average out the stop locations in case there are multiple entries 
+        // Average out the stop locations in case there are multiple entries
         // (e.g. different platforms at a Transitway station)
         result.moveToFirst();
         int avgLatitude = 0;

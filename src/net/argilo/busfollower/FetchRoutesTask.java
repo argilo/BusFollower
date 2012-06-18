@@ -50,7 +50,7 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
     public FetchRoutesTask(Context context, SQLiteDatabase db) {
         super();
         activityContext = context;
-        applicationContext = context.getApplicationContext(); 
+        applicationContext = context.getApplicationContext();
         this.db = db;
     }
 
@@ -73,7 +73,7 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
                 }
             }
         } catch (IOException e) {
-            errorString = applicationContext.getString(R.string.server_error); 
+            errorString = applicationContext.getString(R.string.server_error);
         } catch (XmlPullParserException e) {
             errorString = applicationContext.getString(R.string.invalid_response);
         } catch (IllegalArgumentException e) {

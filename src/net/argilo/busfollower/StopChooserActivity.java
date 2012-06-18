@@ -86,8 +86,8 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
             }
         }
 
-        adapter = new SimpleCursorAdapter(this, 
-                android.R.layout.simple_dropdown_item_1line, null, 
+        adapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_dropdown_item_1line, null,
                 new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
         stopSearchField.setAdapter(adapter);
         
@@ -121,7 +121,7 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
             @Override
             public boolean onEditorAction(TextView v, int actionId,
                     KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_GO || 
+                if (actionId == EditorInfo.IME_ACTION_GO ||
                         (actionId == EditorInfo.IME_NULL && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
                     fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
                     fetchRoutesTask.execute(stopSearchField.getText().toString());
@@ -229,12 +229,12 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
             if (query.getRoute() == null) {
                 // Stop number heading
                 text1.setTypeface(null, Typeface.BOLD);
-                text1.setText(context.getString(R.string.stop_number) + " " + 
+                text1.setText(context.getString(R.string.stop_number) + " " +
                         query.getStop().getNumber() + " " + query.getStop().getName());
             } else {
                 // Route number
                 text1.setTypeface(null, Typeface.NORMAL);
-                text1.setText(" \u00BB " + context.getString(R.string.route_number) + " " + 
+                text1.setText(" \u00BB " + context.getString(R.string.route_number) + " " +
                         query.getRoute().getNumber() + " " + query.getRoute().getHeading());
             }
             
@@ -292,6 +292,6 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
         // This is called when the last Cursor provided to onLoadFinished()
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
-        adapter.changeCursor(null);       
+        adapter.changeCursor(null);
     }
 }

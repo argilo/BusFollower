@@ -52,7 +52,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
     public FetchTripsTask(Context context, SQLiteDatabase db) {
         super();
         activityContext = context;
-        applicationContext = context.getApplicationContext(); 
+        applicationContext = context.getApplicationContext();
         this.db = db;
     }
     
@@ -67,7 +67,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
         route = query[0].getRoute();
         GetNextTripsForStopResult result = null;
         try {
-            dataFetcher = new OCTranspoDataFetcher(applicationContext, db); 
+            dataFetcher = new OCTranspoDataFetcher(applicationContext, db);
             result = dataFetcher.getNextTripsForStop(stop.getNumber(), route.getNumber());
             errorString = Util.getErrorString(applicationContext, result.getError());
             if (errorString == null) {
@@ -82,7 +82,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
                 }
             }
         } catch (IOException e) {
-            errorString = applicationContext.getString(R.string.server_error); 
+            errorString = applicationContext.getString(R.string.server_error);
         } catch (XmlPullParserException e) {
             errorString = applicationContext.getString(R.string.invalid_response);
         } catch (IllegalArgumentException e) {
