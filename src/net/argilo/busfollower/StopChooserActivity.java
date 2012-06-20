@@ -112,8 +112,10 @@ public class StopChooserActivity extends Activity {
 
                 String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
                 ArrayList<String> params = new ArrayList<String>();
+                boolean validQuery = false;
                 for (String piece : pieces) {
                     if (piece.length() > 0) {
+                        validQuery = true;
                         query += " AND (stop_name LIKE ?";
                         params.add("%" + piece + "%");
                         if (piece.matches("\\d\\d\\d?\\d?")) {
@@ -122,6 +124,9 @@ public class StopChooserActivity extends Activity {
                         }
                         query += ")";
                     }
+                }
+                if (!validQuery) {
+                    return null;
                 }
                 query += " ORDER BY total_departures DESC";
                 Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
