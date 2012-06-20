@@ -24,21 +24,14 @@ import java.util.ArrayList;
 
 import net.argilo.busfollower.ocdata.Stop;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter.CursorToStringConverter;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -51,11 +44,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.FilterQueryProvider;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class StopChooserActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StopChooserActivity extends Activity {
     private static final String TAG = "StopChooserActivity";
     
     private SQLiteDatabase db = null;
@@ -86,9 +82,15 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
             }
         }
 
-        adapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_dropdown_item_1line, null,
-                new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
+        if (android.os.Build.VERSION.SDK_INT < 11) {
+            adapter = new SimpleCursorAdapter(this,
+                    android.R.layout.simple_dropdown_item_1line, null,
+                    new String[] { "stop_desc" }, new int[] { android.R.id.text1 });
+        } else {
+            adapter = new SimpleCursorAdapter(this,
+                    android.R.layout.simple_dropdown_item_1line, null,
+                    new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
+        }
         stopSearchField.setAdapter(adapter);
         
         adapter.setCursorToStringConverter(new CursorToStringConverter() {
@@ -98,22 +100,39 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
             }
         });
         
-        stopSearchField.addTextChangedListener(new TextWatcher() {
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
-            public void afterTextChanged(Editable s) {
-                // Do nothing.
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing.
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (stopSearchField.enoughToFilter()) {
-                    getSupportLoaderManager().restartLoader(0, null, StopChooserActivity.this);
+            public Cursor runQuery(CharSequence constraint) {
+                Log.d(TAG, "Loading cursor in runQuery().");
+                if (constraint == null) {
+                    return null;
                 }
+                String constraintStr = constraint.toString();
+                String[] pieces = constraintStr.split(" ");
+
+                String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
+                ArrayList<String> params = new ArrayList<String>();
+                for (String piece : pieces) {
+                    if (piece.length() > 0) {
+                        query += " AND (stop_name LIKE ?";
+                        params.add("%" + piece + "%");
+                        if (piece.matches("\\d\\d\\d?\\d?")) {
+                            query += " OR stop_code LIKE ?";
+                            params.add(piece + "%");
+                        }
+                        query += ")";
+                    }
+                }
+                query += " ORDER BY total_departures DESC";
+                Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    Log.d(TAG, "Done loading cursor.");
+                    return cursor;
+                }
+
+                Log.d(TAG, "Cursor was null.");
+                return null;
             }
         });
         
@@ -164,10 +183,6 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
                 }
             }
         });
-        
-        // Prepare the loader.  Either re-connect with an existing one,
-        // or start a new one.
-        getSupportLoaderManager().initLoader(0, null, this);
     }
     
     @Override
@@ -240,58 +255,5 @@ public class StopChooserActivity extends FragmentActivity implements LoaderManag
             
             return v;
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // This is called when a new Loader needs to be created.  This
-        // sample only has one Loader, so we don't care about the ID.
-        return new CursorLoader(this) {
-            @Override
-            public Cursor loadInBackground() {
-                Log.d(TAG, "Loading cursor in background.");
-                String constraintStr = stopSearchField.getText().toString();
-                String[] pieces = constraintStr.split(" ");
-
-                String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
-                ArrayList<String> params = new ArrayList<String>();
-                for (String piece : pieces) {
-                    if (piece.length() > 0) {
-                        query += " AND (stop_name LIKE ?";
-                        params.add("%" + piece + "%");
-                        if (piece.matches("\\d\\d\\d?\\d?")) {
-                            query += " OR stop_code LIKE ?";
-                            params.add(piece + "%");
-                        }
-                        query += ")";
-                    }
-                }
-                query += " ORDER BY total_departures DESC";
-                Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    Log.d(TAG, "Done loading cursor in background.");
-                    return cursor;
-                }
-
-                Log.d(TAG, "Cursor was null.");
-                return null;
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Swap the new cursor in.  (The framework will take care of closing the
-        // old cursor once we return.)
-        adapter.changeCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        // This is called when the last Cursor provided to onLoadFinished()
-        // above is about to be closed.  We need to make sure we are no
-        // longer using it.
-        adapter.changeCursor(null);
     }
 }
