@@ -47,6 +47,8 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="start_time">Temps de d&#233;part:</string>
     <string name="estimated_arrival">Arriv&#233;e estim&#233;e:</string>
     <string name="scheduled_arrival">Arriv&#233;e pr&#233;vue:</string>
+    <string name="estimated">estim&#233;e</string>
+    <string name="scheduled">pr&#233;vue</string>
     <string name="bus_speed">Vitesse:</string>
     <string name="kph">kmh</string>
     <string name="bus_type">Type d\'autobus:</string>

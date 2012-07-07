@@ -250,7 +250,7 @@ public class BusFollowerActivity extends MapActivity {
                 TextView text1 = (TextView) v.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) v.findViewById(android.R.id.text2);
                 ImageView busPin = (ImageView) v.findViewById(R.id.busPin);
-                text1.setText(getHumanReadableTime(trip.getAdjustedScheduleTime()) + (trip.isEstimated() ? " (estimated)" : " (scheduled)"));
+                text1.setText(getHumanReadableTime(trip.getAdjustedScheduleTime()) + " (" + context.getResources().getString(trip.isEstimated() ? R.string.estimated : R.string.scheduled) + ")");
                 text2.setText("Destination: " + trip.getDestination());
                 if (trip.getGeoPoint() == null) {
                     busPin.setImageDrawable(null);
