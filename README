@@ -49,6 +49,14 @@ available at https://github.com/argilo/BusFollower.  Issues are
 tracked at https://github.com/argilo/BusFollower/issues.  Bug reports
 and code contributions are welcome!
 
+I would like to thank the following contributors:
+* Alnoor Allidina - beta testing, bug reporting
+* Greg Fletcher - beta testing, French translation
+* Sonja Kisa - French translation
+* Matt McLauchlin - French translation
+* Karen Schindel - beta testing
+* Teodora Alexandrova - beta testing
+
 Build dependencies:
 * Android SDK 15
 * Ant
