@@ -56,6 +56,34 @@ I would like to thank the following contributors:
 * Karen Schindel - beta testing
 * Teodora Alexandrova - beta testing
 
+-----
+
+Tu en as assez de geler en attendant l'autobus en retard? Cette
+application te permet de rester au chaud jusqu'à ce que l'autobus soit
+proche. Elle affiche où se trouvent les autobus d'Ottawa et quand ils
+devraient arriver selon les données GPS fournies par OC Transpo. 
+
+Pour commencer, cherche un arrêt par numéro ou par nom ou sélectionne
+un arrêt sur le plan. Ensuite choisis le circuit désiré et voilà les
+infos pour les trois prochaines arrivées à cet arrêt. Tu peux
+rafraîchir les résultats n'importe quand pour mettre à jour. Pour plus
+de renseignements sur un autobus, tape sur celui-ci.
+
+Prière de noter que OC Transpo ne fournit pas encore les infos GPS sur
+tous ses autobus. Tu verras seulement les renseignements GPS pour les
+autobus qui ont commencé leur trajet vers cet arrêt. C'est une
+limitation des systèmes d'OC Transpo et il n'y a pas grand-chose que
+mon application puisse faire à cet égard. Lorsque les coordonnées GPS
+ne sont pas disponibles, les heures de l'horaire régulier sont
+affichées au lieu des heures prévues.
+
+Ceci est un logiciel libre publié sous la licence GPL. Le code source
+est disponible à https://github.com/argilo/BusFollower. Les problèmes
+sont suivis à https://github.com/argilo/BusFollower/issues. Les relevés
+de bogues et les contributions de code sont appréciés!
+
+-----
+
 Build dependencies:
 * Android SDK 15
 * Ant
