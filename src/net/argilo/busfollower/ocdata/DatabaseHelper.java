@@ -34,15 +34,18 @@ import android.util.Log;
 
 public class DatabaseHelper {
     private static final String TAG = "DatabaseHelper";
-    private static final String DATABASE_FOLDER = "/data/data/net.argilo.busfollower/databases";
-    private static final String DATABASE_PATH = DATABASE_FOLDER + "/db";
     private static final String DATABASE_PREFS = "DbPrefsFile";
     private static final int DATABASE_VERSION = 13; // Increment this whenever the DB is changed
 
     Context context;
+    private final String DATABASE_FOLDER;
+    private final String DATABASE_PATH;
     
     public DatabaseHelper(Context context) {
         this.context = context;
+        String filesDir = context.getFilesDir().getPath();
+        DATABASE_FOLDER = filesDir.substring(0, filesDir.lastIndexOf("/")) + "/databases";
+        DATABASE_PATH = DATABASE_FOLDER + "/db";
     }
     
     public SQLiteDatabase getReadableDatabase() throws SQLiteException {
