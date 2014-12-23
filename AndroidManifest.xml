@@ -22,8 +22,8 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.argilo.busfollower"
-    android:versionCode="7"
-    android:versionName="1.1.4" >
+    android:versionCode="8"
+    android:versionName="1.1.5" >
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="19" />
     <uses-permission android:name="android.permission.INTERNET" />
