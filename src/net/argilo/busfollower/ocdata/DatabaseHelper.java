@@ -35,7 +35,7 @@ import android.util.Log;
 public class DatabaseHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_PREFS = "DbPrefsFile";
-    private static final int DATABASE_VERSION = 14; // Increment this whenever the DB is changed
+    private static final int DATABASE_VERSION = 15; // Increment this whenever the DB is changed
 
     Context context;
     private final String DATABASE_FOLDER;
