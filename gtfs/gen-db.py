@@ -92,6 +92,11 @@ for stop_id, stop in schedule.stops.items():
               total_departures]
     c.execute('INSERT INTO stops VALUES (?,?,?,?,?,?)', values)
 
+    # Warn about unparseable stop codes so we can check for problems.
+    if values[1] == None:
+        print('Warning: Couldn\'t parse stop code "' + stop.stop_code + \
+              '" (' + values[2] + ')')
+
 conn.commit()
 c.close()
 print('Created database "db".')
