@@ -31,7 +31,9 @@ public class StopOverlayItem extends OverlayItem {
     private Stop stop;
 
     public StopOverlayItem(Stop stop, Context context) {
-        super(stop.getLocation(), context.getString(R.string.stop_number) + " " + stop.getNumber(), stop.getName());
+        super(stop.getLocation(),
+                stop.getNumber() == null ? stop.getName() : context.getString(R.string.stop_number) + " " + stop.getNumber(),
+                stop.getNumber() == null ? context.getString(R.string.no_departures) : stop.getName());
         this.context = context;
         this.stop = stop;
     }

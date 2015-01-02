@@ -36,7 +36,8 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="server_error">Le serveur ne peut pas &#234;tre atteint. S\'il vous pla&#238;t v&#233;rifier votre connexion r&#233;seau.</string>
     <string name="invalid_response">Le serveur a renvoy&#233; une r&#233;ponse inattendue. S\'il vous pla&#238;t r&#233;essayer plus tard.</string>
     <string name="no_trips">Il n\'y a pas de voyage &#224; venir pour ce circuit.</string>
-    <string name="no_routes">Il n\'existe aucun circuit r&#233;gulier pour cet arr&#234;t</string>
+    <string name="no_routes">Il n\'existe aucun circuit r&#233;gulier pour cet arr&#234;t.</string>
+    <string name="no_departures">Il n\'y a pas de d&#233;parts de cet arr&#234;t.</string>
     <string name="ok">Correct</string>
     <string name="open">Ouvrir</string>
     <string name="cancel">Annuler</string>
