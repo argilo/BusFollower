@@ -63,7 +63,7 @@ public class OCTranspoDataFetcher {
         validateRouteNumber(routeNumber);
         
         httpClient = new DefaultHttpClient(getHttpParams());
-        HttpPost post = new HttpPost("https://api.octranspo1.com/v1.1/GetNextTripsForStop");
+        HttpPost post = new HttpPost("http://api.octranspo1.com/v1.1/GetNextTripsForStop");
         
         List<NameValuePair> params = new ArrayList<NameValuePair>(4);
         params.add(new BasicNameValuePair("appID", context.getString(R.string.oc_transpo_application_id)));
@@ -93,7 +93,7 @@ public class OCTranspoDataFetcher {
         validateStopNumber(stopNumber);
 
         httpClient = new DefaultHttpClient(getHttpParams());
-        HttpPost post = new HttpPost("https://api.octranspo1.com/v1.1/GetRouteSummaryForStop");
+        HttpPost post = new HttpPost("http://api.octranspo1.com/v1.1/GetRouteSummaryForStop");
         
         List<NameValuePair> params = new ArrayList<NameValuePair>(3);
         params.add(new BasicNameValuePair("appID", context.getString(R.string.oc_transpo_application_id)));
