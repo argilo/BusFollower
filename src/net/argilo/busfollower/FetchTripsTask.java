@@ -74,7 +74,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
                 // Check whether there are any trips to display, since there's no
                 // point going to the map screen if there aren't.
                 for (RouteDirection rd : result.getRouteDirections()) {
-                    if (rd.getDirection().equals(route.getDirection())) {
+                    if (rd.matchesDirection(route)) {
                         if (rd.getTrips().isEmpty()) {
                             errorString = applicationContext.getString(R.string.no_trips);
                         }

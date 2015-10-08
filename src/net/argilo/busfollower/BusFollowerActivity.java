@@ -191,7 +191,7 @@ public class BusFollowerActivity extends MapActivity {
         }
 
         for (RouteDirection rd : result.getRouteDirections()) {
-            if (rd.getDirection().equals(route.getDirection())) {
+            if (rd.matchesDirection(route)) {
                 tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, R.layout.tripitem, rd.getTrips()));
 
                 int number = 0;

@@ -110,4 +110,12 @@ public class RouteDirection implements Serializable {
     public ArrayList<Trip> getTrips() {
         return trips;
     }
+
+    public boolean matchesDirection(Route route) {
+        if (direction.length() > 0) {
+            return direction.equals(route.getDirection());
+        } else {
+            return routeLabel.equals(route.getHeading());
+        }
+    }
 }
