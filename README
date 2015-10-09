@@ -1,5 +1,5 @@
 #
-# Copyright 2012-2014 Clayton Smith
+# Copyright 2012-2015 Clayton Smith
 #
 # This file is part of Ottawa Bus Follower.
 #
@@ -91,6 +91,6 @@ Build dependencies:
 * Python 2.x
 * SQLite
 * GoogleTransitDataFeed:
-    http://code.google.com/p/googletransitdatafeed/wiki/TransitFeedDistribution
+    https://github.com/google/transitfeed/wiki
 * GTFS data from OC Transpo:
     http://www.octranspo1.com/files/google_transit.zip
