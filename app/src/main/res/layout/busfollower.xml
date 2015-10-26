@@ -26,7 +26,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     android:orientation="vertical" >
 
     <ListView
-        android:id="@+android:id/tripList"
+        android:id="@+id/tripList"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="false" />

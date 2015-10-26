@@ -53,7 +53,7 @@ def normalizeStopName(stopName):
     stopName = stopName.replace(u"Œ", "OE")
     return stopName
 
-conn = sqlite3.connect(os.path.join('assets','db'))
+conn = sqlite3.connect(os.path.join('app', 'src', 'main', 'assets', 'db'))
 c = conn.cursor()
 
 c.execute('DROP TABLE IF EXISTS android_metadata')

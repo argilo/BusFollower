@@ -17,18 +17,27 @@
 # along with Ottawa Bus Follower; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-/bin/
-/gen/
+.gradle
 /local.properties
 /secure.properties
-/res/values/secure-strings.xml
-/.project
-/.classpath
-/.settings
-/lint.xml
+/.idea/workspace.xml
+/.idea/libraries
+.idea/tasks.xml
+.idea/.name
+.idea/compiler.xml
+.idea/copyright/profiles_settings.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/scopes/scope_settings.xml
+.idea/vcs.xml
+/*/build/
+/app/src/main/res/values/secure-strings.xml
 pin_*.png
 stop.png
 launcher_icon.png
 /google-play-icon.png
 /gtfs/*.zip
-/assets/db
+/app/src/main/assets/db
+*.iml
+*.apk
