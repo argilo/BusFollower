@@ -20,23 +20,16 @@
 
 package net.argilo.busfollower.ocdata;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import net.argilo.busfollower.R;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -50,8 +43,7 @@ public class OCTranspoDataFetcher {
     
     private Context context;
     private SQLiteDatabase db;
-    private HttpClient httpClient = null;
-    
+
     public OCTranspoDataFetcher(Context context, SQLiteDatabase db) {
         this.context = context;
         this.db = db;
@@ -62,79 +54,77 @@ public class OCTranspoDataFetcher {
         validateStopNumber(stopNumber);
         validateRouteNumber(routeNumber);
         
-        httpClient = new DefaultHttpClient(getHttpParams());
-        HttpPost post = new HttpPost("http://api.octranspo1.com/v1.1/GetNextTripsForStop");
-        
-        List<NameValuePair> params = new ArrayList<NameValuePair>(4);
-        params.add(new BasicNameValuePair("appID", context.getString(R.string.oc_transpo_application_id)));
-        params.add(new BasicNameValuePair("apiKey", context.getString(R.string.oc_transpo_application_key)));
-        params.add(new BasicNameValuePair("routeNo", routeNumber));
-        params.add(new BasicNameValuePair("stopNo", stopNumber));
-        post.setEntity(new UrlEncodedFormEntity(params));
-        
-        HttpResponse response = httpClient.execute(post);
-        
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        XmlPullParser xpp = factory.newPullParser();
+        URL url = new URL("http://api.octranspo1.com/v1.1/GetNextTripsForStop");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        try {
+            String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
+                            "&apiKey=" + context.getString(R.string.oc_transpo_application_key) +
+                            "&routeNo=" + routeNumber +
+                            "&stopNo=" + stopNumber;
+            sendPost(conn, params);
 
-        InputStream in = response.getEntity().getContent();
-        xpp.setInput(in, "UTF-8");
-        xpp.next(); // <soap:Envelope>
-        xpp.next(); //   <soap:Body>
-        xpp.next(); //     <GetRouteSummaryForStopResponse>
-        xpp.next(); //       <GetRouteSummaryForStopResult>
-        GetNextTripsForStopResult result = new GetNextTripsForStopResult(context, db, xpp, stopNumber);
-        in.close();
-        return result;
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+            XmlPullParser xpp = factory.newPullParser();
+
+            InputStream in = conn.getInputStream();
+            xpp.setInput(in, "UTF-8");
+            xpp.next(); // <soap:Envelope>
+            xpp.next(); //   <soap:Body>
+            xpp.next(); //     <GetRouteSummaryForStopResponse>
+            xpp.next(); //       <GetRouteSummaryForStopResult>
+            GetNextTripsForStopResult result = new GetNextTripsForStopResult(context, db, xpp, stopNumber);
+            in.close();
+            return result;
+        } finally {
+            conn.disconnect();
+        }
     }
     
     public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
         validateStopNumber(stopNumber);
 
-        httpClient = new DefaultHttpClient(getHttpParams());
-        HttpPost post = new HttpPost("http://api.octranspo1.com/v1.1/GetRouteSummaryForStop");
-        
-        List<NameValuePair> params = new ArrayList<NameValuePair>(3);
-        params.add(new BasicNameValuePair("appID", context.getString(R.string.oc_transpo_application_id)));
-        params.add(new BasicNameValuePair("apiKey", context.getString(R.string.oc_transpo_application_key)));
-        params.add(new BasicNameValuePair("stopNo", stopNumber));
-        post.setEntity(new UrlEncodedFormEntity(params));
-        
-        HttpResponse response = httpClient.execute(post);
-        
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        XmlPullParser xpp = factory.newPullParser();
+        URL url = new URL("http://api.octranspo1.com/v1.1/GetRouteSummaryForStop");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        try {
+            String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
+                    "&apiKey=" + context.getString(R.string.oc_transpo_application_key) +
+                    "&stopNo=" + stopNumber;
+            sendPost(conn, params);
 
-        InputStream in = response.getEntity().getContent();
-        xpp.setInput(in, "UTF-8");
-        xpp.next(); // <soap:Envelope>
-        xpp.next(); //   <soap:Body>
-        xpp.next(); //     <GetRouteSummaryForStopResponse>
-        xpp.next(); //       <GetRouteSummaryForStopResult>
-        GetRouteSummaryForStopResult result = new GetRouteSummaryForStopResult(xpp);
-        in.close();
-        return result;
-    }
-    
-    public void abortRequest() {
-        if (httpClient != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // This must not be done on the main thread.
-                    httpClient.getConnectionManager().shutdown();
-                }
-            }).start();
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+            XmlPullParser xpp = factory.newPullParser();
+
+            InputStream in = conn.getInputStream();
+            xpp.setInput(in, "UTF-8");
+            xpp.next(); // <soap:Envelope>
+            xpp.next(); //   <soap:Body>
+            xpp.next(); //     <GetRouteSummaryForStopResponse>
+            xpp.next(); //       <GetRouteSummaryForStopResult>
+            GetRouteSummaryForStopResult result = new GetRouteSummaryForStopResult(xpp);
+            in.close();
+            return result;
+        } finally {
+            conn.disconnect();
         }
     }
     
-    private HttpParams getHttpParams() {
-        HttpParams httpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_CONNECTION);
-        HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_SOCKET);
-        return httpParams;
+    public void abortRequest() {
+        // TODO: Re-implement
+    }
+
+    private void sendPost(HttpURLConnection conn, String params) throws IOException {
+        conn.setConnectTimeout(TIMEOUT_CONNECTION);
+        conn.setReadTimeout(TIMEOUT_SOCKET);
+        conn.setRequestMethod("POST");
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+
+        OutputStream os = conn.getOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+        writer.write(params);
+        writer.close();
     }
     
     private void validateStopNumber(String stopNumber) {
