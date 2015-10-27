@@ -29,7 +29,7 @@ import java.util.TimeZone;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.google.android.maps.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.util.Log;
 
@@ -172,11 +172,11 @@ public class Trip implements Serializable {
         return gpsSpeed;
     }
     
-    public GeoPoint getGeoPoint() {
+    public LatLng getLocation() {
         if (latitude == Integer.MIN_VALUE || longitude == Integer.MIN_VALUE) {
             return null;
         } else {
-            return new GeoPoint(latitude, longitude);
+            return new LatLng(latitude / 1e6, longitude / 1e6);
         }
     }
     

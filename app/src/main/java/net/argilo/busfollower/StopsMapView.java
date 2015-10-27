@@ -29,7 +29,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.google.android.maps.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
 
 public class StopsMapView extends DoubleTapZoomMapView {
     private static final String TAG = "StopsMapView";

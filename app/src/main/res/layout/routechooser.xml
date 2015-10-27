@@ -32,7 +32,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
         android:text="@string/choose_route" />
 
     <ListView
-        android:id="@+android:id/list"
+        android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:drawSelectorOnTop="false" />

@@ -31,11 +31,9 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="false" />
 
-    <net.argilo.busfollower.DoubleTapZoomMapView
-        android:id="@+id/mapView"
-        android:clickable="true"
+    <fragment class="com.google.android.gms.maps.MapFragment"
+        android:id="@+id/map"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:apiKey="@string/google_maps_api_key" />
+        android:layout_height="fill_parent" />
 
 </LinearLayout>

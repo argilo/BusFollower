@@ -28,7 +28,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.android.maps.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
 
 public class Stop implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -109,8 +109,8 @@ public class Stop implements Serializable {
         return name;
     }
     
-    public GeoPoint getLocation() {
-        return new GeoPoint(latitude, longitude);
+    public LatLng getLocation() {
+        return new LatLng(latitude / 1e6, longitude / 1e6);
     }
     
     @Override
