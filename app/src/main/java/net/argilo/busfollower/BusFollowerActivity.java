@@ -30,12 +30,13 @@ import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
@@ -44,8 +45,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -64,7 +65,7 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
     private static final String TAG = "BusFollowerActivity";
     // The zoom level to use when there's only one point to display.
     private static final int MIN_ZOOM = 10000;
-    boolean isZoomAndCenterRequired = true;
+    boolean zoomAndCenter = true;
     
     private SQLiteDatabase db;
     private static FetchTripsTask task;
@@ -114,15 +115,15 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
 
             if (result != null) {
                 // A configuration change has occurred. Don't reset zoom & center.
-                isZoomAndCenterRequired = false;
+                zoomAndCenter = false;
             } else {
                 // Zoom to OC Transpo service area if it's our first time.
-                isZoomAndCenterRequired = true;
+                zoomAndCenter = true;
             }
         } else {
             RecentQueryList.addOrUpdateRecent(this, result.getStop(), route);
             // We're arriving from another activity, so set zoom & center.
-            isZoomAndCenterRequired = true;
+            zoomAndCenter = true;
         }
         
         setTitle(getString(R.string.stop_number) + " " + result.getStop().getNumber() +
@@ -176,6 +177,8 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
         double minLongitude = Double.MAX_VALUE;
         double maxLongitude = Double.MIN_VALUE;
         
+        map.clear();
+
         Stop stop = result.getStop();
         LatLng stopLocation = stop.getLocation();
         if (stopLocation != null) {
@@ -205,32 +208,33 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
                         maxLongitude = Math.max(maxLongitude, point.longitude);
 
                         map.addMarker(new MarkerOptions()
-                                .icon(getNumberedPin(number))
-                                .anchor(0.5f, 1.0f)
-                                .position(point)
-                                .title(rd.getRouteNumber() + " " + rd.getRouteLabel())
-                                .snippet(Util.getBusInformationString(this, rd, trip))
+                                        .icon(BitmapDescriptorFactory.fromResource(getNumberedPin(number)))
+                                        .anchor(0.5f, 1.0f)
+                                        .position(point)
+                                        .title(rd.getRouteNumber() + " " + rd.getRouteLabel())
+                                        .snippet(trip.getDestination())
                         );
                     }
                 }
             }
         }
-        if (itemizedOverlay.size() > 0) {
-            mapOverlays.add(itemizedOverlay);
-            
-            if (zoomAndCenter) {
-                MapController mapController = mapView.getController();
-                mapController.zoomToSpan(Math.max(MIN_ZOOM, (maxLatitude - minLatitude) * 110 / 100), Math.max(MIN_ZOOM, (maxLongitude - minLongitude) * 110 / 100));
-                mapController.setCenter(new GeoPoint((maxLatitude + minLatitude) / 2, (maxLongitude + minLongitude) / 2));
-            }
+
+        if (zoomAndCenter) {
+            final LatLngBounds bounds = new LatLngBounds(new LatLng (minLatitude, minLongitude), new LatLng (maxLatitude, maxLongitude));
+            map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
+                }
+            });
         }
-        mapView.invalidate();
     }
     
     public void setResult(GetNextTripsForStopResult result) {
         this.result = result;
         // The user requested a refresh. Don't reset zoom & center.
-        displayGetNextTripsForStopResult(false);
+        zoomAndCenter = false;
+        displayGetNextTripsForStopResult();
     }
 
     @Override
@@ -239,15 +243,13 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
         displayGetNextTripsForStopResult();
     }
 
-    private BitmapDescriptor getNumberedPin(int number) {
-        int pinId;
+    private int getNumberedPin(int number) {
         try {
-            pinId = R.drawable.class.getField("pin_red_" + number).getInt(null);
+            return R.drawable.class.getField("pin_red_" + number).getInt(null);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't find numbered pin.");
-            pinId = R.drawable.pin_red;
+            return R.drawable.pin_red;
         }
-        return BitmapDescriptorFactory.fromResource(pinId);
     }
 
     private class TripAdapter extends ArrayAdapter<Trip> {
@@ -278,7 +280,7 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
                 if (trip.getLocation() == null) {
                     busPin.setImageDrawable(null);
                 } else {
-                    busPin.setImageDrawable(Util.getNumberedPin(BusFollowerActivity.this, position + 1));
+                    busPin.setImageDrawable(ContextCompat.getDrawable(BusFollowerActivity.this, getNumberedPin(position + 1)));
                 }
             }
             return v;

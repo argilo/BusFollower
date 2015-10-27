@@ -23,6 +23,8 @@ package net.argilo.busfollower;
 import java.util.List;
 
 import net.argilo.busfollower.ocdata.Stop;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,13 +36,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
-
-public class MapChooserActivity extends MapActivity {
+public class MapChooserActivity extends Activity {
+/*
     private static final String TAG = "MapChooserActivity";
     private static final int MIN_ZOOM_LEVEL = 17; // The minimum zoom level at which stops will be displayed.
     
@@ -54,8 +51,9 @@ public class MapChooserActivity extends MapActivity {
     private static int globalMaxLatitude = 45519650;
     private static int globalMinLongitude = -76040543;
     private static int globalMaxLongitude = -75342690;
-
+*/
     /** Called when the activity is first created. */
+/*
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,4 +229,5 @@ public class MapChooserActivity extends MapActivity {
     public void setFetchRoutesTask(FetchRoutesTask task) {
         MapChooserActivity.task = task;
     }
+*/
 }
