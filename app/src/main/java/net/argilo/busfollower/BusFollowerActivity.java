@@ -32,20 +32,20 @@ import net.argilo.busfollower.ocdata.Trip;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,11 +61,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class BusFollowerActivity extends Activity implements OnMapReadyCallback {
+public class BusFollowerActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "BusFollowerActivity";
     // The zoom level to use when there's only one point to display.
     private static final int MIN_ZOOM = 10000;
-    boolean zoomAndCenter = true;
+    private boolean zoomAndCenter = true;
     
     private SQLiteDatabase db;
     private static FetchTripsTask task;
@@ -75,7 +75,6 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
     private GoogleMap map = null;
     private ListView tripList = null;
     
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +128,7 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
         setTitle(getString(R.string.stop_number) + " " + result.getStop().getNumber() +
                 ", " + getString(R.string.route_number) + " " + route.getNumber() + " " + route.getHeading());
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -276,7 +275,7 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
                 TextView text2 = (TextView) v.findViewById(android.R.id.text2);
                 ImageView busPin = (ImageView) v.findViewById(R.id.busPin);
                 text1.setText(getHumanReadableTime(trip.getAdjustedScheduleTime()) + " (" + context.getResources().getString(trip.isEstimated() ? R.string.estimated : R.string.scheduled) + ")");
-                text2.setText("Destination: " + trip.getDestination());
+                text2.setText(context.getString(R.string.destination) + " " + trip.getDestination());
                 if (trip.getLocation() == null) {
                     busPin.setImageDrawable(null);
                 } else {
@@ -287,7 +286,7 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
         }
 
         private String getHumanReadableTime(Date date) {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             
             // Relative time
             long difference = date.getTime() - Calendar.getInstance().getTimeInMillis();

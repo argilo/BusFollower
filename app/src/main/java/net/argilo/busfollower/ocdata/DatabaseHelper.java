@@ -37,7 +37,7 @@ public class DatabaseHelper {
     private static final String DATABASE_PREFS = "DbPrefsFile";
     private static final int DATABASE_VERSION = 18; // Increment this whenever the DB is changed
 
-    Context context;
+    private Context context;
     private final String DATABASE_FOLDER;
     private final String DATABASE_PATH;
     
@@ -87,7 +87,7 @@ public class DatabaseHelper {
             
             SharedPreferences.Editor editor = dbPrefs.edit();
             editor.putInt("dbVersion", DATABASE_VERSION);
-            editor.commit();
+            editor.apply();
             Log.d(TAG, "Wrote new database version number to preferences file.");
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Clayton Smith
+ * Copyright 2012-2015 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -38,13 +38,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
-    Context activityContext = null;
-    Context applicationContext = null;
-    SQLiteDatabase db = null;
-    ProgressDialog progressDialog = null;
+    private Context activityContext = null;
+    private Context applicationContext = null;
+    private SQLiteDatabase db = null;
+    private ProgressDialog progressDialog = null;
     private Stop stop = null;
     private String errorString = null;
-    OCTranspoDataFetcher dataFetcher = null;
+    private OCTranspoDataFetcher dataFetcher = null;
     private boolean finished = false;
     
     public FetchRoutesTask(Context context, SQLiteDatabase db) {

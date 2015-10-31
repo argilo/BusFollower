@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Clayton Smith
+ * Copyright 2012-2015 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -55,7 +55,7 @@ public class Stop implements Serializable {
         } else {
             // There are multiple names for this stop, so try to pick out
             // what's common to all of them.
-            ArrayList<String> namesSoFar = new ArrayList<String>();
+            ArrayList<String> namesSoFar = new ArrayList<>();
             while (!result.isAfterLast()) {
                 String currentName = result.getString(0);
                 currentName = currentName.replaceAll("  ", " ");
@@ -120,9 +120,18 @@ public class Stop implements Serializable {
         }
         if (other instanceof Stop) {
             Stop otherStop = (Stop) other;
-            return number.equals(otherStop.number);
+            if (number == null) {
+                return name.equals(otherStop.name);
+            } else {
+                return number.equals(otherStop.number);
+            }
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return (number == null) ? name.hashCode() : number.hashCode();
     }
 }

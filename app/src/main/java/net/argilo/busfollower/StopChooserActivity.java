@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Clayton Smith
+ * Copyright 2012-2015 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -61,7 +61,6 @@ public class StopChooserActivity extends Activity {
     private SimpleCursorAdapter adapter = null;
     private AutoCompleteTextView stopSearchField = null;
     
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +110,7 @@ public class StopChooserActivity extends Activity {
                 String[] pieces = constraintStr.split(" ");
 
                 String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
-                ArrayList<String> params = new ArrayList<String>();
+                ArrayList<String> params = new ArrayList<>();
                 boolean validQuery = false;
                 for (String piece : pieces) {
                     if (piece.length() > 0) {

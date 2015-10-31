@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Clayton Smith
+ * Copyright 2012-2015 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -42,7 +42,6 @@ public class RouteChooserActivity extends ListActivity {
     private Stop stop;
     private ArrayList<Route> routes;
         
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +55,7 @@ public class RouteChooserActivity extends ListActivity {
         GetRouteSummaryForStopResult result = (GetRouteSummaryForStopResult) getIntent().getSerializableExtra("result");
         routes = result.getRoutes();
         
-        setListAdapter(new ArrayAdapter<Route>(this, android.R.layout.simple_list_item_1, routes));
+        setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, routes));
         setTitle(getString(R.string.stop_number) + " " + stop.getNumber() +
                 (stop.getName() != null ? " " + stop.getName() : ""));
         

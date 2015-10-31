@@ -25,7 +25,6 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     android:versionCode="14"
     android:versionName="1.1.11" >
 
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="23" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -33,7 +32,9 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <application
         android:name=".BusFollowerApplication"
         android:icon="@drawable/launcher_icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backupscheme" >
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

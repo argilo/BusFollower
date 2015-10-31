@@ -41,7 +41,7 @@ public class RouteDirection implements Serializable {
     private String direction = null;
     private String error = null;
     private String requestProcessingTime = null;
-    private ArrayList<Trip> trips = new ArrayList<Trip>();
+    private ArrayList<Trip> trips = new ArrayList<>();
 
     public RouteDirection(XmlPullParser xpp) throws XmlPullParserException, IOException {
         while (xpp.next() == XmlPullParser.START_TAG) {

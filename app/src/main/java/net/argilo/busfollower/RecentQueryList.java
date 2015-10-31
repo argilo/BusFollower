@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Clayton Smith
+ * Copyright 2012-2015 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -20,7 +20,6 @@
 
 package net.argilo.busfollower;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -47,7 +46,7 @@ public class RecentQueryList {
             in.close();
         } catch (Exception e) {
             // Start a new recent list.
-            recents = new ArrayList<RecentQuery>();
+            recents = new ArrayList<>();
         }
         
         return recents;
@@ -82,9 +81,6 @@ public class RecentQueryList {
             ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(FILENAME, Context.MODE_PRIVATE));
             out.writeObject(recents);
             out.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

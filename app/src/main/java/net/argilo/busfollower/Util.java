@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Clayton Smith
+ * Copyright 2012-2015 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -20,7 +20,6 @@
 
 package net.argilo.busfollower;
 
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,22 +32,15 @@ import net.argilo.busfollower.ocdata.Trip;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 public class Util {
     private static final String TAG = "Util";
     
-    public static void setDisplayHomeAsUpEnabled(Context context, boolean bool) {
-        try {
-            Class<?> actionBarClass = Class.forName("android.app.ActionBar");
-            Method getActionBarMethod = Activity.class.getMethod("getActionBar");
-            Object actionBar = getActionBarMethod.invoke(context);
-            Method setDisplayHomeAsUpEnabledMethod = actionBarClass.getMethod("setDisplayHomeAsUpEnabled", Boolean.TYPE);
-            setDisplayHomeAsUpEnabledMethod.invoke(actionBar, bool);
-        } catch (Exception e) {
-            // We're not running honeycomb or later.
+    public static void setDisplayHomeAsUpEnabled(Activity activity, boolean bool) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            activity.getActionBar().setDisplayHomeAsUpEnabled(bool);
         }
     }
     
@@ -65,7 +57,7 @@ public class Util {
     }
     
     private static String getBusTypeString(Context context, BusType busType) {
-        ArrayList<String> pieces = new ArrayList<String>();
+        ArrayList<String> pieces = new ArrayList<>();
         
         switch (busType.getLength()) {
         case 40:
@@ -92,7 +84,7 @@ public class Util {
     }
 
     private static String getHumanReadableTime(Context context, Date date) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         DateFormat formatter = android.text.format.DateFormat.getTimeFormat(context);
         formatter.setTimeZone(TimeZone.getTimeZone("America/Toronto"));
         result.append(formatter.format(date));

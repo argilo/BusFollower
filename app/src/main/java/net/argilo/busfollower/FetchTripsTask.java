@@ -40,13 +40,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsForStopResult> {
-    Context activityContext = null;
-    Context applicationContext = null;
-    SQLiteDatabase db = null;
-    ProgressDialog progressDialog = null;
+    private Context activityContext = null;
+    private Context applicationContext = null;
+    private SQLiteDatabase db = null;
+    private ProgressDialog progressDialog = null;
     private Route route = null;
     private String errorString = null;
-    OCTranspoDataFetcher dataFetcher = null;
+    private OCTranspoDataFetcher dataFetcher = null;
     private boolean finished = false;
     
     public FetchTripsTask(Context context, SQLiteDatabase db) {

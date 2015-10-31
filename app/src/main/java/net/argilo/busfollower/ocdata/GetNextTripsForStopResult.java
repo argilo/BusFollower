@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Clayton Smith
+ * Copyright 2012-2015 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -33,12 +33,12 @@ import android.util.Log;
 
 public class GetNextTripsForStopResult implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final String TAG = "GetNextTripForStopResult";
+    private static final String TAG = "GetNextTripFSR";
 
     private Stop stop = null;
     private String stopLabel = null;
     private String error = null;
-    private ArrayList<RouteDirection> routeDirections = new ArrayList<RouteDirection>();
+    private ArrayList<RouteDirection> routeDirections = new ArrayList<>();
     
     public GetNextTripsForStopResult(Context context, SQLiteDatabase db, XmlPullParser xpp, String stopNumber)
             throws XmlPullParserException, IOException, IllegalArgumentException {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Clayton Smith
+ * Copyright 2012-2015 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -31,12 +31,12 @@ import android.util.Log;
 
 public class GetRouteSummaryForStopResult implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final String TAG = "GetRouteSummaryForStopResult";
+    private static final String TAG = "GetRouteSummaryFSR";
 
     private String stopNumber = null;
     private String stopLabel = null;
     private String error = null;
-    private ArrayList<Route> routes = new ArrayList<Route>();
+    private ArrayList<Route> routes = new ArrayList<>();
     
     public GetRouteSummaryForStopResult(XmlPullParser xpp) throws XmlPullParserException, IOException {
         while (xpp.next() == XmlPullParser.START_TAG) {
