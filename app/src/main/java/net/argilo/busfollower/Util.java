@@ -37,8 +37,6 @@ import android.os.Build;
 import android.text.TextUtils;
 
 class Util {
-    private static final String TAG = "Util";
-    
     public static void setDisplayHomeAsUpEnabled(Activity activity, boolean bool) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             ActionBar actionBar = activity.getActionBar();
