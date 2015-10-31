@@ -63,8 +63,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class BusFollowerActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "BusFollowerActivity";
-    // The zoom level to use when there's only one point to display.
-    private static final int MIN_ZOOM = 10000;
+    private static final double MIN_LAT_SPAN = 0.01;
+    private static final double MIN_LON_SPAN = 0.01;
     private boolean zoomAndCenter = true;
     
     private SQLiteDatabase db;
@@ -216,6 +216,17 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                     }
                 }
             }
+        }
+
+        if (maxLatitude - minLatitude < MIN_LAT_SPAN) {
+            double middle = (minLatitude + maxLatitude) / 2;
+            minLatitude = middle - MIN_LAT_SPAN / 2;
+            maxLatitude = middle + MIN_LAT_SPAN / 2;
+        }
+        if (maxLongitude - minLongitude < MIN_LON_SPAN) {
+            double middle = (minLongitude + maxLongitude) / 2;
+            minLongitude = middle - MIN_LON_SPAN / 2;
+            maxLongitude = middle + MIN_LON_SPAN / 2;
         }
 
         if (zoomAndCenter) {
