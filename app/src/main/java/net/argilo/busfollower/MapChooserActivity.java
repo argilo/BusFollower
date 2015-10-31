@@ -65,10 +65,10 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
     private Map<Marker, Stop> displayedMarkers = new HashMap<>();
 
     // Values taken from stops.txt.
-    private static final int globalMinLatitude = 45130104;
-    private static final int globalMaxLatitude = 45519650;
-    private static final int globalMinLongitude = -76040543;
-    private static final int globalMaxLongitude = -75342690;
+    private static final double GLOBAL_MIN_LATITUDE = 45.130104;
+    private static final double GLOBAL_MAX_LATITUDE = 45.519650;
+    private static final double GLOBAL_MIN_LONGITUDE = -76.040543;
+    private static final double GLOBAL_MAX_LONGITUDE = -75.342690;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,8 +114,8 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
             } else {
                 // If it's our first time running, initially show OC Transpo's service area.
                 final LatLngBounds bounds = new LatLngBounds(
-                        new LatLng (globalMinLatitude / 1e6, globalMinLongitude / 1e6),
-                        new LatLng (globalMaxLatitude / 1e6, globalMaxLongitude / 1e6)
+                        new LatLng (GLOBAL_MIN_LATITUDE, GLOBAL_MIN_LONGITUDE),
+                        new LatLng (GLOBAL_MAX_LATITUDE, GLOBAL_MAX_LONGITUDE)
                 );
                 startingPosition = CameraUpdateFactory.newLatLngBounds(bounds, 30);
             }
@@ -251,12 +251,9 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
             Log.d(TAG, "Before rawQuery");
             long startTime = System.currentTimeMillis();
             Cursor cursor = db.rawQuery("SELECT stop_code, stop_name, stop_lat, stop_lon FROM stops " +
-                    "WHERE stop_lat > ? AND stop_lat < ? AND stop_lon > ? AND stop_lon < ? " +
-                    "ORDER BY total_departures DESC",
-                    new String[] { String.valueOf((int) (minLatitude * 1e6)),
-                                   String.valueOf((int) (maxLatitude * 1e6)),
-                                   String.valueOf((int) (minLongitude * 1e6)),
-                                   String.valueOf((int) (maxLongitude * 1e6)) });
+                            "WHERE stop_lat > " + minLatitude + " AND stop_lat < " + maxLatitude + " " +
+                            "AND stop_lon > " + minLongitude + " AND stop_lon < " + maxLongitude + " " +
+                            "ORDER BY total_departures DESC", null);
             Log.d(TAG, "After rawQuery " + (System.currentTimeMillis() - startTime));
             HashSet<Stop> stops = new HashSet<>();
             if (cursor != null) {
@@ -264,8 +261,8 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                 while (!cursor.isAfterLast()) {
                     String stopCode = cursor.getString(0);
                     String stopName = cursor.getString(1);
-                    int stopLat = cursor.getInt(2);
-                    int stopLon = cursor.getInt(3);
+                    double stopLat = cursor.getDouble(2);
+                    double stopLon = cursor.getDouble(3);
                     
                     Stop stop = new Stop(stopCode, stopName, stopLat, stopLon);
                     if (stop.getLocation() != null) { // TODO: Factor with code in BusFollowerActivity?

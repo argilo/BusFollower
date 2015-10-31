@@ -35,8 +35,8 @@ public class Stop implements Serializable {
 
     private String number = null;
     private String name = null;
-    private int latitude;
-    private int longitude;
+    private double latitude;
+    private double longitude;
     
     public Stop(Context context, SQLiteDatabase db, String number) throws IllegalArgumentException {
         // Zero-pad the stop number to 4 digits.
@@ -80,11 +80,11 @@ public class Stop implements Serializable {
         // Average out the stop locations in case there are multiple entries
         // (e.g. different platforms at a Transitway station)
         result.moveToFirst();
-        int avgLatitude = 0;
-        int avgLongitude = 0;
+        double avgLatitude = 0;
+        double avgLongitude = 0;
         while (!result.isAfterLast()) {
-            avgLatitude += result.getInt(1);
-            avgLongitude += result.getInt(2);
+            avgLatitude += result.getDouble(1);
+            avgLongitude += result.getDouble(2);
             result.moveToNext();
         }
         latitude = avgLatitude / result.getCount();
@@ -94,7 +94,7 @@ public class Stop implements Serializable {
         this.number = number;
     }
     
-    public Stop(String number, String name, int latitude, int longitude) {
+    public Stop(String number, String name, double latitude, double longitude) {
         this.number = number;
         this.name = name;
         this.latitude = latitude;
@@ -110,7 +110,7 @@ public class Stop implements Serializable {
     }
     
     public LatLng getLocation() {
-        return new LatLng(latitude / 1e6, longitude / 1e6);
+        return new LatLng(latitude, longitude);
     }
     
     @Override

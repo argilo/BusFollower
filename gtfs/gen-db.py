@@ -69,8 +69,8 @@ c.execute('''CREATE TABLE stops (
 stop_id TEXT PRIMARY KEY,
 stop_code TEXT,
 stop_name TEXT,
-stop_lat INT,
-stop_lon INT,
+stop_lat REAL,
+stop_lon REAL,
 total_departures INT
 )''')
 c.execute('CREATE INDEX stop_code ON stops(stop_code)')
@@ -88,11 +88,11 @@ for stop_id, stop in schedule.stops.items():
     for trip in stop.GetTrips():
         total_departures += days_active[trip.service_id]
     
-    values = [stop.stop_id, \
-              normalizeStopCode(stop.stop_code), \
-              normalizeStopName(stop.stop_name), \
-              int(0.5 + 1000000 * stop.stop_lat), \
-              int(-0.5 + 1000000 * stop.stop_lon),
+    values = [stop.stop_id,
+              normalizeStopCode(stop.stop_code),
+              normalizeStopName(stop.stop_name),
+              stop.stop_lat,
+              stop.stop_lon,
               total_departures]
     c.execute('INSERT INTO stops VALUES (?,?,?,?,?,?)', values)
 
