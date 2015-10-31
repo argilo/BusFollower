@@ -31,10 +31,11 @@
 .idea/modules.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
-/*/build/
+build/
 /app/src/main/res/values/secure-strings.xml
 pin_*.png
 stop.png
+refresh.png
 launcher_icon.png
 /google-play-icon.png
 /gtfs/*.zip

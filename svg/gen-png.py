@@ -20,12 +20,23 @@
 
 import os
 
+densities = {
+       'ldpi': 120,
+       'mdpi': 160,
+       'hdpi': 240,
+      'xhdpi': 320,
+     'xxhdpi': 480,
+    'xxxhdpi': 640,
+}
+
 for filename in os.listdir('svg'):
     if filename.endswith('.svg'):
         prefix = filename[0:-4]
-        os.system('inkscape -e app/src/main/res/drawable-xhdpi/' + prefix + '.png -d 320 svg/' + prefix + '.svg')
-        os.system('inkscape -e app/src/main/res/drawable-hdpi/' + prefix + '.png -d 240 svg/' + prefix + '.svg')
-        os.system('inkscape -e app/src/main/res/drawable-mdpi/' + prefix + '.png -d 160 svg/' + prefix + '.svg')
-        os.system('inkscape -e app/src/main/res/drawable-ldpi/' + prefix + '.png -d 120 svg/' + prefix + '.svg')
+        for density, dpi in densities.iteritems():
+            density_dir = 'app/src/main/res/drawable-' + density
+            if not os.path.exists(density_dir):
+                os.makedirs(density_dir)
+            os.system('inkscape -e ' + density_dir + '/' + prefix + '.png' \
+                      + ' -d ' + str(dpi) + ' svg/' + prefix + '.svg')
     if filename == 'launcher_icon.svg':
         os.system('inkscape -e google-play-icon.png -h 512 -w 512 svg/' + prefix + '.svg')
