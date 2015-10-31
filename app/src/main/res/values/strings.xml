@@ -31,7 +31,6 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     
     <string name="stop_number">Stop</string>
     <string name="route_number">Route</string>
-    <string name="update">Update</string>
     <string name="error">Error</string>
     <string name="server_error">The server could not be reached. Please check your network connection.</string>
     <string name="invalid_response">The server returned an unexpected response.  Please try again later.</string>
@@ -39,8 +38,6 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="no_routes">There are currently no routes available at this stop.</string>
     <string name="no_departures">There are no departures from this stop.</string>
     <string name="ok">OK</string>
-    <string name="open">Open</string>
-    <string name="cancel">Cancel</string>
     <string name="menu_refresh">Refresh</string>
     
     <string name="direction">Direction:</string>
