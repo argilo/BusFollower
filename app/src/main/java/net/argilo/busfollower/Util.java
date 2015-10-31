@@ -36,7 +36,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 
-public class Util {
+class Util {
     private static final String TAG = "Util";
     
     public static void setDisplayHomeAsUpEnabled(Activity activity, boolean bool) {

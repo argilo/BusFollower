@@ -32,7 +32,7 @@ import net.argilo.busfollower.ocdata.Stop;
 
 import android.content.Context;
 
-public class RecentQueryList {
+class RecentQueryList {
     private static final String FILENAME = "recent_queries";
     private static final int MAX_RECENT_QUERIES = 10;
     

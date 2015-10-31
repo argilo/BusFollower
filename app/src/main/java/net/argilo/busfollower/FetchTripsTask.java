@@ -39,7 +39,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
-public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsForStopResult> {
+class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsForStopResult> {
     private Context activityContext = null;
     private Context applicationContext = null;
     private SQLiteDatabase db = null;

@@ -37,7 +37,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
-public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
+class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
     private Context activityContext = null;
     private Context applicationContext = null;
     private SQLiteDatabase db = null;

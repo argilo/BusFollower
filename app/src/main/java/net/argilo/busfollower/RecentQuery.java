@@ -26,7 +26,7 @@ import java.util.Date;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.Stop;
 
-public class RecentQuery implements Serializable {
+class RecentQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Stop stop = null;
