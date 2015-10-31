@@ -32,11 +32,12 @@ densities = {
 for filename in os.listdir('svg'):
     if filename.endswith('.svg'):
         prefix = filename[0:-4]
+        infile = os.path.join('svg', prefix + '.svg')
         for density, dpi in densities.iteritems():
-            density_dir = 'app/src/main/res/drawable-' + density
+            density_dir = os.path.join('app', 'src', 'main', 'res', 'drawable-' + density)
             if not os.path.exists(density_dir):
                 os.makedirs(density_dir)
-            os.system('inkscape -e ' + density_dir + '/' + prefix + '.png' \
-                      + ' -d ' + str(dpi) + ' svg/' + prefix + '.svg')
-    if filename == 'launcher_icon.svg':
-        os.system('inkscape -e google-play-icon.png -h 512 -w 512 svg/' + prefix + '.svg')
+            os.system('inkscape -e ' + os.path.join(density_dir, prefix + '.png') \
+                      + ' -d ' + str(dpi) + ' ' + infile)
+        if prefix == 'launcher_icon':
+            os.system('inkscape -e google-play-icon.png -h 512 -w 512 ' + infile)
