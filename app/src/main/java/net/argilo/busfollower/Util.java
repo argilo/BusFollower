@@ -30,6 +30,7 @@ import net.argilo.busfollower.ocdata.BusType;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Trip;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -40,7 +41,10 @@ public class Util {
     
     public static void setDisplayHomeAsUpEnabled(Activity activity, boolean bool) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            activity.getActionBar().setDisplayHomeAsUpEnabled(bool);
+            ActionBar actionBar = activity.getActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(bool);
+            }
         }
     }
     

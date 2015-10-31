@@ -140,7 +140,7 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
     }
     
     private ProgressDialog createProgressDialog() {
-        ProgressDialog progressDialog = ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
+        return ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 if (dataFetcher != null) {
@@ -149,6 +149,5 @@ public class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetNextTripsFor
                 }
             }
         });
-        return progressDialog;
     }
 }

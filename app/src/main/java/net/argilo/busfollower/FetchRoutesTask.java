@@ -125,7 +125,7 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
     }
 
     private ProgressDialog createProgressDialog() {
-        ProgressDialog progressDialog = ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
+        return ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 if (dataFetcher != null) {
@@ -134,6 +134,5 @@ public class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForS
                 }
             }
         });
-        return progressDialog;
     }
 }

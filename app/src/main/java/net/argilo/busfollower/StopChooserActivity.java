@@ -58,7 +58,6 @@ public class StopChooserActivity extends Activity {
     private static FetchRoutesTask fetchRoutesTask = null;
     private static FetchTripsTask fetchTripsTask = null;
     private RecentQueryAdapter recentQueryAdapter = null;
-    private SimpleCursorAdapter adapter = null;
     private AutoCompleteTextView stopSearchField = null;
     
     @Override
@@ -81,6 +80,7 @@ public class StopChooserActivity extends Activity {
             }
         }
 
+        SimpleCursorAdapter adapter;
         if (android.os.Build.VERSION.SDK_INT < 11) {
             adapter = new SimpleCursorAdapter(this,
                     android.R.layout.simple_dropdown_item_1line, null,
