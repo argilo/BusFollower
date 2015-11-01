@@ -51,8 +51,12 @@ import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
 public class StopChooserActivity extends Activity {
     private static final String TAG = "StopChooserActivity";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     
     private SQLiteDatabase db = null;
     private static FetchRoutesTask fetchRoutesTask = null;
@@ -187,6 +191,8 @@ public class StopChooserActivity extends Activity {
                 }
             }
         });
+
+        checkPlayServices();
     }
     
     @Override
@@ -219,6 +225,22 @@ public class StopChooserActivity extends Activity {
         if (fetchTripsTask != null) {
             fetchTripsTask.setActivityContext(null);
         }
+    }
+
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
     
     private class RecentQueryAdapter extends ArrayAdapter<RecentQuery> {
