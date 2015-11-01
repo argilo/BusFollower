@@ -303,7 +303,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                     double stopLon = cursor.getDouble(3);
                     
                     Stop stop = new Stop(stopCode, stopName, stopLat, stopLon);
-                    if (stop.getLocation() != null) { // TODO: Factor with code in BusFollowerActivity?
+                    if (stop.getLocation() != null) {
                         stops.add(stop);
                     }
 
@@ -330,18 +330,15 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
             }
             for (Stop stop : result) {
                 if (!displayedStops.containsKey(stop)) {
-                    Marker marker = map.addMarker(new MarkerOptions() // TODO: Factor with code in BusFollowerActivity?
+                    Marker marker = map.addMarker(new MarkerOptions()
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop))
                                     .anchor(0.0f, 1.0f)
                                     .position(stop.getLocation())
-                            //.title(stop.getNumber() == null ? stop.getName() : getString(R.string.stop_number) + " " + stop.getNumber())
-                            //.snippet(stop.getNumber() == null ? getString(R.string.no_departures) : stop.getName())
                     );
                     displayedStops.put(stop, marker);
                     displayedMarkers.put(marker, stop);
                 }
             }
-            // TODO: Add buttons
         }
 
     }

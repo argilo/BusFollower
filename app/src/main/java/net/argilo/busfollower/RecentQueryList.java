@@ -82,8 +82,7 @@ class RecentQueryList {
             out.writeObject(recents);
             out.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // No big deal if the recent queries didn't get saved.
         }
     }
 
