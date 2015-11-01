@@ -73,6 +73,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
     private Route route;
 
     private GoogleMap map = null;
+    private int padding = 0;
     private ListView tripList = null;
     
     @Override
@@ -127,6 +128,8 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         
         setTitle(getString(R.string.stop_number) + " " + result.getStop().getNumber() +
                 ", " + getString(R.string.route_number) + " " + route.getNumber() + " " + route.getHeading());
+
+        padding = ContextCompat.getDrawable(this, R.drawable.pin_red).getIntrinsicHeight();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -232,7 +235,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 @Override
                 public void onGlobalLayout() {
                     tripList.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+                    map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
                 }
             });
         }
