@@ -87,8 +87,7 @@ de bogues et les contributions de code sont appréciés!
 -----
 
 Build dependencies:
-* Android SDK 19
-* Ant
+* Android SDK 23
 * Inkscape
 * Python 2.x
 * SQLite
