@@ -28,15 +28,19 @@ import java.util.Map;
 
 import net.argilo.busfollower.ocdata.Stop;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -55,6 +59,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapChooserActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private static final String TAG = "MapChooserActivity";
     private static final double MAX_AREA = 0.04 * 0.04; // The maximum area for which stops will be displayed.
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     
     private SQLiteDatabase db;
     private static FetchRoutesTask task = null;
@@ -156,7 +161,32 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         editor.putFloat("mapBearing", pos.bearing);
         editor.apply();
     }
-    
+
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else if (map != null) {
+            map.setMyLocationEnabled(true);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+            return;
+        }
+
+        for (int i = 0; i < permissions.length; i++) {
+            if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permissions[i])) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    enableMyLocation();
+                }
+            }
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -189,7 +219,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        map.setMyLocationEnabled(true); // TODO: Check/request permission
+        enableMyLocation();
 
         map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
