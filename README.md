@@ -1,3 +1,4 @@
+```
 #
 # Copyright 2012-2015 Clayton Smith
 #
@@ -17,11 +18,12 @@
 # along with Ottawa Bus Follower; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
+```
 
 Ottawa Bus Follower
 ===================
 
-Author: Clayton Smith
+Author: Clayton Smith  
 Email: <argilo@gmail.com>
 
 https://play.google.com/store/apps/details?id=net.argilo.busfollower
