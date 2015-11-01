@@ -277,8 +277,9 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
             double latitudeSpan = mapBounds.northeast.latitude - mapBounds.southwest.latitude;
             double longitudeSpan = mapBounds.northeast.longitude - mapBounds.southwest.longitude;
 
+            HashSet<Stop> stops = new HashSet<>();
             if (latitudeSpan * longitudeSpan > MAX_AREA) {
-                return null;
+                return stops;
             }
 
             double minLatitude = mapBounds.getCenter().latitude - latitudeSpan;
@@ -293,7 +294,6 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                             "AND stop_lon > " + minLongitude + " AND stop_lon < " + maxLongitude + " " +
                             "ORDER BY total_departures DESC", null);
             Log.d(TAG, "After rawQuery " + (System.currentTimeMillis() - startTime));
-            HashSet<Stop> stops = new HashSet<>();
             if (cursor != null) {
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
@@ -317,9 +317,6 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
 
         @Override
         protected void onPostExecute(Collection<Stop> result) {
-            if (result == null) {
-                return;
-            }
             Iterator<Map.Entry<Stop, Marker>> iter = displayedStops.entrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry<Stop, Marker> entry = iter.next();
