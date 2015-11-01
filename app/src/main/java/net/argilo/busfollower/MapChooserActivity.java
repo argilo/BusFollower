@@ -36,6 +36,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -56,14 +60,18 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapChooserActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MapChooserActivity extends FragmentActivity implements OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener, LocationListener {
     private static final String TAG = "MapChooserActivity";
     private static final double MAX_AREA = 0.04 * 0.04; // The maximum area for which stops will be displayed.
+    private static final double MIN_LAT_SPAN = 0.01;
+    private static final double MIN_LON_SPAN = 0.01;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     
     private SQLiteDatabase db;
     private static FetchRoutesTask task = null;
     private GoogleMap map = null;
+    private LocationManager locationManager = null;
     private CameraUpdate startingPosition = null;
     private Map<Stop, Marker> displayedStops = new HashMap<>();
     private Map<Marker, Stop> displayedMarkers = new HashMap<>();
@@ -123,34 +131,13 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                 );
                 startingPosition = CameraUpdateFactory.newLatLngBounds(bounds, 30);
             }
-            /*
-            myLocationOverlay.runOnFirstFix(new Runnable() {
-                @Override
-                public void run() {
-                    mapController.setZoom(MIN_ZOOM_LEVEL);
-                    mapController.setCenter(myLocationOverlay.getMyLocation());
-                    new DisplayStopsTask().execute();
-                }
-            });
-            */
         }
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-/*
-        myLocationOverlay.enableMyLocation();
-*/
     }
     
     @Override
     protected void onPause() {
         super.onPause();
 
-/*
-        myLocationOverlay.disableMyLocation();
-*/
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         CameraPosition pos = map.getCameraPosition();
@@ -169,6 +156,11 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                     LOCATION_PERMISSION_REQUEST_CODE);
         } else if (map != null) {
             map.setMyLocationEnabled(true);
+
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            Criteria locationCriteria = new Criteria();
+            locationCriteria.setAccuracy(Criteria.ACCURACY_FINE);
+            locationManager.requestSingleUpdate(locationManager.getBestProvider(locationCriteria, true), this, null);
         }
     }
 
@@ -256,6 +248,26 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         }
         return true;
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double minLatitude = location.getLatitude() - MIN_LAT_SPAN / 2;
+        double maxLatitude = location.getLatitude() + MIN_LAT_SPAN / 2;
+        double minLongitude = location.getLongitude() - MIN_LON_SPAN / 2;
+        double maxLongitude = location.getLongitude() + MIN_LON_SPAN / 2;
+
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
+                new LatLng(minLatitude, minLongitude), new LatLng(maxLatitude, maxLongitude)), 0));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+    @Override
+    public void onProviderEnabled(String provider) {}
+
+    @Override
+    public void onProviderDisabled(String provider) {}
 
     private class DisplayStopsTask extends AsyncTask<LatLngBounds, Void, Collection<Stop>> {
         @Override
