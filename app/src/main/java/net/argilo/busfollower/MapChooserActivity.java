@@ -94,20 +94,20 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                             savedInstanceState.getDouble("mapTargetLatitude"),
                             savedInstanceState.getDouble("mapTargetLongitude")
                     ),
-                    savedInstanceState.getFloat("mapZoom"),
+                    savedInstanceState.getFloat("mapZoomV2"),
                     savedInstanceState.getFloat("mapTilt"),
                     savedInstanceState.getFloat("mapBearing")
             ));
         } else {
             SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-            float mapZoom = settings.getFloat("mapZoom", -1);
+            float mapZoom = settings.getFloat("mapZoomV2", -1);
             if (mapZoom != -1) {
                 startingPosition = CameraUpdateFactory.newCameraPosition(new CameraPosition(
                         new LatLng(
                                 settings.getFloat("mapTargetLatitude", 0),
                                 settings.getFloat("mapTargetLongitude", 0)
                         ),
-                        settings.getFloat("mapZoom", 0),
+                        settings.getFloat("mapZoomV2", 0),
                         settings.getFloat("mapTilt", 0),
                         settings.getFloat("mapBearing", 0)
                 ));
@@ -152,7 +152,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         CameraPosition pos = map.getCameraPosition();
         editor.putFloat("mapTargetLatitude", (float) pos.target.latitude);
         editor.putFloat("mapTargetLongitude", (float) pos.target.longitude);
-        editor.putFloat("mapZoom", pos.zoom);
+        editor.putFloat("mapZoomV2", pos.zoom);
         editor.putFloat("mapTilt", pos.tilt);
         editor.putFloat("mapBearing", pos.bearing);
         editor.apply();
@@ -185,7 +185,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         CameraPosition pos = map.getCameraPosition();
         outState.putDouble("mapTargetLatitude", pos.target.latitude);
         outState.putDouble("mapTargetLongitude", pos.target.longitude);
-        outState.putFloat("mapZoom", pos.zoom);
+        outState.putFloat("mapZoomV2", pos.zoom);
         outState.putFloat("mapTilt", pos.tilt);
         outState.putFloat("mapBearing", pos.bearing);
     }
