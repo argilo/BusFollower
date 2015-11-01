@@ -47,6 +47,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -220,8 +222,16 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
             }
         });
 
-        map.moveCamera(startingPosition);
         map.setOnMarkerClickListener(this);
+        final View layout = findViewById(R.id.layout);
+
+        layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                map.moveCamera(startingPosition);
+            }
+        });
     }
 
     @Override

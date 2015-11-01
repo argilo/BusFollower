@@ -30,6 +30,7 @@ import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -230,12 +231,15 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         }
 
         if (zoomAndCenter) {
-            final LatLngBounds bounds = new LatLngBounds(new LatLng (minLatitude, minLongitude), new LatLng (maxLatitude, maxLongitude));
-            tripList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            LatLngBounds bounds = new LatLngBounds(new LatLng (minLatitude, minLongitude), new LatLng (maxLatitude, maxLongitude));
+            final CameraUpdate startingPosition = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            final View layout = findViewById(R.id.layout);
+
+            layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    tripList.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+                    layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    map.moveCamera(startingPosition);
                 }
             });
         }
