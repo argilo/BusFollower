@@ -74,7 +74,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
     private static FetchRoutesTask task = null;
     private GoogleMap map = null;
     private LocationManager locationManager = null;
-    private CameraUpdate startingPosition = null;
+    private CameraPosition startingPosition = null;
     private Map<Stop, Marker> displayedStops = new HashMap<>();
     private Map<Marker, Stop> displayedMarkers = new HashMap<>();
 
@@ -103,7 +103,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                 task.setActivityContext(this);
                 Log.d(TAG, "set task activity in onCreate");
             }
-            startingPosition = CameraUpdateFactory.newCameraPosition(new CameraPosition(
+            startingPosition = new CameraPosition(
                     new LatLng(
                             savedInstanceState.getDouble("mapTargetLatitude"),
                             savedInstanceState.getDouble("mapTargetLongitude")
@@ -111,12 +111,12 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                     savedInstanceState.getFloat("mapZoomV2"),
                     savedInstanceState.getFloat("mapTilt"),
                     savedInstanceState.getFloat("mapBearing")
-            ));
+            );
         } else {
             SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
             float mapZoom = settings.getFloat("mapZoomV2", -1);
             if (mapZoom != -1) {
-                startingPosition = CameraUpdateFactory.newCameraPosition(new CameraPosition(
+                startingPosition = new CameraPosition(
                         new LatLng(
                                 settings.getFloat("mapTargetLatitude", 0),
                                 settings.getFloat("mapTargetLongitude", 0)
@@ -124,14 +124,8 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                         settings.getFloat("mapZoomV2", 0),
                         settings.getFloat("mapTilt", 0),
                         settings.getFloat("mapBearing", 0)
-                ));
-            } else {
-                // If it's our first time running, initially show OC Transpo's service area.
-                final LatLngBounds bounds = new LatLngBounds(
-                        new LatLng (GLOBAL_MIN_LATITUDE, GLOBAL_MIN_LONGITUDE),
-                        new LatLng (GLOBAL_MAX_LATITUDE, GLOBAL_MAX_LONGITUDE)
                 );
-                startingPosition = CameraUpdateFactory.newLatLngBounds(bounds, 30);
+            } else {
             }
         }
     }
@@ -140,15 +134,17 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
     protected void onPause() {
         super.onPause();
 
-        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        CameraPosition pos = map.getCameraPosition();
-        editor.putFloat("mapTargetLatitude", (float) pos.target.latitude);
-        editor.putFloat("mapTargetLongitude", (float) pos.target.longitude);
-        editor.putFloat("mapZoomV2", pos.zoom);
-        editor.putFloat("mapTilt", pos.tilt);
-        editor.putFloat("mapBearing", pos.bearing);
-        editor.apply();
+        if (map != null) {
+            SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            CameraPosition pos = map.getCameraPosition();
+            editor.putFloat("mapTargetLatitude", (float) pos.target.latitude);
+            editor.putFloat("mapTargetLongitude", (float) pos.target.longitude);
+            editor.putFloat("mapZoomV2", pos.zoom);
+            editor.putFloat("mapTilt", pos.tilt);
+            editor.putFloat("mapBearing", pos.bearing);
+            editor.apply();
+        }
     }
 
     private void enableMyLocation() {
@@ -223,13 +219,24 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         });
 
         map.setOnMarkerClickListener(this);
+        final CameraUpdate cameraUpdate;
+        if (startingPosition == null) {
+            // If it's our first time running, initially show OC Transpo's service area.
+            final LatLngBounds bounds = new LatLngBounds(
+                    new LatLng(GLOBAL_MIN_LATITUDE, GLOBAL_MIN_LONGITUDE),
+                    new LatLng(GLOBAL_MAX_LATITUDE, GLOBAL_MAX_LONGITUDE)
+            );
+            cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 30);
+        } else {
+            cameraUpdate = CameraUpdateFactory.newCameraPosition(startingPosition);
+        }
         final View layout = findViewById(R.id.layout);
 
         layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                map.moveCamera(startingPosition);
+                map.moveCamera(cameraUpdate);
             }
         });
     }

@@ -232,14 +232,14 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
 
         if (zoomAndCenter) {
             LatLngBounds bounds = new LatLngBounds(new LatLng (minLatitude, minLongitude), new LatLng (maxLatitude, maxLongitude));
-            final CameraUpdate startingPosition = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            final CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             final View layout = findViewById(R.id.layout);
 
             layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    map.moveCamera(startingPosition);
+                    map.moveCamera(cameraUpdate);
                 }
             });
         }
