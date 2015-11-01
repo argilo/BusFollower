@@ -54,6 +54,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -231,10 +232,11 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
 
         if (zoomAndCenter) {
             final LatLngBounds bounds = new LatLngBounds(new LatLng (minLatitude, minLongitude), new LatLng (maxLatitude, maxLongitude));
-            map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            tripList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
-                public void onMapLoaded() {
-                    map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
+                public void onGlobalLayout() {
+                    tripList.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
                 }
             });
         }
