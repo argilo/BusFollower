@@ -32,7 +32,7 @@
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
 build/
-/app/src/main/res/values/secure-strings.xml
+/app/src/*/res/values/oc_transpo_api.xml
 pin_*.png
 stop.png
 refresh.png
