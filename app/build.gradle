@@ -28,9 +28,31 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.1.0'
 }
 
+task generateOCTranspoXML {
+    def props = new Properties()
+    props.load(new FileInputStream(rootProject.file("secure.properties")))
+
+    ['debug', 'release'].each { type ->
+        def sw = new StringWriter()
+        def xml = new groovy.xml.MarkupBuilder(sw)
+
+        xml.resources() {
+            string(name: "oc_transpo_application_id", translatable: "false", props.getProperty("${type}.oc_transpo_application_id"))
+            string(name: "oc_transpo_application_key", translatable: "false", props.getProperty("${type}.oc_transpo_application_key"))
+        }
+
+        def stringsFile = new File("app/src/${type}/res/values/oc_transpo_api.xml")
+        stringsFile.write(sw.toString())
+    }
+}
+
+gradle.projectsEvaluated {
+    preBuild.dependsOn('generateOCTranspoXML')
+}
+
 def props = new Properties()
 props.load(new FileInputStream(rootProject.file("secure.properties")))
-android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
-android.signingConfigs.release.storePassword props.keyStorePassword
-android.signingConfigs.release.keyAlias props.keyAlias
-android.signingConfigs.release.keyPassword props.keyAliasPassword
+android.signingConfigs.release.storeFile rootProject.file(props.getProperty("key.store"))
+android.signingConfigs.release.storePassword props.getProperty("key.store.password")
+android.signingConfigs.release.keyAlias props.getProperty("key.alias")
+android.signingConfigs.release.keyPassword props.getProperty("key.alias.password")

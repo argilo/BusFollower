@@ -1,0 +1,10 @@
+debug.oc_transpo_application_id=0123abcd
+debug.oc_transpo_application_key=0123456789abcdef0123456789abcdef
+
+release.oc_transpo_application_id=1234bcde
+release.oc_transpo_application_key0123456789abcdef0123456789abcdef0
+
+key.store=../android-release.keystore
+key.store.password=mysecretpassword
+key.alias=release
+key.alias.password=mysecretpassword
