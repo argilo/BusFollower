@@ -46,8 +46,24 @@ task generateOCTranspoXML {
     }
 }
 
+task generatePNG(type:Exec) {
+    inputs.dir '../svg'
+    outputs.dir 'src/main/res'
+    workingDir '..'
+    commandLine 'python', "svg${File.separator}gen-png.py"
+}
+
+task generateDB(type:Exec) {
+    inputs.dir '../gtfs'
+    outputs.file 'src/main/assets/db'
+    workingDir '..'
+    commandLine 'python', "gtfs${File.separator}gen-db.py"
+}
+
 gradle.projectsEvaluated {
     preBuild.dependsOn('generateOCTranspoXML')
+    preBuild.dependsOn('generatePNG')
+    preBuild.dependsOn('generateDB')
 }
 
 def props = new Properties()
