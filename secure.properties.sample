@@ -1,8 +1,10 @@
-debug.oc_transpo_application_id=0123abcd
-debug.oc_transpo_application_key=0123456789abcdef0123456789abcdef
+debug.google_maps_api_key=APIKEY
+debug.oc_transpo_application_id=APPID
+debug.oc_transpo_application_key=APPKEY
 
-release.oc_transpo_application_id=1234bcde
-release.oc_transpo_application_key0123456789abcdef0123456789abcdef0
+release.google_maps_api_key=APIKEY
+release.oc_transpo_application_id=APPID
+release.oc_transpo_application_key=APPKEY
 
 key.store=../android-release.keystore
 key.store.password=mysecretpassword

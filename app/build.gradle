@@ -37,11 +37,12 @@ task generateOCTranspoXML {
         def xml = new groovy.xml.MarkupBuilder(sw)
 
         xml.resources() {
+            string(name: "google_maps_key", translatable: "false", props.getProperty("${type}.google_maps_api_key"))
             string(name: "oc_transpo_application_id", translatable: "false", props.getProperty("${type}.oc_transpo_application_id"))
             string(name: "oc_transpo_application_key", translatable: "false", props.getProperty("${type}.oc_transpo_application_key"))
         }
 
-        def stringsFile = new File("app/src/${type}/res/values/oc_transpo_api.xml")
+        def stringsFile = new File("app/src/${type}/res/values/api_keys.xml")
         stringsFile.write(sw.toString())
     }
 }
