@@ -136,7 +136,13 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-    
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ((TripAdapter) tripList.getAdapter()).notifyDataSetChanged();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
