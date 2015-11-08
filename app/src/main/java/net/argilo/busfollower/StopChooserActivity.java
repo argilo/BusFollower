@@ -91,7 +91,7 @@ public class StopChooserActivity extends Activity {
                     new String[] { "stop_desc" }, new int[] { android.R.id.text1 });
         } else {
             adapter = new SimpleCursorAdapter(this,
-                    android.R.layout.simple_dropdown_item_1line, null,
+                    android.R.layout.simple_spinner_dropdown_item, null,
                     new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
         }
         stopSearchField.setAdapter(adapter);
