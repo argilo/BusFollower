@@ -54,7 +54,7 @@ public class OCTranspoDataFetcher {
         validateStopNumber(stopNumber);
         validateRouteNumber(routeNumber);
         
-        URL url = new URL("http://api.octranspo1.com/v1.1/GetNextTripsForStop");
+        URL url = new URL("http://api.octranspo1.com/v1.2/GetNextTripsForStop");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {
             String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
@@ -84,7 +84,7 @@ public class OCTranspoDataFetcher {
     public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
         validateStopNumber(stopNumber);
 
-        URL url = new URL("http://api.octranspo1.com/v1.1/GetRouteSummaryForStop");
+        URL url = new URL("http://api.octranspo1.com/v1.2/GetRouteSummaryForStop");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {
             String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
