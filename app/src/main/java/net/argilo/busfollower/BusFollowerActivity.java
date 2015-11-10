@@ -79,6 +79,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Util.useAndroidTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.busfollower);
         

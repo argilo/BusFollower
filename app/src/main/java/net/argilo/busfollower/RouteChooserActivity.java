@@ -43,6 +43,7 @@ public class RouteChooserActivity extends ListActivity {
         
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Util.useAndroidTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routechooser);
 

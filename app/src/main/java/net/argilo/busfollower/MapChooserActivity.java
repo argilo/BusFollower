@@ -86,6 +86,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Util.useAndroidTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapchooser);
         

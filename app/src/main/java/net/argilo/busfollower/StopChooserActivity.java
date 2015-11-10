@@ -66,6 +66,7 @@ public class StopChooserActivity extends Activity {
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Util.useAndroidTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stopchooser);
 
