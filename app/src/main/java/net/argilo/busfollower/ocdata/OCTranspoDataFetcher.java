@@ -73,7 +73,7 @@ public class OCTranspoDataFetcher {
             xpp.next(); //   <soap:Body>
             xpp.next(); //     <GetRouteSummaryForStopResponse>
             xpp.next(); //       <GetRouteSummaryForStopResult>
-            GetNextTripsForStopResult result = new GetNextTripsForStopResult(context, db, xpp, stopNumber);
+            GetNextTripsForStopResult result = new GetNextTripsForStopResult(xpp);
             in.close();
             return result;
         } finally {

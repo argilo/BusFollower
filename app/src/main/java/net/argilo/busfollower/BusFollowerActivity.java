@@ -123,12 +123,12 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 zoomAndCenter = true;
             }
         } else {
-            RecentQueryList.addOrUpdateRecent(this, result.getStop(), route);
+            RecentQueryList.addOrUpdateRecent(this, new Stop(this, db, result.getStopNumber()), route);
             // We're arriving from another activity, so set zoom & center.
             zoomAndCenter = true;
         }
 
-        setTitle(getString(R.string.stop_number) + " " + result.getStop().getNumber() +
+        setTitle(getString(R.string.stop_number) + " " + result.getStopNumber() +
                 ", " + getString(R.string.route_number) + " " + route.getNumber() + " " + route.getHeading());
 
         padding = ContextCompat.getDrawable(this, R.drawable.pin_red).getIntrinsicHeight();
@@ -171,7 +171,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 return true;
             case R.id.menu_refresh:
                 task = new FetchTripsTask(this, db);
-                task.execute(new RecentQuery(result.getStop(), route));
+                task.execute(new RecentQuery(new Stop(this, db, result.getStopNumber()), route));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -186,7 +186,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
 
         map.clear();
 
-        Stop stop = result.getStop();
+        Stop stop = new Stop(this, db, result.getStopNumber());
         LatLng stopLocation = stop.getLocation();
         if (stopLocation != null) {
             map.addMarker(new MarkerOptions()
