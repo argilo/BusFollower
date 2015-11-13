@@ -42,6 +42,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -126,7 +127,6 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                         settings.getFloat("mapTilt", 0),
                         settings.getFloat("mapBearing", 0)
                 );
-            } else {
             }
         }
     }
@@ -164,7 +164,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
             return;
         }
