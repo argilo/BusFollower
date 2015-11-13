@@ -46,7 +46,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResu
     private String errorString = null;
     private OCTranspoDataFetcher dataFetcher = null;
     private boolean finished = false;
-    
+
     public FetchRoutesTask(Context context, SQLiteDatabase db) {
         super();
         activityContext = context;
@@ -58,7 +58,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResu
     protected void onPreExecute() {
         progressDialog = createProgressDialog();
     }
-    
+
     @Override
     protected GetRouteSummaryForStopResult doInBackground(String... stopNumber) {
         GetRouteSummaryForStopResult result = null;
@@ -83,7 +83,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResu
         }
         return result;
     }
-    
+
     @Override
     protected void onPostExecute(GetRouteSummaryForStopResult result) {
         finished = true;

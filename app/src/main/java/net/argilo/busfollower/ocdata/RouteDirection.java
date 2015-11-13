@@ -68,23 +68,23 @@ public class RouteDirection implements Serializable {
             xpp.require(XmlPullParser.END_TAG, null, tagName);
         }
     }
-    
+
     public String getRouteNumber() {
         return routeNumber;
     }
-    
+
     public String getRouteLabel() {
         return routeLabel;
     }
-    
+
     public String getDirection() {
         return direction;
     }
-    
+
     public String getError() {
         return error;
     }
-    
+
     public Date getRequestProcessingTime() {
         if (requestProcessingTime == null || requestProcessingTime.length() < 14) {
             return null;
@@ -97,7 +97,7 @@ public class RouteDirection implements Serializable {
             int hourOfDay = Integer.parseInt(requestProcessingTime.substring(8, 10));
             int minute    = Integer.parseInt(requestProcessingTime.substring(10, 12));
             int second    = Integer.parseInt(requestProcessingTime.substring(12, 14));
-            
+
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Toronto"));
             calendar.set(year, month, day, hourOfDay, minute, second);
             return calendar.getTime();
@@ -106,7 +106,7 @@ public class RouteDirection implements Serializable {
             return null;
         }
     }
-    
+
     public ArrayList<Trip> getTrips() {
         return trips;
     }

@@ -55,7 +55,7 @@ class Util {
             }
         }
     }
-    
+
     public static String getBusInformationString(Context context, RouteDirection rd, Trip trip) {
         return context.getString(R.string.direction) + " " + rd.getDirection() +
                 "\n" + context.getString(R.string.destination) + " " + trip.getDestination() +
@@ -67,10 +67,10 @@ class Util {
                 "\n" + context.getString(R.string.bus_type) + " " + getBusTypeString(context, trip.getBusType()) +
                 (trip.isLastTrip() ? "\n" + context.getString(R.string.last_trip) : "");
     }
-    
+
     private static String getBusTypeString(Context context, BusType busType) {
         ArrayList<String> pieces = new ArrayList<>();
-        
+
         switch (busType.getLength()) {
         case 40:
             pieces.add(context.getString(R.string.length_40));
@@ -79,11 +79,11 @@ class Util {
             pieces.add(context.getString(R.string.length_60));
             break;
         }
-        
+
         if (busType.hasBikeRack()) {
             pieces.add(context.getString(R.string.bike_rack));
         }
-        
+
         if (busType.isDoubleDecker()) {
             pieces.add(context.getString(R.string.double_decker));
         }
@@ -101,7 +101,7 @@ class Util {
         formatter.setTimeZone(TimeZone.getTimeZone("America/Toronto"));
         result.append(formatter.format(date));
         result.append(" (");
-        
+
         // Relative time
         long difference = date.getTime() - Calendar.getInstance().getTimeInMillis();
         if (difference >= 0) {
@@ -111,7 +111,7 @@ class Util {
             int differenceMinutes = (int) ((-difference + 30000) / 60000);
             result.append(context.getResources().getQuantityString(R.plurals.minutesAgo, differenceMinutes, differenceMinutes));
         }
-        
+
         result.append(")");
         return result.toString();
     }

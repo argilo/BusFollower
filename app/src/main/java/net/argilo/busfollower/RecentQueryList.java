@@ -35,7 +35,7 @@ import android.content.Context;
 class RecentQueryList {
     private static final String FILENAME = "recent_queries";
     private static final int MAX_RECENT_QUERIES = 10;
-    
+
     @SuppressWarnings("unchecked")
     public static synchronized ArrayList<RecentQuery> loadRecents(Context context) {
         ArrayList<RecentQuery> recents;
@@ -48,15 +48,15 @@ class RecentQueryList {
             // Start a new recent list.
             recents = new ArrayList<>();
         }
-        
+
         return recents;
     }
-    
+
     public static synchronized void addOrUpdateRecent(Context context, Stop stop, Route route) {
         ArrayList<RecentQuery> recents = loadRecents(context);
-        
+
         RecentQuery query = new RecentQuery(stop, route);
-        
+
         boolean foundQuery = false;
         for (RecentQuery recent : recents) {
             if (recent.equals(query)) {
@@ -65,7 +65,7 @@ class RecentQueryList {
                 break;
             }
         }
-        
+
         if (!foundQuery) {
             recents.add(query);
             if (recents.size() > MAX_RECENT_QUERIES) {
@@ -76,7 +76,7 @@ class RecentQueryList {
             // Sort by stop and route number for use.
             Collections.sort(recents, new QueryStopRouteComparator());
         }
-        
+
         try {
             ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(FILENAME, Context.MODE_PRIVATE));
             out.writeObject(recents);

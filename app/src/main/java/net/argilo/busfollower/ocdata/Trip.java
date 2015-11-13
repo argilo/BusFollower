@@ -36,7 +36,7 @@ import android.util.Log;
 public class Trip implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String TAG = "Trip";
-    
+
     private String destination = null;
     private String startTime = null;
     private String adjustedScheduleTime = null;
@@ -46,13 +46,13 @@ public class Trip implements Serializable {
     private float gpsSpeed = Float.NaN;
     private double latitude = Double.NaN;
     private double longitude = Double.NaN;
-    
+
     // Needed to get the request processing time.
     private RouteDirection routeDirection;
-    
+
     public Trip(XmlPullParser xpp, RouteDirection routeDirection) throws XmlPullParserException, IOException {
         this.routeDirection = routeDirection;
-        
+
         while (xpp.next() == XmlPullParser.START_TAG) {
             String tagName = xpp.getName();
             if ("TripDestination".equalsIgnoreCase(tagName)) {
@@ -95,11 +95,11 @@ public class Trip implements Serializable {
             xpp.require(XmlPullParser.END_TAG, null, tagName);
         }
     }
-    
+
     public String getDestination() {
         return destination;
     }
-    
+
     public Date getStartTime() {
         // Start time is measured from "noon minus 12h" (effectively midnight, except for days
         // on which daylight savings time changes occur) at the beginning of the service date.
@@ -110,16 +110,16 @@ public class Trip implements Serializable {
         if (routeDirection.getRequestProcessingTime() != null) {
             calendar.setTime(routeDirection.getRequestProcessingTime());
         }
-        
+
         int colonIndex = startTime.indexOf(":");
         int hours = Integer.parseInt(startTime.substring(0, colonIndex));
         int minutes = Integer.parseInt(startTime.substring(colonIndex + 1));
-        
+
         // Subtracting the start time should put us within a few hours of the beginning of
         // the service date.
         calendar.add(Calendar.HOUR, -hours);
         calendar.add(Calendar.MINUTE, -minutes);
-        
+
         // Now scan forward until we get to noon.
         while (calendar.get(Calendar.HOUR_OF_DAY) != 12) {
             calendar.add(Calendar.HOUR, 1);
@@ -127,17 +127,17 @@ public class Trip implements Serializable {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        
+
         // Subtract twelve hours.
         calendar.add(Calendar.HOUR, -12);
-        
+
         // Add in the start time.
         calendar.add(Calendar.HOUR, hours);
         calendar.add(Calendar.MINUTE, minutes);
-        
+
         return calendar.getTime();
     }
-    
+
     public Date getAdjustedScheduleTime() {
         try {
             Calendar calendar = Calendar.getInstance();
@@ -151,27 +151,27 @@ public class Trip implements Serializable {
             return null;
         }
     }
-    
+
     public float getAdjustmentAge() {
         return adjustmentAge;
     }
-    
+
     public boolean isEstimated() {
         return (adjustmentAge >= 0);
     }
-    
+
     public boolean isLastTrip() {
         return lastTripOfSchedule;
     }
-    
+
     public BusType getBusType() {
         return busType;
     }
-    
+
     public float getGpsSpeed() {
         return gpsSpeed;
     }
-    
+
     public LatLng getLocation() {
         if (Double.isNaN(latitude) || Double.isNaN(longitude)) {
             return null;
@@ -179,7 +179,7 @@ public class Trip implements Serializable {
             return new LatLng(latitude, longitude);
         }
     }
-    
+
     public RouteDirection getRouteDirection() {
         return routeDirection;
     }

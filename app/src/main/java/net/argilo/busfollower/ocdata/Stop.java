@@ -37,7 +37,7 @@ public class Stop implements Serializable {
     private String name = null;
     private double latitude;
     private double longitude;
-    
+
     public Stop(Context context, SQLiteDatabase db, String number) throws IllegalArgumentException {
         // Zero-pad the stop number to 4 digits.
         while (number.length() < 4) {
@@ -48,7 +48,7 @@ public class Stop implements Serializable {
         if (result.getCount() == 0) {
             throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
         }
-        
+
         result.moveToFirst();
         if (result.getCount() == 1) {
             name = result.getString(0);
@@ -93,26 +93,26 @@ public class Stop implements Serializable {
 
         this.number = number;
     }
-    
+
     public Stop(String number, String name, double latitude, double longitude) {
         this.number = number;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    
+
     public String getNumber() {
         return number;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public LatLng getLocation() {
         return new LatLng(latitude, longitude);
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if (other == null) {

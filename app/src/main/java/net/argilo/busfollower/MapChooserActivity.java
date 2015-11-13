@@ -69,7 +69,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
     private static final double MIN_LAT_SPAN = 0.01;
     private static final double MIN_LON_SPAN = 0.01;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    
+
     private SQLiteDatabase db;
     private static FetchRoutesTask task = null;
     private GoogleMap map = null;
@@ -89,9 +89,9 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         Util.useAndroidTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapchooser);
-        
+
         db = ((BusFollowerApplication) getApplication()).getDatabase();
-        
+
         Util.setDisplayHomeAsUpEnabled(this, true);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -130,7 +130,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
             }
         }
     }
-    
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -192,7 +192,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        
+
         if (task != null) {
             // Let the AsyncTask know we're gone.
             task.setActivityContext(null);
@@ -206,7 +206,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         outState.putFloat("mapTilt", pos.tilt);
         outState.putFloat("mapBearing", pos.bearing);
     }
-    
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -304,7 +304,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
             double maxLatitude = mapBounds.getCenter().latitude + latitudeSpan;
             double minLongitude = mapBounds.getCenter().longitude - longitudeSpan;
             double maxLongitude = mapBounds.getCenter().longitude + longitudeSpan;
-            
+
             Log.d(TAG, "Before rawQuery");
             long startTime = System.currentTimeMillis();
             Cursor cursor = db.rawQuery("SELECT stop_code, stop_name, stop_lat, stop_lon FROM stops " +
@@ -319,7 +319,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
                     String stopName = cursor.getString(1);
                     double stopLat = cursor.getDouble(2);
                     double stopLon = cursor.getDouble(3);
-                    
+
                     Stop stop = new Stop(stopCode, stopName, stopLat, stopLon);
                     if (stop.getLocation() != null) {
                         stops.add(stop);

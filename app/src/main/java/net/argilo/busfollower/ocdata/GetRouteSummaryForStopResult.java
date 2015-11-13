@@ -37,7 +37,7 @@ public class GetRouteSummaryForStopResult implements Serializable {
     private String stopLabel = null;
     private String error = null;
     private ArrayList<Route> routes = new ArrayList<>();
-    
+
     public GetRouteSummaryForStopResult(XmlPullParser xpp) throws XmlPullParserException, IOException {
         while (xpp.next() == XmlPullParser.START_TAG) {
             String tagName = xpp.getName();
@@ -59,19 +59,19 @@ public class GetRouteSummaryForStopResult implements Serializable {
             xpp.require(XmlPullParser.END_TAG, null, tagName);
         }
     }
-    
+
     public String getStopNumber() {
         return stopNumber;
     }
-    
+
     public String getStopLabel() {
         return stopLabel;
     }
-    
+
     public String getError() {
         return error;
     }
-    
+
     public ArrayList<Route> getRoutes() {
         return routes;
     }

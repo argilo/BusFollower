@@ -26,7 +26,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class BusFollowerApplication extends Application {
     private SQLiteDatabase db = null;
-    
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -34,7 +34,7 @@ public class BusFollowerApplication extends Application {
         db = (new DatabaseHelper(this)).getReadableDatabase();
         // TODO: Catch & handle SQLiteException
     }
-    
+
     public SQLiteDatabase getDatabase() {
         return db;
     }

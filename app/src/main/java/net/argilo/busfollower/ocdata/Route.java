@@ -31,12 +31,12 @@ import android.util.Log;
 public class Route implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String TAG = "Route";
-    
+
     private String number = null;
     private String directionID = null;
     private String direction = null;
     private String heading = null;
-    
+
     public Route(XmlPullParser xpp) throws XmlPullParserException, IOException {
         while (xpp.next() == XmlPullParser.START_TAG) {
             String tagName = xpp.getName();
@@ -54,23 +54,23 @@ public class Route implements Serializable {
             xpp.require(XmlPullParser.END_TAG, null, tagName);
         }
     }
-    
+
     public String getNumber() {
         return number;
     }
-    
+
     public String getDirectionID() {
         return directionID;
     }
-    
+
     public String getDirection() {
         return direction;
     }
-    
+
     public String getHeading() {
         return heading;
     }
-    
+
     @Override
     public String toString() {
         String result = "";

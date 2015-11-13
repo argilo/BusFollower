@@ -40,7 +40,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class OCTranspoDataFetcher {
     private static final int TIMEOUT_CONNECTION = 15000;
     private static final int TIMEOUT_SOCKET = 15000;
-    
+
     private Context context;
     private SQLiteDatabase db;
 
@@ -48,12 +48,12 @@ public class OCTranspoDataFetcher {
         this.context = context;
         this.db = db;
     }
-    
+
     public GetNextTripsForStopResult getNextTripsForStop(String stopNumber, String routeNumber)
             throws IOException, XmlPullParserException, IllegalArgumentException {
         validateStopNumber(stopNumber);
         validateRouteNumber(routeNumber);
-        
+
         URL url = new URL("http://api.octranspo1.com/v1.2/GetNextTripsForStop");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {
@@ -80,7 +80,7 @@ public class OCTranspoDataFetcher {
             conn.disconnect();
         }
     }
-    
+
     public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
         validateStopNumber(stopNumber);
 
@@ -109,7 +109,7 @@ public class OCTranspoDataFetcher {
             conn.disconnect();
         }
     }
-    
+
     public void abortRequest() {
         // TODO: Re-implement
     }
@@ -126,7 +126,7 @@ public class OCTranspoDataFetcher {
         writer.write(params);
         writer.close();
     }
-    
+
     private void validateStopNumber(String stopNumber) {
         if (stopNumber.length() < 3 || stopNumber.length() > 4) {
             throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
@@ -137,7 +137,7 @@ public class OCTranspoDataFetcher {
             }
         }
     }
-    
+
     private void validateRouteNumber(String routeNumber) {
         if (routeNumber.length() < 1 || routeNumber.length() > 3) {
             throw new IllegalArgumentException(context.getString(R.string.invalid_route_number));

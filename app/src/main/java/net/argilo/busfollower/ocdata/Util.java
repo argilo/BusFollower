@@ -26,12 +26,12 @@ import android.util.Log;
 
 public class Util {
     private static final String TAG = "Util";
-    
+
     public static String getErrorString(Context context, String error) {
         if ("".equals(error)) {
             return null;
         }
-        
+
         try {
             int errorNumber = Integer.parseInt(error);
             switch (errorNumber) {

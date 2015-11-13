@@ -57,13 +57,13 @@ import com.google.android.gms.common.GoogleApiAvailability;
 public class StopChooserActivity extends Activity {
     private static final String TAG = "StopChooserActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    
+
     private SQLiteDatabase db = null;
     private static FetchRoutesTask fetchRoutesTask = null;
     private static FetchTripsTask fetchTripsTask = null;
     private RecentQueryAdapter recentQueryAdapter = null;
     private AutoCompleteTextView stopSearchField = null;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Util.useAndroidTheme(this);
@@ -71,10 +71,10 @@ public class StopChooserActivity extends Activity {
         setContentView(R.layout.stopchooser);
 
         db = ((BusFollowerApplication) getApplication()).getDatabase();
-                
+
         stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
         final Button chooseMapButton = (Button) findViewById(R.id.chooseMap);
-        
+
         if (savedInstanceState != null) {
             // Let the AsyncTasks know we're back.
             if (fetchRoutesTask != null) {
@@ -96,14 +96,14 @@ public class StopChooserActivity extends Activity {
                     new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
         }
         stopSearchField.setAdapter(adapter);
-        
+
         adapter.setCursorToStringConverter(new CursorToStringConverter() {
             @Override
             public String convertToString(Cursor cursor) {
                 return cursor.getString(cursor.getColumnIndexOrThrow("stop_code"));
             }
         });
-        
+
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {
@@ -144,7 +144,7 @@ public class StopChooserActivity extends Activity {
                 return null;
             }
         });
-        
+
         stopSearchField.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId,
@@ -158,7 +158,7 @@ public class StopChooserActivity extends Activity {
                 return false;
             }
         });
-        
+
         stopSearchField.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -166,7 +166,7 @@ public class StopChooserActivity extends Activity {
                 fetchRoutesTask.execute(stopSearchField.getText().toString());
             }
         });
-        
+
         chooseMapButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,11 +195,11 @@ public class StopChooserActivity extends Activity {
 
         checkPlayServices();
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
-        
+
         recentQueryAdapter.clear();
 
         ArrayList<RecentQuery> recentQueryList = RecentQueryList.loadRecents(this);
@@ -214,11 +214,11 @@ public class StopChooserActivity extends Activity {
             recentQueryAdapter.add(recentQuery);
         }
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        
+
         // Let the AsyncTasks know we're gone.
         if (fetchRoutesTask != null) {
             fetchRoutesTask.setActivityContext(null);
@@ -243,19 +243,19 @@ public class StopChooserActivity extends Activity {
         }
         return true;
     }
-    
+
     private class RecentQueryAdapter extends ArrayAdapter<RecentQuery> {
         private Context context;
         private int resourceId;
         private ArrayList<RecentQuery> queries;
-        
+
         public RecentQueryAdapter(Context context, int resourceId, ArrayList<RecentQuery> queries) {
             super(context, resourceId, queries);
             this.context = context;
             this.resourceId = resourceId;
             this.queries = queries;
         }
-        
+
         @Override
         public View getView(int position, View v, ViewGroup parent) {
             RecentQuery query = queries.get(position);
@@ -279,7 +279,7 @@ public class StopChooserActivity extends Activity {
                 text1.setText(" \u00BB " + context.getString(R.string.route_number) + " " +
                         query.getRoute().getNumber() + " " + query.getRoute().getHeading());
             }
-            
+
             return v;
         }
     }

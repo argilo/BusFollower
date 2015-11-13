@@ -40,7 +40,7 @@ public class RouteChooserActivity extends ListActivity {
 
     private Stop stop;
     private ArrayList<Route> routes;
-        
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Util.useAndroidTheme(this);
@@ -54,11 +54,11 @@ public class RouteChooserActivity extends ListActivity {
         stop = (Stop) getIntent().getSerializableExtra("stop");
         GetRouteSummaryForStopResult result = (GetRouteSummaryForStopResult) getIntent().getSerializableExtra("result");
         routes = result.getRoutes();
-        
+
         setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, routes));
         setTitle(getString(R.string.stop_number) + " " + stop.getNumber() +
                 (stop.getName() != null ? " " + stop.getName() : ""));
-        
+
         if (savedInstanceState != null) {
             if (task != null) {
                 // Let the AsyncTask know we're back.
@@ -66,14 +66,14 @@ public class RouteChooserActivity extends ListActivity {
             }
         }
     }
-    
+
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
         // Here we just use RecentQuery as a convenience, since it can hold a stop and route.
         task = new FetchTripsTask(this, db);
         task.execute(new RecentQuery(stop, routes.get(position)));
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -84,11 +84,11 @@ public class RouteChooserActivity extends ListActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        
+
         if (task != null) {
             // Let the AsyncTask know we're gone.
             task.setActivityContext(null);

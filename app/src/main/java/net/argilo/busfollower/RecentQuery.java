@@ -33,7 +33,7 @@ class RecentQuery implements Serializable {
     private Route route = null;
     private int timesQueried = -1;
     private Date lastQueried = null;
-    
+
     public RecentQuery(Stop stop) {
         this.stop = stop;
     }
@@ -44,23 +44,23 @@ class RecentQuery implements Serializable {
         this.timesQueried = 1;
         this.lastQueried = new Date();
     }
-    
+
     public Stop getStop() {
         return stop;
     }
-    
+
     public Route getRoute() {
         return route;
     }
-    
+
     public int getTimesQueried() {
         return timesQueried;
     }
-    
+
     public Date getLastQueried() {
         return lastQueried;
     }
-    
+
     public void queriedAgain() {
         timesQueried++;
         lastQueried = new Date();

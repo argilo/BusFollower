@@ -67,7 +67,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
     private static final double MIN_LAT_SPAN = 0.01;
     private static final double MIN_LON_SPAN = 0.01;
     private boolean zoomAndCenter = true;
-    
+
     private SQLiteDatabase db;
     private static FetchTripsTask task;
     private GetNextTripsForStopResult result = null;
@@ -76,15 +76,15 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
     private GoogleMap map = null;
     private int padding = 0;
     private ListView tripList = null;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Util.useAndroidTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.busfollower);
-        
+
         db = ((BusFollowerApplication) getApplication()).getDatabase();
-        
+
         Util.setDisplayHomeAsUpEnabled(this, true);
 
         tripList = (ListView) findViewById(R.id.tripList);
@@ -104,7 +104,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 dialog.show();
             }
         });
-        
+
         result = (GetNextTripsForStopResult) getIntent().getSerializableExtra("result");
         route = (Route) getIntent().getSerializableExtra("route");
         if (savedInstanceState != null) {
@@ -127,7 +127,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
             // We're arriving from another activity, so set zoom & center.
             zoomAndCenter = true;
         }
-        
+
         setTitle(getString(R.string.stop_number) + " " + result.getStop().getNumber() +
                 ", " + getString(R.string.route_number) + " " + route.getNumber() + " " + route.getHeading());
 
@@ -147,7 +147,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        
+
         if (task != null) {
             // Let the AsyncTask know we're gone.
             task.setActivityContext(null);
@@ -155,14 +155,14 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         outState.putSerializable("result", result);
         outState.putSerializable("route", route);
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.busfollower_menu, menu);
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -177,13 +177,13 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     private void displayGetNextTripsForStopResult() {
         double minLatitude = Double.MAX_VALUE;
         double maxLatitude = Double.MIN_VALUE;
         double minLongitude = Double.MAX_VALUE;
         double maxLongitude = Double.MIN_VALUE;
-        
+
         map.clear();
 
         Stop stop = result.getStop();
@@ -251,7 +251,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
             });
         }
     }
-    
+
     public void setResult(GetNextTripsForStopResult result) {
         this.result = result;
         // The user requested a refresh. Don't reset zoom & center.
@@ -278,14 +278,14 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         private Context context;
         private int resourceId;
         private ArrayList<Trip> trips;
-        
+
         public TripAdapter(Context context, int resourceId, ArrayList<Trip> trips) {
             super(context, resourceId, trips);
             this.context = context;
             this.resourceId = resourceId;
             this.trips = trips;
         }
-        
+
         @Override
         public View getView(int position, View v, ViewGroup parent) {
             if (v == null) {
@@ -310,7 +310,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
 
         private String getHumanReadableTime(Date date) {
             StringBuilder result = new StringBuilder();
-            
+
             // Relative time
             long difference = date.getTime() - Calendar.getInstance().getTimeInMillis();
             if (difference >= 0) {
@@ -320,7 +320,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 int differenceMinutes = (int) ((-difference + 30000) / 60000);
                 result.append(context.getResources().getQuantityString(R.plurals.minutesAgo, differenceMinutes, differenceMinutes));
             }
-            
+
             return result.toString();
         }
     }

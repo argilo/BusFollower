@@ -40,14 +40,14 @@ public class DatabaseHelper {
     private Context context;
     private final String DATABASE_FOLDER;
     private final String DATABASE_PATH;
-    
+
     public DatabaseHelper(Context context) {
         this.context = context;
         String filesDir = context.getFilesDir().getPath();
         DATABASE_FOLDER = filesDir.substring(0, filesDir.lastIndexOf("/")) + "/databases";
         DATABASE_PATH = DATABASE_FOLDER + "/db";
     }
-    
+
     public SQLiteDatabase getReadableDatabase() throws SQLiteException {
         try {
             writeDatabaseIfNecessary();
@@ -64,10 +64,10 @@ public class DatabaseHelper {
                 throw new IOException("Couldn't create folder " + DATABASE_FOLDER);
             }
         }
-        
+
         SharedPreferences dbPrefs = context.getSharedPreferences(DATABASE_PREFS, Context.MODE_PRIVATE);
         int dbVersion = dbPrefs.getInt("dbVersion", 0);
-        
+
         if (dbVersion != DATABASE_VERSION) {
             Log.d(TAG, "Attempting to write database file.");
             InputStream is = context.getAssets().open("db");
@@ -84,7 +84,7 @@ public class DatabaseHelper {
             os.close();
             is.close();
             Log.d(TAG, "Successfully wrote database file.");
-            
+
             SharedPreferences.Editor editor = dbPrefs.edit();
             editor.putInt("dbVersion", DATABASE_VERSION);
             editor.apply();
