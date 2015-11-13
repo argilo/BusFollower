@@ -22,7 +22,7 @@ package net.argilo.busfollower;
 
 import java.util.ArrayList;
 
-import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
+import net.argilo.busfollower.ocdata.GetRoutesOrTripsResult;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
@@ -53,7 +53,7 @@ public class RouteChooserActivity extends ListActivity {
         Util.setDisplayHomeAsUpEnabled(this, true);
 
         stop = (Stop) getIntent().getSerializableExtra("stop");
-        GetRouteSummaryForStopResult result = (GetRouteSummaryForStopResult) getIntent().getSerializableExtra("result");
+        GetRoutesOrTripsResult result = (GetRoutesOrTripsResult) getIntent().getSerializableExtra("result");
         routeDirections = result.getRouteDirections();
 
         setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, routeDirections));

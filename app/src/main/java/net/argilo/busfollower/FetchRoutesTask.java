@@ -22,7 +22,7 @@ package net.argilo.busfollower;
 
 import java.io.IOException;
 
-import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
+import net.argilo.busfollower.ocdata.GetRoutesOrTripsResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Util;
@@ -37,7 +37,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
-class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResult> {
+class FetchRoutesTask extends AsyncTask<String, Void, GetRoutesOrTripsResult> {
     private Context activityContext = null;
     private Context applicationContext = null;
     private SQLiteDatabase db = null;
@@ -60,8 +60,8 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResu
     }
 
     @Override
-    protected GetRouteSummaryForStopResult doInBackground(String... stopNumber) {
-        GetRouteSummaryForStopResult result = null;
+    protected GetRoutesOrTripsResult doInBackground(String... stopNumber) {
+        GetRoutesOrTripsResult result = null;
         try {
             stop = new Stop(applicationContext, db, stopNumber[0]);
             dataFetcher = new OCTranspoDataFetcher(applicationContext, db);
@@ -85,7 +85,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResu
     }
 
     @Override
-    protected void onPostExecute(GetRouteSummaryForStopResult result) {
+    protected void onPostExecute(GetRoutesOrTripsResult result) {
         finished = true;
         if (activityContext == null) {
             return;

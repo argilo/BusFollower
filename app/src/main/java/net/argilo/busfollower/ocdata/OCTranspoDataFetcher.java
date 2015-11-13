@@ -49,7 +49,7 @@ public class OCTranspoDataFetcher {
         this.db = db;
     }
 
-    public GetNextTripsForStopResult getNextTripsForStop(String stopNumber, String routeNumber)
+    public GetRoutesOrTripsResult getNextTripsForStop(String stopNumber, String routeNumber)
             throws IOException, XmlPullParserException, IllegalArgumentException {
         validateStopNumber(stopNumber);
         validateRouteNumber(routeNumber);
@@ -73,7 +73,7 @@ public class OCTranspoDataFetcher {
             xpp.next(); //   <soap:Body>
             xpp.next(); //     <GetRouteSummaryForStopResponse>
             xpp.next(); //       <GetRouteSummaryForStopResult>
-            GetNextTripsForStopResult result = new GetNextTripsForStopResult(xpp);
+            GetRoutesOrTripsResult result = new GetRoutesOrTripsResult(xpp);
             in.close();
             return result;
         } finally {
@@ -81,7 +81,7 @@ public class OCTranspoDataFetcher {
         }
     }
 
-    public GetRouteSummaryForStopResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
+    public GetRoutesOrTripsResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
         validateStopNumber(stopNumber);
 
         URL url = new URL("http://api.octranspo1.com/v1.2/GetRouteSummaryForStop");
@@ -102,7 +102,7 @@ public class OCTranspoDataFetcher {
             xpp.next(); //   <soap:Body>
             xpp.next(); //     <GetRouteSummaryForStopResponse>
             xpp.next(); //       <GetRouteSummaryForStopResult>
-            GetRouteSummaryForStopResult result = new GetRouteSummaryForStopResult(xpp);
+            GetRoutesOrTripsResult result = new GetRoutesOrTripsResult(xpp);
             in.close();
             return result;
         } finally {

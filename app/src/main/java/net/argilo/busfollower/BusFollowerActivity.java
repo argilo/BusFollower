@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.argilo.busfollower.ocdata.GetNextTripsForStopResult;
+import net.argilo.busfollower.ocdata.GetRoutesOrTripsResult;
 import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
@@ -70,7 +70,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
 
     private SQLiteDatabase db;
     private static FetchTripsTask task;
-    private GetNextTripsForStopResult result = null;
+    private GetRoutesOrTripsResult result = null;
     private Route route;
 
     private GoogleMap map = null;
@@ -105,14 +105,14 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
-        result = (GetNextTripsForStopResult) getIntent().getSerializableExtra("result");
+        result = (GetRoutesOrTripsResult) getIntent().getSerializableExtra("result");
         route = (Route) getIntent().getSerializableExtra("route");
         if (savedInstanceState != null) {
             if (task != null) {
                 // Let the AsyncTask know we're back.
                 task.setActivityContext(this);
             }
-            result = (GetNextTripsForStopResult) savedInstanceState.getSerializable("result");
+            result = (GetRoutesOrTripsResult) savedInstanceState.getSerializable("result");
             route = (Route) savedInstanceState.getSerializable("route");
 
             if (result != null) {
@@ -252,7 +252,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         }
     }
 
-    public void setResult(GetNextTripsForStopResult result) {
+    public void setResult(GetRoutesOrTripsResult result) {
         this.result = result;
         // The user requested a refresh. Don't reset zoom & center.
         zoomAndCenter = false;

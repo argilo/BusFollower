@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Log;
 
-public class GetNextTripsForStopResult implements Serializable {
+public class GetRoutesOrTripsResult implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String TAG = "GetNextTripFSR";
 
@@ -38,12 +38,12 @@ public class GetNextTripsForStopResult implements Serializable {
     private String error = null;
     private ArrayList<RouteDirection> routeDirections = new ArrayList<>();
 
-    public GetNextTripsForStopResult(XmlPullParser xpp) throws XmlPullParserException, IOException {
+    public GetRoutesOrTripsResult(XmlPullParser xpp) throws XmlPullParserException, IOException {
         while (xpp.next() == XmlPullParser.START_TAG) {
             String tagName = xpp.getName();
             if ("StopNo".equalsIgnoreCase(tagName)) {
                 stopNumber = xpp.nextText();
-            } else if ("StopLabel".equalsIgnoreCase(tagName)) {
+            } else if ("StopLabel".equalsIgnoreCase(tagName) || "StopDescription".equalsIgnoreCase(tagName)) {
                 stopLabel = xpp.nextText();
             } else if ("Error".equalsIgnoreCase(tagName)) {
                 error = xpp.nextText();
@@ -52,6 +52,12 @@ public class GetNextTripsForStopResult implements Serializable {
                     xpp.require(XmlPullParser.START_TAG, null, "RouteDirection");
                     routeDirections.add(new RouteDirection(xpp));
                     xpp.require(XmlPullParser.END_TAG, null, "RouteDirection");
+                }
+            } else if ("Routes".equalsIgnoreCase(tagName)) {
+                while (xpp.next() == XmlPullParser.START_TAG) {
+                    xpp.require(XmlPullParser.START_TAG, null, "Route");
+                    routeDirections.add(new RouteDirection(xpp));
+                    xpp.require(XmlPullParser.END_TAG, null, "Route");
                 }
             } else {
                 Log.w(TAG, "Unrecognized start tag: " + tagName);
