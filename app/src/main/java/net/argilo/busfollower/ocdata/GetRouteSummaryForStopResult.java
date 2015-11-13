@@ -36,7 +36,7 @@ public class GetRouteSummaryForStopResult implements Serializable {
     private String stopNumber = null;
     private String stopLabel = null;
     private String error = null;
-    private ArrayList<Route> routes = new ArrayList<>();
+    private ArrayList<RouteDirection> routeDirections = new ArrayList<>();
 
     public GetRouteSummaryForStopResult(XmlPullParser xpp) throws XmlPullParserException, IOException {
         while (xpp.next() == XmlPullParser.START_TAG) {
@@ -50,7 +50,7 @@ public class GetRouteSummaryForStopResult implements Serializable {
             } else if ("Routes".equalsIgnoreCase(tagName)) {
                 while (xpp.next() == XmlPullParser.START_TAG) {
                     xpp.require(XmlPullParser.START_TAG, null, "Route");
-                    routes.add(new Route(xpp));
+                    routeDirections.add(new RouteDirection(xpp));
                     xpp.require(XmlPullParser.END_TAG, null, "Route");
                 }
             } else {
@@ -72,7 +72,7 @@ public class GetRouteSummaryForStopResult implements Serializable {
         return error;
     }
 
-    public ArrayList<Route> getRoutes() {
-        return routes;
+    public ArrayList<RouteDirection> getRouteDirections() {
+        return routeDirections;
     }
 }

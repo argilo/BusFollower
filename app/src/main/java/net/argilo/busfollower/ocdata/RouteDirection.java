@@ -38,6 +38,7 @@ public class RouteDirection implements Serializable {
 
     private String routeNumber = null;
     private String routeLabel = null;
+    private String directionID = null;
     private String direction = null;
     private String error = null;
     private String requestProcessingTime = null;
@@ -48,8 +49,10 @@ public class RouteDirection implements Serializable {
             String tagName = xpp.getName();
             if ("RouteNo".equalsIgnoreCase(tagName)) {
                 routeNumber = xpp.nextText();
-            } else if ("RouteLabel".equalsIgnoreCase(tagName)) {
+            } else if ("RouteLabel".equalsIgnoreCase(tagName) || "RouteHeading".equalsIgnoreCase(tagName)) {
                 routeLabel = xpp.nextText();
+            } else if ("DirectionID".equalsIgnoreCase(tagName)) {
+                directionID = xpp.nextText();
             } else if ("Direction".equalsIgnoreCase(tagName)) {
                 direction = xpp.nextText();
             } else if ("Error".equalsIgnoreCase(tagName)) {
@@ -75,6 +78,10 @@ public class RouteDirection implements Serializable {
 
     public String getRouteLabel() {
         return routeLabel;
+    }
+
+    public String getDirectionID() {
+        return directionID;
     }
 
     public String getDirection() {
@@ -117,5 +124,17 @@ public class RouteDirection implements Serializable {
         } else {
             return routeLabel.equals(route.getHeading());
         }
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+        if (routeNumber != null) {
+            result += routeNumber;
+        }
+        if (routeLabel != null) {
+            result += "  " + routeLabel;
+        }
+        return result;
     }
 }

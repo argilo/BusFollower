@@ -68,7 +68,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRouteSummaryForStopResu
             result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
             errorString = Util.getErrorString(applicationContext, result.getError());
             if (errorString == null) {
-                if(result.getRoutes().isEmpty()) {
+                if(result.getRouteDirections().isEmpty()) {
                     errorString = applicationContext.getString(R.string.no_routes);
                 }
             }

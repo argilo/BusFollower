@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import net.argilo.busfollower.ocdata.GetRouteSummaryForStopResult;
 import net.argilo.busfollower.ocdata.Route;
+import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 
 import android.app.ListActivity;
@@ -39,7 +40,7 @@ public class RouteChooserActivity extends ListActivity {
     private static FetchTripsTask task = null;
 
     private Stop stop;
-    private ArrayList<Route> routes;
+    private ArrayList<RouteDirection> routeDirections;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,9 +54,9 @@ public class RouteChooserActivity extends ListActivity {
 
         stop = (Stop) getIntent().getSerializableExtra("stop");
         GetRouteSummaryForStopResult result = (GetRouteSummaryForStopResult) getIntent().getSerializableExtra("result");
-        routes = result.getRoutes();
+        routeDirections = result.getRouteDirections();
 
-        setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, routes));
+        setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, routeDirections));
         setTitle(getString(R.string.stop_number) + " " + stop.getNumber() +
                 (stop.getName() != null ? " " + stop.getName() : ""));
 
@@ -71,7 +72,7 @@ public class RouteChooserActivity extends ListActivity {
     public void onListItemClick(ListView parent, View v, int position, long id) {
         // Here we just use RecentQuery as a convenience, since it can hold a stop and route.
         task = new FetchTripsTask(this, db);
-        task.execute(new RecentQuery(stop, routes.get(position)));
+        task.execute(new RecentQuery(stop, new Route(routeDirections.get(position))));
     }
 
     @Override
