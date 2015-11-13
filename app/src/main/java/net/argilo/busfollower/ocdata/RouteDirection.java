@@ -119,6 +119,9 @@ public class RouteDirection implements Serializable {
     }
 
     public boolean matchesDirection(Route route) {
+        if (!routeNumber.equals(route.getNumber())) {
+            return false;
+        }
         if (direction.length() > 0) {
             return direction.equals(route.getDirection());
         } else {

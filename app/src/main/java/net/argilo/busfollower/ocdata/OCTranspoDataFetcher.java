@@ -49,47 +49,36 @@ public class OCTranspoDataFetcher {
         this.db = db;
     }
 
-    public GetRoutesOrTripsResult getNextTripsForStop(String stopNumber, String routeNumber)
-            throws IOException, XmlPullParserException, IllegalArgumentException {
+    public GetRoutesOrTripsResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
+        return getRoutesOrTripsResult("GetRouteSummaryForStop", stopNumber, null);
+    }
+
+    public GetRoutesOrTripsResult getNextTripsForStop(String stopNumber, String routeNumber) throws IOException, XmlPullParserException {
+        return getRoutesOrTripsResult("GetNextTripsForStop", stopNumber, routeNumber);
+    }
+
+    public GetRoutesOrTripsResult getNextTripsForStopAllRoutes(String stopNumber) throws IOException, XmlPullParserException {
+        return getRoutesOrTripsResult("GetNextTripsForStopAllRoutes", stopNumber, null);
+    }
+
+    public void abortRequest() {
+        // TODO: Re-implement
+    }
+
+    private GetRoutesOrTripsResult getRoutesOrTripsResult(String command, String stopNumber, String routeNumber)
+            throws IOException, XmlPullParserException {
         validateStopNumber(stopNumber);
         validateRouteNumber(routeNumber);
 
-        URL url = new URL("http://api.octranspo1.com/v1.2/GetNextTripsForStop");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        try {
-            String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
-                            "&apiKey=" + context.getString(R.string.oc_transpo_application_key) +
-                            "&routeNo=" + routeNumber +
-                            "&stopNo=" + stopNumber;
-            sendPost(conn, params);
-
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware(true);
-            XmlPullParser xpp = factory.newPullParser();
-
-            InputStream in = conn.getInputStream();
-            xpp.setInput(in, "UTF-8");
-            xpp.next(); // <soap:Envelope>
-            xpp.next(); //   <soap:Body>
-            xpp.next(); //     <GetRouteSummaryForStopResponse>
-            xpp.next(); //       <GetRouteSummaryForStopResult>
-            GetRoutesOrTripsResult result = new GetRoutesOrTripsResult(xpp);
-            in.close();
-            return result;
-        } finally {
-            conn.disconnect();
-        }
-    }
-
-    public GetRoutesOrTripsResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
-        validateStopNumber(stopNumber);
-
-        URL url = new URL("http://api.octranspo1.com/v1.2/GetRouteSummaryForStop");
+        URL url = new URL("http://api.octranspo1.com/v1.2/" + command);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {
             String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
                     "&apiKey=" + context.getString(R.string.oc_transpo_application_key) +
                     "&stopNo=" + stopNumber;
+            if (routeNumber != null) {
+                params += "&routeNo=" + routeNumber;
+            }
             sendPost(conn, params);
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -100,18 +89,14 @@ public class OCTranspoDataFetcher {
             xpp.setInput(in, "UTF-8");
             xpp.next(); // <soap:Envelope>
             xpp.next(); //   <soap:Body>
-            xpp.next(); //     <GetRouteSummaryForStopResponse>
-            xpp.next(); //       <GetRouteSummaryForStopResult>
+            xpp.next(); //     <Get*Response>
+            xpp.next(); //       <Get*Result>
             GetRoutesOrTripsResult result = new GetRoutesOrTripsResult(xpp);
             in.close();
             return result;
         } finally {
             conn.disconnect();
         }
-    }
-
-    public void abortRequest() {
-        // TODO: Re-implement
     }
 
     private void sendPost(HttpURLConnection conn, String params) throws IOException {
@@ -139,6 +124,9 @@ public class OCTranspoDataFetcher {
     }
 
     private void validateRouteNumber(String routeNumber) {
+        if (routeNumber == null) {
+            return;
+        }
         if (routeNumber.length() < 1 || routeNumber.length() > 3) {
             throw new IllegalArgumentException(context.getString(R.string.invalid_route_number));
         }
