@@ -44,10 +44,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -215,7 +221,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                         maxLongitude = Math.max(maxLongitude, point.longitude);
 
                         map.addMarker(new MarkerOptions()
-                                        .icon(BitmapDescriptorFactory.fromResource(getNumberedPin(number)))
+                                        .icon(BitmapDescriptorFactory.fromBitmap(getLabeledPin("" + number)))
                                         .anchor(0.5f, 1.0f)
                                         .position(point)
                                         .title(rd.getRouteNumber() + " " + rd.getRouteLabel())
@@ -265,13 +271,22 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         displayGetNextTripsForStopResult();
     }
 
-    private int getNumberedPin(int number) {
-        try {
-            return R.drawable.class.getField("pin_red_" + number).getInt(null);
-        } catch (Exception e) {
-            Log.e(TAG, "Couldn't find numbered pin.");
-            return R.drawable.pin_red;
-        }
+    public Bitmap getLabeledPin(String text) {
+        float fontSize = text.length() > 2 ? 13.0f : 16.0f;
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.pin_red).copy(Bitmap.Config.ARGB_8888, true);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(fontSize * getResources().getDisplayMetrics().density);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        float textWidth = paint.measureText(text);
+        float textHeight = -paint.ascent();
+
+        Canvas canvas = new Canvas(bm);
+        canvas.drawText(text, (bm.getWidth() - textWidth) / 2, bm.getHeight() * 0.27f + (textHeight / 2), paint);
+
+        return bm;
     }
 
     private class TripAdapter extends ArrayAdapter<Trip> {
@@ -302,7 +317,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 if (trip.getLocation() == null) {
                     busPin.setImageDrawable(null);
                 } else {
-                    busPin.setImageDrawable(ContextCompat.getDrawable(BusFollowerActivity.this, getNumberedPin(position + 1)));
+                    busPin.setImageDrawable(new BitmapDrawable(context.getResources(), getLabeledPin("" + (position + 1))));
                 }
             }
             return v;
