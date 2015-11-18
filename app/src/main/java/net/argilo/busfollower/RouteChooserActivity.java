@@ -21,9 +21,9 @@
 package net.argilo.busfollower;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import net.argilo.busfollower.ocdata.GetRoutesOrTripsResult;
-import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 
@@ -72,7 +72,9 @@ public class RouteChooserActivity extends ListActivity {
     public void onListItemClick(ListView parent, View v, int position, long id) {
         // Here we just use RecentQuery as a convenience, since it can hold a stop and route.
         task = new FetchTripsTask(this, db);
-        task.execute(new RecentQuery(stop, new Route(routeDirections.get(position))));
+        HashSet<RouteDirection> queryRouteDirections = new HashSet<>();
+        queryRouteDirections.add(routeDirections.get(position));
+        task.execute(new TripsQuery(stop.getNumber(), queryRouteDirections));
     }
 
     @Override

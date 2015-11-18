@@ -72,6 +72,13 @@ public class RouteDirection implements Serializable {
         }
     }
 
+    public RouteDirection(Route route) {
+        this.routeNumber = route.getNumber();
+        this.directionID = route.getDirectionID();
+        this.direction = route.getDirection();
+        this.routeLabel = route.getHeading();
+    }
+
     public String getRouteNumber() {
         return routeNumber;
     }
@@ -118,14 +125,23 @@ public class RouteDirection implements Serializable {
         return trips;
     }
 
-    public boolean matchesDirection(Route route) {
-        if (!routeNumber.equals(route.getNumber())) {
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
             return false;
         }
-        if (direction.length() > 0) {
-            return direction.equals(route.getDirection());
+        if (other instanceof RouteDirection) {
+            RouteDirection otherRouteDirection = (RouteDirection) other;
+            if (!routeNumber.equals(otherRouteDirection.routeNumber)) {
+                return false;
+            }
+            if (direction.length() > 0) {
+                return direction.equals(otherRouteDirection.direction);
+            } else {
+                return routeLabel.equals(otherRouteDirection.routeLabel);
+            }
         } else {
-            return routeLabel.equals(route.getHeading());
+            return false;
         }
     }
 
@@ -139,5 +155,10 @@ public class RouteDirection implements Serializable {
             result += "  " + routeLabel;
         }
         return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return ("" + routeNumber + direction + routeLabel).hashCode();
     }
 }

@@ -23,6 +23,8 @@ package net.argilo.busfollower.ocdata;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -80,5 +82,18 @@ public class GetRoutesOrTripsResult implements Serializable {
 
     public ArrayList<RouteDirection> getRouteDirections() {
         return routeDirections;
+    }
+
+    public Collection<RouteDirection> getFilteredRouteDirections(HashSet<RouteDirection> filter) {
+        if (filter.size() == 0) {
+            return routeDirections;
+        }
+        Collection<RouteDirection> result = new ArrayList<>();
+        for (RouteDirection rd : routeDirections) {
+            if (filter.contains(rd)) {
+                result.add(rd);
+            }
+        }
+        return result;
     }
 }

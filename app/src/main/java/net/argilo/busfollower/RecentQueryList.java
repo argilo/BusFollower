@@ -31,6 +31,7 @@ import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.Stop;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 class RecentQueryList {
     private static final String FILENAME = "recent_queries";
@@ -52,14 +53,19 @@ class RecentQueryList {
         return recents;
     }
 
-    public static synchronized void addOrUpdateRecent(Context context, Stop stop, Route route) {
+    public static synchronized void addOrUpdateRecent(Context context, SQLiteDatabase db, String stopNumber, TripsQuery tripsQuery) {
         ArrayList<RecentQuery> recents = loadRecents(context);
 
-        RecentQuery query = new RecentQuery(stop, route);
+        Stop stop = new Stop(context, db, stopNumber);
+        Route route = null;
+        if (tripsQuery.getRouteDirections().size() == 1) {
+            route = new Route(tripsQuery.getRouteDirections().iterator().next());
+        }
+        RecentQuery recentQuery = new RecentQuery(stop, route);
 
         boolean foundQuery = false;
         for (RecentQuery recent : recents) {
-            if (recent.equals(query)) {
+            if (recent.equals(recentQuery)) {
                 foundQuery = true;
                 recent.queriedAgain();
                 break;
@@ -67,7 +73,7 @@ class RecentQueryList {
         }
 
         if (!foundQuery) {
-            recents.add(query);
+            recents.add(recentQuery);
             if (recents.size() > MAX_RECENT_QUERIES) {
                 // Boot the least recently used query.
                 Collections.sort(recents, new QueryDateComparator());

@@ -34,7 +34,8 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="error">Error</string>
     <string name="server_error">The server could not be reached. Please check your network connection.</string>
     <string name="invalid_response">The server returned an unexpected response.  Please try again later.</string>
-    <string name="no_trips">There are no upcoming trips for this route.</string>
+    <string name="no_trips_one_route">There are no upcoming trips for this route.</string>
+    <string name="no_trips_many_routes">There are no upcoming trips for these routes.</string>
     <string name="no_routes">There are currently no routes available at this stop.</string>
     <string name="no_departures">There are no departures from this stop.</string>
     <string name="ok">OK</string>

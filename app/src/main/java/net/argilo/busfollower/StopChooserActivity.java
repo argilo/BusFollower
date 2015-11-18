@@ -21,7 +21,9 @@
 package net.argilo.busfollower;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 
 import android.app.Activity;
@@ -182,13 +184,18 @@ public class StopChooserActivity extends Activity {
         recentList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                RecentQuery query = recentQueryAdapter.getItem(position);
-                if (query.getRoute() == null) {
+                RecentQuery recentQuery = recentQueryAdapter.getItem(position);
+                if (recentQuery.getRoute() == null) {
                     fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
-                    fetchRoutesTask.execute(query.getStop().getNumber());
+                    fetchRoutesTask.execute(recentQuery.getStop().getNumber());
                 } else {
                     fetchTripsTask = new FetchTripsTask(StopChooserActivity.this, db);
-                    fetchTripsTask.execute(query);
+                    HashSet<RouteDirection> routeDirections = new HashSet<>();
+                    if (recentQuery.getRoute() != null) {
+                        routeDirections.add(new RouteDirection(recentQuery.getRoute()));
+                    }
+                    TripsQuery tripsQuery = new TripsQuery(recentQuery.getStop().getNumber(), routeDirections);
+                    fetchTripsTask.execute(tripsQuery);
                 }
             }
         });
@@ -258,7 +265,7 @@ public class StopChooserActivity extends Activity {
 
         @Override
         public View getView(int position, View v, ViewGroup parent) {
-            RecentQuery query = queries.get(position);
+            RecentQuery recentQuery = queries.get(position);
 
             if (v == null) {
                 LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -268,16 +275,16 @@ public class StopChooserActivity extends Activity {
             TextView text1 = (TextView) v.findViewById(android.R.id.text1);
             text1.setSingleLine();
             text1.setEllipsize(TextUtils.TruncateAt.END);
-            if (query.getRoute() == null) {
+            if (recentQuery.getRoute() == null) {
                 // Stop number heading
                 text1.setTypeface(null, Typeface.BOLD);
                 text1.setText(context.getString(R.string.stop_number) + " " +
-                        query.getStop().getNumber() + " " + query.getStop().getName());
+                        recentQuery.getStop().getNumber() + " " + recentQuery.getStop().getName());
             } else {
                 // Route number
                 text1.setTypeface(null, Typeface.NORMAL);
                 text1.setText(" \u00BB " + context.getString(R.string.route_number) + " " +
-                        query.getRoute().getNumber() + " " + query.getRoute().getHeading());
+                        recentQuery.getRoute().getNumber() + " " + recentQuery.getRoute().getHeading());
             }
 
             return v;

@@ -25,7 +25,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import net.argilo.busfollower.ocdata.GetRoutesOrTripsResult;
-import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Trip;
@@ -76,8 +75,8 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
 
     private SQLiteDatabase db;
     private static FetchTripsTask task;
+    private TripsQuery query = null;
     private GetRoutesOrTripsResult result = null;
-    private Route route;
 
     private GoogleMap map = null;
     private int padding = 0;
@@ -111,15 +110,15 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
+        query = (TripsQuery) getIntent().getSerializableExtra("query");
         result = (GetRoutesOrTripsResult) getIntent().getSerializableExtra("result");
-        route = (Route) getIntent().getSerializableExtra("route");
         if (savedInstanceState != null) {
             if (task != null) {
                 // Let the AsyncTask know we're back.
                 task.setActivityContext(this);
             }
+            query = (TripsQuery) savedInstanceState.getSerializable("query");
             result = (GetRoutesOrTripsResult) savedInstanceState.getSerializable("result");
-            route = (Route) savedInstanceState.getSerializable("route");
 
             if (result != null) {
                 // A configuration change has occurred. Don't reset zoom & center.
@@ -129,13 +128,21 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 zoomAndCenter = true;
             }
         } else {
-            RecentQueryList.addOrUpdateRecent(this, new Stop(this, db, result.getStopNumber()), route);
+            if (query.getRouteDirections().size() == 1) {
+                RecentQueryList.addOrUpdateRecent(this, db, result.getStopNumber(), query);
+            }
             // We're arriving from another activity, so set zoom & center.
             zoomAndCenter = true;
         }
 
-        setTitle(getString(R.string.stop_number) + " " + result.getStopNumber() +
-                ", " + getString(R.string.route_number) + " " + route.getNumber() + " " + route.getHeading());
+        if (query.getRouteDirections().size() == 1) {
+            RouteDirection rd = query.getRouteDirections().iterator().next();
+            setTitle(getString(R.string.stop_number) + " " + result.getStopNumber() +
+                    ", " + getString(R.string.route_number) + " " + rd.getRouteNumber() + " " + rd.getRouteLabel());
+        } else {
+            setTitle(getString(R.string.stop_number) + " " + result.getStopNumber() +
+                    ", all routes"); // TODO: make string
+        }
 
         padding = ContextCompat.getDrawable(this, R.drawable.pin_red).getIntrinsicHeight();
 
@@ -158,8 +165,8 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
             // Let the AsyncTask know we're gone.
             task.setActivityContext(null);
         }
+        outState.putSerializable("query", query);
         outState.putSerializable("result", result);
-        outState.putSerializable("route", route);
     }
 
     @Override
@@ -177,7 +184,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 return true;
             case R.id.menu_refresh:
                 task = new FetchTripsTask(this, db);
-                task.execute(new RecentQuery(new Stop(this, db, result.getStopNumber()), route));
+                task.execute(query);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -206,29 +213,29 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
             minLongitude = maxLongitude = stopLocation.longitude;
         }
 
-        for (RouteDirection rd : result.getRouteDirections()) {
-            if (rd.matchesDirection(route)) {
-                tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, R.layout.tripitem, rd.getTrips()));
+        ArrayList<Trip> trips = new ArrayList<>();
+        for (RouteDirection rd : result.getFilteredRouteDirections(query.getRouteDirections())) {
+            trips.addAll(rd.getTrips());
+        }
+        tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, R.layout.tripitem, trips));
 
-                int number = 0;
-                for (Trip trip : rd.getTrips()) {
-                    number++;
-                    LatLng point = trip.getLocation();
-                    if (point != null) {
-                        minLatitude = Math.min(minLatitude, point.latitude);
-                        maxLatitude = Math.max(maxLatitude, point.latitude);
-                        minLongitude = Math.min(minLongitude, point.longitude);
-                        maxLongitude = Math.max(maxLongitude, point.longitude);
+        int number = 0;
+        for (Trip trip : trips) {
+            number++;
+            LatLng point = trip.getLocation();
+            if (point != null) {
+                minLatitude = Math.min(minLatitude, point.latitude);
+                maxLatitude = Math.max(maxLatitude, point.latitude);
+                minLongitude = Math.min(minLongitude, point.longitude);
+                maxLongitude = Math.max(maxLongitude, point.longitude);
 
-                        map.addMarker(new MarkerOptions()
-                                        .icon(BitmapDescriptorFactory.fromBitmap(getLabeledPin("" + number)))
-                                        .anchor(0.5f, 1.0f)
-                                        .position(point)
-                                        .title(rd.getRouteNumber() + " " + rd.getRouteLabel())
-                                        .snippet(trip.getDestination())
-                        );
-                    }
-                }
+                map.addMarker(new MarkerOptions()
+                                .icon(BitmapDescriptorFactory.fromBitmap(getLabeledPin("" + number)))
+                                .anchor(0.5f, 1.0f)
+                                .position(point)
+                                .title(trip.getRouteDirection().getRouteNumber() + " " + trip.getRouteDirection().getRouteLabel())
+                                .snippet(trip.getDestination())
+                );
             }
         }
 

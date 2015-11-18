@@ -21,12 +21,11 @@
 package net.argilo.busfollower;
 
 import java.io.IOException;
+import java.util.HashSet;
 
 import net.argilo.busfollower.ocdata.GetRoutesOrTripsResult;
 import net.argilo.busfollower.ocdata.OCTranspoDataFetcher;
-import net.argilo.busfollower.ocdata.Route;
 import net.argilo.busfollower.ocdata.RouteDirection;
-import net.argilo.busfollower.ocdata.Stop;
 import net.argilo.busfollower.ocdata.Util;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -39,12 +38,12 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
-class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetRoutesOrTripsResult> {
+class FetchTripsTask extends AsyncTask<TripsQuery, Void, GetRoutesOrTripsResult> {
     private Context activityContext = null;
     private Context applicationContext = null;
     private SQLiteDatabase db = null;
     private ProgressDialog progressDialog = null;
-    private Route route = null;
+    private TripsQuery query = null;
     private String errorString = null;
     private OCTranspoDataFetcher dataFetcher = null;
     private boolean finished = false;
@@ -62,23 +61,30 @@ class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetRoutesOrTripsResult
     }
 
     @Override
-    protected GetRoutesOrTripsResult doInBackground(RecentQuery... query) {
-        Stop stop = query[0].getStop();
-        route = query[0].getRoute();
+    protected GetRoutesOrTripsResult doInBackground(TripsQuery... query) {
+        this.query = query[0];
+        String stopNumber = query[0].getStopNumber();
+        HashSet<RouteDirection> routeDirections = query[0].getRouteDirections();
         GetRoutesOrTripsResult result = null;
         try {
             dataFetcher = new OCTranspoDataFetcher(applicationContext, db);
-            result = dataFetcher.getNextTripsForStop(stop.getNumber(), route.getNumber());
+            if (routeDirections.size() == 1) {
+                String routeNumber = routeDirections.iterator().next().getRouteNumber();
+                result = dataFetcher.getNextTripsForStop(stopNumber, routeNumber);
+            } else {
+                result = dataFetcher.getNextTripsForStopAllRoutes(stopNumber);
+            }
             errorString = Util.getErrorString(applicationContext, result.getError());
             if (errorString == null) {
                 // Check whether there are any trips to display, since there's no
                 // point going to the map screen if there aren't.
-                for (RouteDirection rd : result.getRouteDirections()) {
-                    if (rd.matchesDirection(route)) {
-                        if (rd.getTrips().isEmpty()) {
-                            errorString = applicationContext.getString(R.string.no_trips);
-                        }
-                    }
+                int totalTrips = 0;
+                for (RouteDirection rd : result.getFilteredRouteDirections(routeDirections)) {
+                    totalTrips += rd.getTrips().size();
+                }
+                if (totalTrips == 0) {
+                    errorString = applicationContext.getString(routeDirections.size() == 1 ?
+                            R.string.no_trips_one_route : R.string.no_trips_many_routes);
                 }
             }
         } catch (IOException e) {
@@ -121,8 +127,8 @@ class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetRoutesOrTripsResult
                 ((BusFollowerActivity) activityContext).setResult(result);
             } else {
                 Intent intent = new Intent(activityContext, BusFollowerActivity.class);
+                intent.putExtra("query", query);
                 intent.putExtra("result", result);
-                intent.putExtra("route", route);
                 activityContext.startActivity(intent);
             }
         }
