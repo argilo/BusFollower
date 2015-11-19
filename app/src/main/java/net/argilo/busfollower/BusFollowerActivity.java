@@ -230,7 +230,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 maxLongitude = Math.max(maxLongitude, point.longitude);
 
                 map.addMarker(new MarkerOptions()
-                                .icon(BitmapDescriptorFactory.fromBitmap(getLabeledPin("" + number)))
+                                .icon(BitmapDescriptorFactory.fromBitmap(getLabeledPin(trip.getRouteDirection().getRouteNumber())))
                                 .anchor(0.5f, 1.0f)
                                 .position(point)
                                 .title(trip.getRouteDirection().getRouteNumber() + " " + trip.getRouteDirection().getRouteLabel())
@@ -324,7 +324,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 if (trip.getLocation() == null) {
                     busPin.setImageDrawable(null);
                 } else {
-                    busPin.setImageDrawable(new BitmapDrawable(context.getResources(), getLabeledPin("" + (position + 1))));
+                    busPin.setImageDrawable(new BitmapDrawable(context.getResources(), getLabeledPin(trip.getRouteDirection().getRouteNumber())));
                 }
             }
             return v;

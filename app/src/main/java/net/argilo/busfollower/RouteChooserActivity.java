@@ -30,10 +30,13 @@ import net.argilo.busfollower.ocdata.Stop;
 import android.app.ListActivity;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class RouteChooserActivity extends ListActivity {
     private SQLiteDatabase db = null;
@@ -56,7 +59,39 @@ public class RouteChooserActivity extends ListActivity {
         GetRoutesOrTripsResult result = (GetRoutesOrTripsResult) getIntent().getSerializableExtra("result");
         routeDirections = result.getRouteDirections();
 
-        setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, routeDirections));
+        setListAdapter(new BaseAdapter() {
+            private LayoutInflater layoutInflater = LayoutInflater.from(RouteChooserActivity.this);
+
+            @Override
+            public int getCount() {
+                return routeDirections.size() + 1;
+            }
+
+            @Override
+            public Object getItem(int position) {
+                if (position == 0) {
+                    return null;
+                } else {
+                    return routeDirections.get(position - 1);
+                }
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView text = (TextView) layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+                if (position == 0) {
+                    text.setText("All routes"); // TODO: Make resource
+                } else {
+                    text.setText(getItem(position).toString());
+                }
+                return text;
+            }
+        });
         setTitle(getString(R.string.stop_number) + " " + stop.getNumber() +
                 (stop.getName() != null ? " " + stop.getName() : ""));
 
@@ -73,7 +108,9 @@ public class RouteChooserActivity extends ListActivity {
         // Here we just use RecentQuery as a convenience, since it can hold a stop and route.
         task = new FetchTripsTask(this, db);
         HashSet<RouteDirection> queryRouteDirections = new HashSet<>();
-        queryRouteDirections.add(routeDirections.get(position));
+        if (position > 0) {
+            queryRouteDirections.add(routeDirections.get(position - 1));
+        }
         task.execute(new TripsQuery(stop.getNumber(), queryRouteDirections));
     }
 
