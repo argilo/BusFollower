@@ -22,6 +22,8 @@ package net.argilo.busfollower;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import net.argilo.busfollower.ocdata.GetRoutesOrTripsResult;
@@ -217,6 +219,12 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         for (RouteDirection rd : result.getFilteredRouteDirections(query.getRouteDirections())) {
             trips.addAll(rd.getTrips());
         }
+        Collections.sort(trips, new Comparator<Trip>() {
+            @Override
+            public int compare(Trip lhs, Trip rhs) {
+                return lhs.getAdjustedScheduleTime().compareTo(rhs.getAdjustedScheduleTime());
+            }
+        });
         tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, R.layout.tripitem, trips));
 
         int number = 0;
