@@ -37,6 +37,8 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
                     android:layout_marginStart="6dip"
                     android:layout_marginLeft="6dip"
                     android:layout_marginTop="6dip"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:textAppearance="?android:attr/textAppearanceLarge"
             />
     
@@ -46,6 +48,8 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
                     android:layout_marginStart="6dip"
                     android:layout_marginLeft="6dip"
                     android:layout_marginBottom="6dip"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:textAppearance="?android:attr/textAppearanceSmall"
             />
     
