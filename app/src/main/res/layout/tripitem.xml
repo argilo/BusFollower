@@ -25,6 +25,14 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <ImageView
+        android:id="@+id/busPin"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_weight="0"
+        android:padding="3dp"
+        android:gravity="center_vertical" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_weight="1"
@@ -55,12 +63,4 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/busPin"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_weight="0"
-        android:padding="3dp"
-        android:gravity="center_vertical" />
-    
 </LinearLayout>
