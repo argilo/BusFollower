@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,39 +60,43 @@ public class RouteChooserActivity extends ListActivity {
         GetRoutesOrTripsResult result = (GetRoutesOrTripsResult) getIntent().getSerializableExtra("result");
         routeDirections = result.getRouteDirections();
 
-        setListAdapter(new BaseAdapter() {
-            private LayoutInflater layoutInflater = LayoutInflater.from(RouteChooserActivity.this);
+        if (routeDirections.size() == 1) {
+            setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, routeDirections));
+        } else {
+            setListAdapter(new BaseAdapter() {
+                private LayoutInflater layoutInflater = LayoutInflater.from(RouteChooserActivity.this);
 
-            @Override
-            public int getCount() {
-                return routeDirections.size() + 1;
-            }
-
-            @Override
-            public Object getItem(int position) {
-                if (position == 0) {
-                    return null;
-                } else {
-                    return routeDirections.get(position - 1);
+                @Override
+                public int getCount() {
+                    return routeDirections.size() + 1;
                 }
-            }
 
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                TextView text = (TextView) layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-                if (position == 0) {
-                    text.setText("All routes"); // TODO: Make resource
-                } else {
-                    text.setText(getItem(position).toString());
+                @Override
+                public Object getItem(int position) {
+                    if (position == 0) {
+                        return null;
+                    } else {
+                        return routeDirections.get(position - 1);
+                    }
                 }
-                return text;
-            }
-        });
+
+                @Override
+                public long getItemId(int position) {
+                    return position;
+                }
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    TextView text = (TextView) layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+                    if (position == 0) {
+                        text.setText("All routes"); // TODO: Make resource
+                    } else {
+                        text.setText(getItem(position).toString());
+                    }
+                    return text;
+                }
+            });
+        }
         setTitle(getString(R.string.stop_number) + " " + stop.getNumber() +
                 (stop.getName() != null ? " " + stop.getName() : ""));
 
