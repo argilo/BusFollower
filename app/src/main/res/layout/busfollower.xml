@@ -29,7 +29,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <ListView
         android:id="@+id/tripList"
         android:layout_width="fill_parent"
-        android:layout_height="183dip"
+        android:layout_height="165dip"
         android:drawSelectorOnTop="false" />
 
     <fragment class="com.google.android.gms.maps.SupportMapFragment"
