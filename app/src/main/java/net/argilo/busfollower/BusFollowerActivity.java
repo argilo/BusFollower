@@ -238,7 +238,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 maxLongitude = Math.max(maxLongitude, point.longitude);
 
                 map.addMarker(new MarkerOptions()
-                                .icon(BitmapDescriptorFactory.fromBitmap(getLabeledPin(trip.getRouteDirection().getRouteNumber())))
+                                .icon(BitmapDescriptorFactory.fromBitmap(getLabeledPin(trip.getRouteDirection().getRouteNumber(), R.drawable.pin_red)))
                                 .anchor(0.5f, 1.0f)
                                 .position(point)
                                 .title(trip.getRouteDirection().getRouteNumber() + " " + trip.getRouteDirection().getRouteLabel())
@@ -286,9 +286,9 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         displayGetNextTripsForStopResult();
     }
 
-    public Bitmap getLabeledPin(String text) {
+    public Bitmap getLabeledPin(String text, int resource) {
         float fontSize = text.length() > 2 ? 13.0f : 16.0f;
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.pin_red).copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), resource).copy(Bitmap.Config.ARGB_8888, true);
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -329,11 +329,8 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 ImageView busPin = (ImageView) v.findViewById(R.id.busPin);
                 text1.setText(getHumanReadableTime(trip.getAdjustedScheduleTime()) + " (" + context.getResources().getString(trip.isEstimated() ? R.string.estimated : R.string.scheduled) + ")");
                 text2.setText(context.getString(R.string.destination) + " " + trip.getDestination());
-                if (trip.getLocation() == null) {
-                    busPin.setImageDrawable(null);
-                } else {
-                    busPin.setImageDrawable(new BitmapDrawable(context.getResources(), getLabeledPin(trip.getRouteDirection().getRouteNumber())));
-                }
+                int resource = trip.getLocation() == null ? R.drawable.square : R.drawable.pin_red;
+                busPin.setImageDrawable(new BitmapDrawable(context.getResources(), getLabeledPin(trip.getRouteDirection().getRouteNumber(), resource)));
             }
             return v;
         }

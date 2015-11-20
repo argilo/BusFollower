@@ -33,11 +33,7 @@
 .idea/vcs.xml
 build/
 /app/src/*/res/values/api_keys.xml
-pin_*.png
-stop.png
-refresh.png
-launcher_icon.png
-/google-play-icon.png
+*.png
 /gtfs/*.zip
 /app/src/main/assets/db
 *.iml
