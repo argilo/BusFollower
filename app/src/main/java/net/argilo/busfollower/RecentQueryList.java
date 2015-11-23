@@ -53,10 +53,10 @@ class RecentQueryList {
         return recents;
     }
 
-    public static synchronized void addOrUpdateRecent(Context context, SQLiteDatabase db, String stopNumber, TripsQuery tripsQuery) {
+    public static synchronized void addOrUpdateRecent(Context context, SQLiteDatabase db, TripsQuery tripsQuery) {
         ArrayList<RecentQuery> recents = loadRecents(context);
 
-        Stop stop = new Stop(context, db, stopNumber);
+        Stop stop = new Stop(context, db, tripsQuery.getStopNumber());
         Route route = null;
         if (tripsQuery.getRouteDirections().size() == 1) {
             route = new Route(tripsQuery.getRouteDirections().iterator().next());

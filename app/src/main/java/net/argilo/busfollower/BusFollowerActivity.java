@@ -131,7 +131,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
             }
         } else {
             if (query.getRouteDirections().size() == 1) {
-                RecentQueryList.addOrUpdateRecent(this, db, result.getStopNumber(), query);
+                RecentQueryList.addOrUpdateRecent(this, db, query);
             }
             // We're arriving from another activity, so set zoom & center.
             zoomAndCenter = true;
