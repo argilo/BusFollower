@@ -26,8 +26,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 
 import net.argilo.busfollower.ocdata.Route;
+import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 
 import android.content.Context;
@@ -37,20 +39,18 @@ class RecentQueryList {
     private static final String FILENAME = "recent_queries";
     private static final int MAX_RECENT_QUERIES = 10;
 
-    @SuppressWarnings("unchecked")
-    public static synchronized ArrayList<RecentQuery> loadRecents(Context context) {
-        ArrayList<RecentQuery> recents;
+    public static synchronized ArrayList<TripsQuery> loadRecentQueries(Context context) {
+        ArrayList<TripsQuery> result = new ArrayList<>();
 
-        try {
-            ObjectInputStream in = new ObjectInputStream(context.openFileInput(FILENAME));
-            recents = (ArrayList<RecentQuery>) in.readObject();
-            in.close();
-        } catch (Exception e) {
-            // Start a new recent list.
-            recents = new ArrayList<>();
+        for (RecentQuery recentQuery : loadRecents(context)) {
+            HashSet<RouteDirection> routeDirections = new HashSet<>();
+            if (recentQuery.getRoute() != null) {
+                routeDirections.add(new RouteDirection(recentQuery.getRoute()));
+            }
+            result.add(new TripsQuery(recentQuery.getStop().getNumber(), routeDirections));
         }
 
-        return recents;
+        return result;
     }
 
     public static synchronized void addOrUpdateRecent(Context context, SQLiteDatabase db, TripsQuery tripsQuery) {
@@ -90,6 +90,22 @@ class RecentQueryList {
         } catch (IOException e) {
             // No big deal if the recent queries didn't get saved.
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static synchronized ArrayList<RecentQuery> loadRecents(Context context) {
+        ArrayList<RecentQuery> recents;
+
+        try {
+            ObjectInputStream in = new ObjectInputStream(context.openFileInput(FILENAME));
+            recents = (ArrayList<RecentQuery>) in.readObject();
+            in.close();
+        } catch (Exception e) {
+            // Start a new recent list.
+            recents = new ArrayList<>();
+        }
+
+        return recents;
     }
 
     private static class QueryDateComparator implements Comparator<RecentQuery> {

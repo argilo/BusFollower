@@ -110,7 +110,6 @@ public class RouteChooserActivity extends ListActivity {
 
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
-        // Here we just use RecentQuery as a convenience, since it can hold a stop and route.
         task = new FetchTripsTask(this, db);
         HashSet<RouteDirection> queryRouteDirections = new HashSet<>();
         if (position > 0) {

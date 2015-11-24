@@ -21,7 +21,6 @@
 package net.argilo.busfollower;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
@@ -63,7 +62,7 @@ public class StopChooserActivity extends Activity {
     private SQLiteDatabase db = null;
     private static FetchRoutesTask fetchRoutesTask = null;
     private static FetchTripsTask fetchTripsTask = null;
-    private RecentQueryAdapter recentQueryAdapter = null;
+    private QueryAdapter queryAdapter = null;
     private AutoCompleteTextView stopSearchField = null;
 
     @Override
@@ -178,24 +177,19 @@ public class StopChooserActivity extends Activity {
         });
 
         ListView recentList = (ListView) findViewById(R.id.recentList);
-        recentQueryAdapter = new RecentQueryAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<RecentQuery>());
-        recentList.setAdapter(recentQueryAdapter);
+        queryAdapter = new QueryAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<Query>());
+        recentList.setAdapter(queryAdapter);
 
         recentList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                RecentQuery recentQuery = recentQueryAdapter.getItem(position);
-                if (recentQuery.getRoute() == null) {
+                Query query = queryAdapter.getItem(position);
+                if (query instanceof RoutesQuery) {
                     fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
-                    fetchRoutesTask.execute(recentQuery.getStop().getNumber());
-                } else {
+                    fetchRoutesTask.execute(((RoutesQuery) query).getStopNumber());
+                } else if (query instanceof TripsQuery) {
                     fetchTripsTask = new FetchTripsTask(StopChooserActivity.this, db);
-                    HashSet<RouteDirection> routeDirections = new HashSet<>();
-                    if (recentQuery.getRoute() != null) {
-                        routeDirections.add(new RouteDirection(recentQuery.getRoute()));
-                    }
-                    TripsQuery tripsQuery = new TripsQuery(recentQuery.getStop().getNumber(), routeDirections);
-                    fetchTripsTask.execute(tripsQuery);
+                    fetchTripsTask.execute((TripsQuery) query);
                 }
             }
         });
@@ -207,18 +201,18 @@ public class StopChooserActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        recentQueryAdapter.clear();
+        queryAdapter.clear();
 
-        ArrayList<RecentQuery> recentQueryList = RecentQueryList.loadRecents(this);
-        Stop lastStop = null;
-        for (RecentQuery recentQuery : recentQueryList) {
-            Stop thisStop = recentQuery.getStop();
+        ArrayList<TripsQuery> tripsQueryList = RecentQueryList.loadRecentQueries(this);
+        String lastStop = null;
+        for (TripsQuery tripsQuery : tripsQueryList) {
+            String thisStop = tripsQuery.getStopNumber();
             if (!thisStop.equals(lastStop)) {
                 // Add a stop heading that will group all routes departing from this stop.
-                recentQueryAdapter.add(new RecentQuery(thisStop));
+                queryAdapter.add(new RoutesQuery(thisStop));
                 lastStop = thisStop;
             }
-            recentQueryAdapter.add(recentQuery);
+            queryAdapter.add(tripsQuery);
         }
     }
 
@@ -251,12 +245,12 @@ public class StopChooserActivity extends Activity {
         return true;
     }
 
-    private class RecentQueryAdapter extends ArrayAdapter<RecentQuery> {
+    private class QueryAdapter extends ArrayAdapter<Query> {
         private Context context;
         private int resourceId;
-        private ArrayList<RecentQuery> queries;
+        private ArrayList<Query> queries;
 
-        public RecentQueryAdapter(Context context, int resourceId, ArrayList<RecentQuery> queries) {
+        public QueryAdapter(Context context, int resourceId, ArrayList<Query> queries) {
             super(context, resourceId, queries);
             this.context = context;
             this.resourceId = resourceId;
@@ -265,7 +259,7 @@ public class StopChooserActivity extends Activity {
 
         @Override
         public View getView(int position, View v, ViewGroup parent) {
-            RecentQuery recentQuery = queries.get(position);
+            Query query = queries.get(position);
 
             if (v == null) {
                 LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -275,16 +269,22 @@ public class StopChooserActivity extends Activity {
             TextView text1 = (TextView) v.findViewById(android.R.id.text1);
             text1.setSingleLine();
             text1.setEllipsize(TextUtils.TruncateAt.END);
-            if (recentQuery.getRoute() == null) {
+            if (query instanceof RoutesQuery) {
                 // Stop number heading
+                RoutesQuery routesQuery = (RoutesQuery) query;
+                Stop stop = new Stop(context, db, routesQuery.getStopNumber());
                 text1.setTypeface(null, Typeface.BOLD);
                 text1.setText(context.getString(R.string.stop_number) + " " +
-                        recentQuery.getStop().getNumber() + " " + recentQuery.getStop().getName());
-            } else {
+                        stop.getNumber() + " " + stop.getName());
+            } else if (query instanceof TripsQuery) {
                 // Route number
+                TripsQuery tripsQuery = (TripsQuery) query;
                 text1.setTypeface(null, Typeface.NORMAL);
-                text1.setText(" \u00BB " + context.getString(R.string.route_number) + " " +
-                        recentQuery.getRoute().getNumber() + " " + recentQuery.getRoute().getHeading());
+                if (tripsQuery.getRouteDirections().size() == 1) {
+                    RouteDirection rd = tripsQuery.getRouteDirections().iterator().next();
+                    text1.setText(" \u00BB " + context.getString(R.string.route_number) + " " +
+                            rd.getRouteNumber() + " " + rd.getRouteLabel());
+                }
             }
 
             return v;

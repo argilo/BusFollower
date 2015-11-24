@@ -20,27 +20,5 @@
 
 package net.argilo.busfollower;
 
-import net.argilo.busfollower.ocdata.RouteDirection;
-
-import java.io.Serializable;
-import java.util.HashSet;
-
-public class TripsQuery extends Query implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private String stopNumber = null;
-    private HashSet<RouteDirection> routeDirections = null;
-
-    public TripsQuery(String stopNumber, HashSet<RouteDirection> routeDirections) {
-        this.stopNumber = stopNumber;
-        this.routeDirections = routeDirections;
-    }
-
-    public String getStopNumber() {
-        return stopNumber;
-    }
-
-    public HashSet<RouteDirection> getRouteDirections() {
-        return routeDirections;
-    }
+public class Query {
 }
