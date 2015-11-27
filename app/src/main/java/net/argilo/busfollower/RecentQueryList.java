@@ -36,20 +36,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 class RecentQueryList {
-    private static final String FILENAME = "recent_queries";
+    private static final String LEGACY_FILENAME = "recent_queries";
     private static final int MAX_RECENT_QUERIES = 10;
 
     public static synchronized ArrayList<TripsQuery> loadRecentQueries(Context context) {
         ArrayList<TripsQuery> result = new ArrayList<>();
-
-        for (RecentQuery recentQuery : loadRecents(context)) {
-            HashSet<RouteDirection> routeDirections = new HashSet<>();
-            if (recentQuery.getRoute() != null) {
-                routeDirections.add(new RouteDirection(recentQuery.getRoute()));
-            }
-            result.add(new TripsQuery(recentQuery.getStop().getNumber(), routeDirections));
-        }
-
         return result;
     }
 
@@ -84,7 +75,7 @@ class RecentQueryList {
         }
 
         try {
-            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(FILENAME, Context.MODE_PRIVATE));
+            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(LEGACY_FILENAME, Context.MODE_PRIVATE));
             out.writeObject(recents);
             out.close();
         } catch (IOException e) {
@@ -92,20 +83,34 @@ class RecentQueryList {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static synchronized ArrayList<RecentQuery> loadRecents(Context context) {
+    // TODO: Remove someday
+    private static synchronized ArrayList<TripsQuery> convertToDatabase(Context context) {
         ArrayList<RecentQuery> recents;
 
         try {
-            ObjectInputStream in = new ObjectInputStream(context.openFileInput(FILENAME));
+            ObjectInputStream in = new ObjectInputStream(context.openFileInput(LEGACY_FILENAME));
             recents = (ArrayList<RecentQuery>) in.readObject();
             in.close();
+
+            for (RecentQuery recentQuery : recents) {
+
+            }
         } catch (Exception e) {
-            // Start a new recent list.
+            // Oh well, don't bother importing the old saved queries.
             recents = new ArrayList<>();
         }
 
-        return recents;
+        ArrayList<TripsQuery> result = new ArrayList<>();
+
+        for (RecentQuery recentQuery : recents) {
+            HashSet<RouteDirection> routeDirections = new HashSet<>();
+            if (recentQuery.getRoute() != null) {
+                routeDirections.add(new RouteDirection(recentQuery.getRoute()));
+            }
+            result.add(new TripsQuery(recentQuery.getStop().getNumber(), routeDirections));
+        }
+
+        return result;
     }
 
     private static class QueryDateComparator implements Comparator<RecentQuery> {
