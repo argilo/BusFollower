@@ -27,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -77,6 +79,13 @@ public class RouteDirection implements Serializable {
         this.directionID = route.getDirectionID();
         this.direction = route.getDirection();
         this.routeLabel = route.getHeading();
+    }
+
+    public RouteDirection(JSONObject obj) throws JSONException {
+        this.routeNumber = obj.getString("routeNumber");
+        this.directionID = obj.getString("directionID");
+        this.direction = obj.getString("direction");
+        this.routeLabel = obj.getString("routeLabel");
     }
 
     public String getRouteNumber() {
@@ -155,6 +164,16 @@ public class RouteDirection implements Serializable {
             result += "  " + routeLabel;
         }
         return result;
+    }
+
+
+    public JSONObject toJSON() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("routeNumber", routeNumber);
+        obj.put("directionID", directionID);
+        obj.put("direction", direction);
+        obj.put("routeLabel", routeLabel);
+        return obj;
     }
 
     @Override

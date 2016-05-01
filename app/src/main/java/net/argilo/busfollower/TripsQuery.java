@@ -22,6 +22,10 @@ package net.argilo.busfollower;
 
 import net.argilo.busfollower.ocdata.RouteDirection;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.HashSet;
 
@@ -36,11 +40,33 @@ public class TripsQuery extends Query implements Serializable {
         this.routeDirections = routeDirections;
     }
 
+    public TripsQuery(JSONObject obj) throws JSONException {
+        stopNumber = obj.getString("stopNumber");
+
+        JSONArray arr = obj.getJSONArray("routeDirections");
+        routeDirections = new HashSet<>();
+        for (int i = 0; i < arr.length(); i++) {
+            routeDirections.add(new RouteDirection(arr.getJSONObject(i)));
+        }
+    }
+
     public String getStopNumber() {
         return stopNumber;
     }
 
     public HashSet<RouteDirection> getRouteDirections() {
         return routeDirections;
+    }
+
+    public JSONObject toJSON() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("stopNumber", stopNumber);
+
+        JSONArray arr = new JSONArray();
+        for (RouteDirection rd : routeDirections) {
+            arr.put(rd.toJSON());
+        }
+        obj.put("routeDirections", arr);
+        return obj;
     }
 }

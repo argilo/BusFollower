@@ -20,9 +20,13 @@
 
 package net.argilo.busfollower;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,8 +39,13 @@ import net.argilo.busfollower.ocdata.Stop;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 class RecentQueryList {
-    private static final String FILENAME = "recent_queries";
+    private static final String FILENAME_JSON = "recent_queries.json";
+    private static final String FILENAME_LEGACY = "recent_queries";
     private static final int MAX_RECENT_QUERIES = 10;
 
     public static synchronized ArrayList<TripsQuery> loadRecentQueries(Context context) {
@@ -84,7 +93,7 @@ class RecentQueryList {
         }
 
         try {
-            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(FILENAME, Context.MODE_PRIVATE));
+            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(FILENAME_LEGACY, Context.MODE_PRIVATE));
             out.writeObject(recents);
             out.close();
         } catch (IOException e) {
@@ -92,37 +101,105 @@ class RecentQueryList {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static synchronized ArrayList<RecentQuery> loadRecents(Context context) {
-        ArrayList<RecentQuery> recents;
+    private static synchronized ArrayList<SavedTripsQuery> loadRecents(Context context) {
+        ArrayList<RecentQuery> legacyRecents = null;
 
+        ObjectInputStream in = null;
         try {
-            ObjectInputStream in = new ObjectInputStream(context.openFileInput(FILENAME));
-            recents = (ArrayList<RecentQuery>) in.readObject();
-            in.close();
+            in = new ObjectInputStream(context.openFileInput(FILENAME_LEGACY));
+            legacyRecents = (ArrayList<RecentQuery>) in.readObject();
         } catch (Exception e) {
-            // Start a new recent list.
-            recents = new ArrayList<>();
+            // Carry on if the legacy file is unreadable or missing.
+        } finally {
+            if (in != null) {
+                try { in.close(); } catch (IOException e) {}
+            }
+            context.deleteFile(FILENAME_LEGACY);
         }
 
-        return recents;
+        ArrayList<SavedTripsQuery> result = new ArrayList<>();
+        if (legacyRecents != null) {
+            for (RecentQuery legacyQuery : legacyRecents) {
+                HashSet<RouteDirection> routeDirections = new HashSet<>();
+                if (legacyQuery.getRoute() != null) {
+                    routeDirections.add(new RouteDirection(legacyQuery.getRoute()));
+                }
+                TripsQuery tripsQuery = new TripsQuery(legacyQuery.getStop().getNumber(), routeDirections);
+                result.add(new SavedTripsQuery(tripsQuery, legacyQuery.getTimesQueried(), legacyQuery.getLastQueried()));
+            }
+            saveRecents(context, result);
+        } else {
+            // TODO: Read JSON if possible
+            FileInputStream fin = null;
+            String jsonString = null;
+            try {
+                fin = context.openFileInput(FILENAME_LEGACY);
+                byte[] buffer = new byte[fin.available()];
+                fin.read(buffer);
+                jsonString = new String(buffer, "UTF-8");
+            } catch (Exception e) {
+                // Carry on if we couldn't read the JSON file.
+            } finally {
+                if (fin != null) {
+                    try { fin.close(); } catch (IOException e) {}
+                }
+            }
+
+            if (jsonString != null) {
+                try {
+                    JSONObject json = new JSONObject(jsonString);
+                    int version = json.getInt("version");
+                    if (version == 1) {
+                        JSONArray savedTripsJson = json.getJSONArray("savedTrips");
+                        for (int i = 0; i < savedTripsJson.length(); i++) {
+                            result.add(new SavedTripsQuery(savedTripsJson.getJSONObject(i)));
+                        }
+                    }
+                } catch (JSONException e) {
+                    // TODO: Handle?
+                }
+            }
+        }
+
+        return result;
     }
 
-    private static class QueryDateComparator implements Comparator<RecentQuery> {
+    private static synchronized void saveRecents(Context context, ArrayList<SavedTripsQuery> queries) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("version", 1);
+
+        JSONArray arr = new JSONArray();
+        for (SavedTripsQuery query : queries) {
+            arr.put(query.toJSON());
+        }
+        json.put("savedTrips", arr);
+    }
+
+    private static class QueryDateComparator implements Comparator<SavedTripsQuery> {
         @Override
-        public int compare(RecentQuery lhs, RecentQuery rhs) {
+        public int compare(SavedTripsQuery lhs, SavedTripsQuery rhs) {
             return lhs.getLastQueried().compareTo(rhs.getLastQueried());
         }
     }
 
-    private static class QueryStopRouteComparator implements Comparator<RecentQuery> {
+    private static class QueryStopRouteComparator implements Comparator<SavedTripsQuery> {
         @Override
-        public int compare(RecentQuery lhs, RecentQuery rhs) {
-            int lhsStopNumber = Integer.parseInt(lhs.getStop().getNumber());
-            int rhsStopNumber = Integer.parseInt(rhs.getStop().getNumber());
-            int lhsRouteNumber = Integer.parseInt(lhs.getRoute().getNumber());
-            int rhsRouteNumber = Integer.parseInt(rhs.getRoute().getNumber());
+        public int compare(SavedTripsQuery lhs, SavedTripsQuery rhs) {
+            int lhsStopNumber = Integer.parseInt(lhs.getTripsQuery().getStopNumber());
+            int rhsStopNumber = Integer.parseInt(rhs.getTripsQuery().getStopNumber());
+            int lhsRouteNumber = routeDirectionsSortNumber(lhs.getTripsQuery().getRouteDirections());
+            int rhsRouteNumber = routeDirectionsSortNumber(rhs.getTripsQuery().getRouteDirections());
             return (lhsStopNumber - rhsStopNumber) * 10000 + (lhsRouteNumber - rhsRouteNumber);
+        }
+    }
+
+    private static int routeDirectionsSortNumber(HashSet<RouteDirection> routeDirections) {
+        if (routeDirections.isEmpty()) { // All routes first
+            return 0;
+        } else if (routeDirections.size() > 1) { // Then multiple routes
+            return Integer.parseInt(routeDirections.iterator().next().getRouteNumber());
+        } else { // Finally single routes
+            return Integer.parseInt(routeDirections.iterator().next().getRouteNumber()) + 1000;
         }
     }
 }
