@@ -36,6 +36,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -349,7 +350,8 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
             for (Stop stop : result) {
                 if (!displayedStops.containsKey(stop)) {
                     Marker marker = map.addMarker(new MarkerOptions()
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop))
+                                    .icon(BitmapDescriptorFactory.fromBitmap(
+                                            BitmapFactory.decodeResource(getResources(), R.drawable.stop)))
                                     .anchor(0.0f, 1.0f)
                                     .position(stop.getLocation())
                     );
