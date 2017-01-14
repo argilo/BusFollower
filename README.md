@@ -1,6 +1,6 @@
 ```
 #
-# Copyright 2012-2015 Clayton Smith
+# Copyright 2012-2017 Clayton Smith
 #
 # This file is part of Ottawa Bus Follower.
 #
@@ -63,7 +63,7 @@ I would like to thank the following contributors:
 Tu en as assez de geler en attendant l'autobus en retard? Cette
 application te permet de rester au chaud jusqu'à ce que l'autobus soit
 proche. Elle affiche où se trouvent les autobus d'Ottawa et quand ils
-devraient arriver selon les données GPS fournies par OC Transpo. 
+devraient arriver selon les données GPS fournies par OC Transpo.
 
 Pour commencer, cherche un arrêt par numéro ou par nom ou sélectionne
 un arrêt sur le plan. Ensuite choisis le circuit désiré et voilà les
@@ -87,7 +87,7 @@ de bogues et les contributions de code sont appréciés!
 -----
 
 Build dependencies:
-* Android SDK 23
+* Android SDK 25
 * Inkscape
 * Python 2.x
 * SQLite
