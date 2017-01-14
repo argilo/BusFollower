@@ -1,7 +1,7 @@
 # coding=utf-8
 
 #
-# Copyright 2012-2015 Clayton Smith
+# Copyright 2012-2017 Clayton Smith
 #
 # This file is part of Ottawa Bus Follower.
 #
@@ -33,8 +33,7 @@ def normalizeStopCode(stopCode):
     else:
         return None
 
-def normalizeStopName(stopName):
-    stopName = stopName.replace(u"''", "'")
+def removeAccents(stopName):
     stopName = stopName.replace(u"À", "A")
     stopName = stopName.replace(u"Â", "A")
     stopName = stopName.replace(u"Æ", "AE")
@@ -51,6 +50,25 @@ def normalizeStopName(stopName):
     stopName = stopName.replace(u"Û", "U")
     stopName = stopName.replace(u"Ü", "U")
     stopName = stopName.replace(u"Œ", "OE")
+    return stopName
+
+def normalizeStopName(stopName):
+    stopName = removeAccents(stopName.upper())
+    original = stopName
+    stopName = stopName.strip()
+    stopName = stopName.replace("LAURIER / GOULBOURN", "LAURIER / GOULBURN")
+    stopName = stopName.replace("SOMERSET E / GOULBOURN", "SOMERSET E / GOULBURN")
+    stopName = stopName.replace("MANN / GOULBOURN", "MANN / GOULBURN")
+    stopName = stopName.replace("KANATA / GOULBURN", "KANATA / GOULBOURN")
+    stopName = stopName.replace("REHABILITATION/CENTRE", "REHABILITATION CENTRE")
+    stopName = stopName.replace("SUMMERFIELDS # 1", "SUMMERFIELDS #1")
+    stopName = stopName.replace("EVANSHAN", "EVANSHEN")
+    stopName = stopName.replace("\\", "/")
+    stopName = stopName.replace("/", " / ")
+    stopName = re.sub(' +', ' ', stopName)
+    stopName = re.sub('\\b(STE?)-', '\\1 ', stopName)
+    if stopName != original:
+        print('Info: Corrected "' + original + '" to "' + stopName + '"')
     return stopName
 
 assets_dir = os.path.join('app', 'src', 'main', 'assets')
@@ -87,7 +105,7 @@ for stop_id, stop in schedule.stops.items():
     total_departures = 0
     for trip in stop.GetTrips():
         total_departures += days_active[trip.service_id]
-    
+
     values = [stop.stop_id,
               normalizeStopCode(stop.stop_code),
               normalizeStopName(stop.stop_name),
