@@ -37,7 +37,7 @@ public class DatabaseHelper {
     private static final String DATABASE_PREFS = "DbPrefsFile";
     private static final int DATABASE_VERSION = 32; // Increment this whenever the DB is changed
 
-    private Context context;
+    private final Context context;
     private final String DATABASE_FOLDER;
     private final String DATABASE_PATH;
 

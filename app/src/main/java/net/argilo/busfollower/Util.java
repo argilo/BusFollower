@@ -33,11 +33,10 @@ import net.argilo.busfollower.ocdata.Trip;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.text.TextUtils;
 
 class Util {
-    public static void useAndroidTheme(Context context) {
+    static void useAndroidTheme(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             context.setTheme(android.R.style.Theme_Material);
         } else {
@@ -45,14 +44,14 @@ class Util {
         }
     }
 
-    public static void setDisplayHomeAsUpEnabled(Activity activity, boolean bool) {
+    static void setDisplayHomeAsUpEnabled(Activity activity, boolean bool) {
         ActionBar actionBar = activity.getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(bool);
         }
     }
 
-    public static String getBusInformationString(Context context, RouteDirection rd, Trip trip) {
+    static String getBusInformationString(Context context, RouteDirection rd, Trip trip) {
         return context.getString(R.string.direction) + " " + rd.getDirection() +
                 "\n" + context.getString(R.string.destination) + " " + trip.getDestination() +
                 "\n" + context.getString(R.string.start_time) + " " + getHumanReadableTime(context, trip.getStartTime()) +

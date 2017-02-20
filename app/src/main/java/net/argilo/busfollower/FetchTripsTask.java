@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -36,24 +36,21 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetRoutesOrTripsResult> {
     private Context activityContext = null;
     private Context applicationContext = null;
-    private SQLiteDatabase db = null;
     private ProgressDialog progressDialog = null;
     private Route route = null;
     private String errorString = null;
     private OCTranspoDataFetcher dataFetcher = null;
     private boolean finished = false;
 
-    public FetchTripsTask(Context context, SQLiteDatabase db) {
+    FetchTripsTask(Context context) {
         super();
         activityContext = context;
         applicationContext = context.getApplicationContext();
-        this.db = db;
     }
 
     @Override
@@ -67,7 +64,7 @@ class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetRoutesOrTripsResult
         route = query[0].getRoute();
         GetRoutesOrTripsResult result = null;
         try {
-            dataFetcher = new OCTranspoDataFetcher(applicationContext, db);
+            dataFetcher = new OCTranspoDataFetcher(applicationContext);
             result = dataFetcher.getNextTripsForStop(stop.getNumber(), route.getNumber());
             errorString = Util.getErrorString(applicationContext, result.getError());
             if (errorString == null) {
@@ -128,7 +125,7 @@ class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetRoutesOrTripsResult
         }
     }
 
-    public void setActivityContext(Context context) {
+    void setActivityContext(Context context) {
         activityContext = context;
         if (context == null) {
             progressDialog = null;

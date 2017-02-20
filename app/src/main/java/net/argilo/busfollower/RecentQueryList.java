@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -37,7 +37,7 @@ class RecentQueryList {
     private static final int MAX_RECENT_QUERIES = 10;
 
     @SuppressWarnings("unchecked")
-    public static synchronized ArrayList<RecentQuery> loadRecents(Context context) {
+    static synchronized ArrayList<RecentQuery> loadRecents(Context context) {
         ArrayList<RecentQuery> recents;
 
         try {
@@ -52,7 +52,7 @@ class RecentQueryList {
         return recents;
     }
 
-    public static synchronized void addOrUpdateRecent(Context context, Stop stop, Route route) {
+    static synchronized void addOrUpdateRecent(Context context, Stop stop, Route route) {
         ArrayList<RecentQuery> recents = loadRecents(context);
 
         RecentQuery query = new RecentQuery(stop, route);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -52,6 +52,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -69,7 +70,6 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class BusFollowerActivity extends FragmentActivity implements OnMapReadyCallback {
-    private static final String TAG = "BusFollowerActivity";
     private static final double MIN_LAT_SPAN = 0.01;
     private static final double MIN_LON_SPAN = 0.01;
     private boolean zoomAndCenter = true;
@@ -176,7 +176,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
                 onBackPressed();
                 return true;
             case R.id.menu_refresh:
-                task = new FetchTripsTask(this, db);
+                task = new FetchTripsTask(this);
                 task.execute(new RecentQuery(new Stop(this, db, result.getStopNumber()), route));
                 return true;
             default:
@@ -208,7 +208,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
 
         for (RouteDirection rd : result.getRouteDirections()) {
             if (rd.matchesDirection(route)) {
-                tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, R.layout.tripitem, rd.getTrips()));
+                tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, rd.getTrips()));
 
                 int number = 0;
                 for (Trip trip : rd.getTrips()) {
@@ -271,7 +271,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
         displayGetNextTripsForStopResult();
     }
 
-    public Bitmap getLabeledPin(String text) {
+    private Bitmap getLabeledPin(String text) {
         float fontSize = text.length() > 2 ? 13.0f : 16.0f;
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.pin_red).copy(Bitmap.Config.ARGB_8888, true);
 
@@ -290,22 +290,21 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
     }
 
     private class TripAdapter extends ArrayAdapter<Trip> {
-        private Context context;
-        private int resourceId;
-        private ArrayList<Trip> trips;
+        private final Context context;
+        private final ArrayList<Trip> trips;
 
-        public TripAdapter(Context context, int resourceId, ArrayList<Trip> trips) {
-            super(context, resourceId, trips);
+        public TripAdapter(Context context, ArrayList<Trip> trips) {
+            super(context, R.layout.tripitem, trips);
             this.context = context;
-            this.resourceId = resourceId;
             this.trips = trips;
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View v, ViewGroup parent) {
+        public View getView(int position, View v, @NonNull ViewGroup parent) {
             if (v == null) {
                 LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = li.inflate(resourceId, null);
+                v = li.inflate(R.layout.tripitem, null);
             }
             final Trip trip = trips.get(position);
             if (trip != null) {

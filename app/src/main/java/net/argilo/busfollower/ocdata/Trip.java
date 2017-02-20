@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -48,9 +48,9 @@ public class Trip implements Serializable {
     private double longitude = Double.NaN;
 
     // Needed to get the request processing time.
-    private RouteDirection routeDirection;
+    private final RouteDirection routeDirection;
 
-    public Trip(XmlPullParser xpp, RouteDirection routeDirection) throws XmlPullParserException, IOException {
+    Trip(XmlPullParser xpp, RouteDirection routeDirection) throws XmlPullParserException, IOException {
         this.routeDirection = routeDirection;
 
         while (xpp.next() == XmlPullParser.START_TAG) {

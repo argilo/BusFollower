@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -25,9 +25,9 @@ import java.io.Serializable;
 public class BusType implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String busType;
+    private final String busType;
 
-    public BusType(String busType) {
+    BusType(String busType) {
         this.busType = busType;
     }
 

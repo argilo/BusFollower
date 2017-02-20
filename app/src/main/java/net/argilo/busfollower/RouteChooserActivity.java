@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -28,7 +28,6 @@ import net.argilo.busfollower.ocdata.RouteDirection;
 import net.argilo.busfollower.ocdata.Stop;
 
 import android.app.ListActivity;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +35,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class RouteChooserActivity extends ListActivity {
-    private SQLiteDatabase db = null;
     private static FetchTripsTask task = null;
 
     private Stop stop;
@@ -47,8 +45,6 @@ public class RouteChooserActivity extends ListActivity {
         Util.useAndroidTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routechooser);
-
-        db = ((BusFollowerApplication) getApplication()).getDatabase();
 
         Util.setDisplayHomeAsUpEnabled(this, true);
 
@@ -71,7 +67,7 @@ public class RouteChooserActivity extends ListActivity {
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
         // Here we just use RecentQuery as a convenience, since it can hold a stop and route.
-        task = new FetchTripsTask(this, db);
+        task = new FetchTripsTask(this);
         task.execute(new RecentQuery(stop, new Route(routeDirections.get(position))));
     }
 

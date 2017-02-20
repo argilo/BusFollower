@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 public class Route implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final String TAG = "Route";
 
     private String number = null;
     private String directionID = null;
@@ -46,7 +45,7 @@ public class Route implements Serializable {
         return directionID;
     }
 
-    public String getDirection() {
+    String getDirection() {
         return direction;
     }
 

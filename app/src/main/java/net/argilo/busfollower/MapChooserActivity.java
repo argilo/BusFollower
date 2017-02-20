@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -74,10 +74,9 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
     private SQLiteDatabase db;
     private static FetchRoutesTask task = null;
     private GoogleMap map = null;
-    private LocationManager locationManager = null;
     private CameraPosition startingPosition = null;
-    private Map<Stop, Marker> displayedStops = new HashMap<>();
-    private Map<Marker, Stop> displayedMarkers = new HashMap<>();
+    private final Map<Stop, Marker> displayedStops = new HashMap<>();
+    private final Map<Marker, Stop> displayedMarkers = new HashMap<>();
 
     // Values taken from stops.txt.
     private static final double GLOBAL_MIN_LATITUDE = 45.130104;
@@ -156,7 +155,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         } else if (map != null) {
             map.setMyLocationEnabled(true);
 
-            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             Criteria locationCriteria = new Criteria();
             locationCriteria.setAccuracy(Criteria.ACCURACY_FINE);
             locationManager.requestSingleUpdate(locationManager.getBestProvider(locationCriteria, true), this, null);
@@ -212,9 +211,9 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
         map = googleMap;
         enableMyLocation();
 
-        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
-            public void onCameraChange(CameraPosition pos) {
+            public void onCameraIdle() {
                 new DisplayStopsTask().execute(map.getProjection().getVisibleRegion().latLngBounds);
             }
         });

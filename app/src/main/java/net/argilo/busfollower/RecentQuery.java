@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -34,11 +34,11 @@ class RecentQuery implements Serializable {
     private int timesQueried = -1;
     private Date lastQueried = null;
 
-    public RecentQuery(Stop stop) {
+    RecentQuery(Stop stop) {
         this.stop = stop;
     }
 
-    public RecentQuery(Stop stop, Route route) {
+    RecentQuery(Stop stop, Route route) {
         this.stop = stop;
         this.route = route;
         this.timesQueried = 1;
@@ -57,11 +57,11 @@ class RecentQuery implements Serializable {
         return timesQueried;
     }
 
-    public Date getLastQueried() {
+    Date getLastQueried() {
         return lastQueried;
     }
 
-    public void queriedAgain() {
+    void queriedAgain() {
         timesQueried++;
         lastQueried = new Date();
     }

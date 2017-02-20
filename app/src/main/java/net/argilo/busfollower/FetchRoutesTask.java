@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -47,7 +47,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRoutesOrTripsResult> {
     private OCTranspoDataFetcher dataFetcher = null;
     private boolean finished = false;
 
-    public FetchRoutesTask(Context context, SQLiteDatabase db) {
+    FetchRoutesTask(Context context, SQLiteDatabase db) {
         super();
         activityContext = context;
         applicationContext = context.getApplicationContext();
@@ -64,7 +64,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRoutesOrTripsResult> {
         GetRoutesOrTripsResult result = null;
         try {
             stop = new Stop(applicationContext, db, stopNumber[0]);
-            dataFetcher = new OCTranspoDataFetcher(applicationContext, db);
+            dataFetcher = new OCTranspoDataFetcher(applicationContext);
             result = dataFetcher.getRouteSummaryForStop(stop.getNumber());
             errorString = Util.getErrorString(applicationContext, result.getError());
             if (errorString == null) {
@@ -113,7 +113,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRoutesOrTripsResult> {
         }
     }
 
-    public void setActivityContext(Context context) {
+    void setActivityContext(Context context) {
         activityContext = context;
         if (context == null) {
             progressDialog = null;

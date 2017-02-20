@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -42,9 +42,9 @@ public class RouteDirection implements Serializable {
     private String direction = null;
     private String error = null;
     private String requestProcessingTime = null;
-    private ArrayList<Trip> trips = new ArrayList<>();
+    private final ArrayList<Trip> trips = new ArrayList<>();
 
-    public RouteDirection(XmlPullParser xpp) throws XmlPullParserException, IOException {
+    RouteDirection(XmlPullParser xpp) throws XmlPullParserException, IOException {
         while (xpp.next() == XmlPullParser.START_TAG) {
             String tagName = xpp.getName();
             if ("RouteNo".equalsIgnoreCase(tagName)) {
@@ -80,7 +80,7 @@ public class RouteDirection implements Serializable {
         return routeLabel;
     }
 
-    public String getDirectionID() {
+    String getDirectionID() {
         return directionID;
     }
 
@@ -92,7 +92,7 @@ public class RouteDirection implements Serializable {
         return error;
     }
 
-    public Date getRequestProcessingTime() {
+    Date getRequestProcessingTime() {
         if (requestProcessingTime == null || requestProcessingTime.length() < 14) {
             return null;
         }

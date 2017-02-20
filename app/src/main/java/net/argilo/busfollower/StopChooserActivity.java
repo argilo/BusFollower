@@ -31,6 +31,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -169,18 +170,21 @@ public class StopChooserActivity extends Activity {
         });
 
         ListView recentList = (ListView) findViewById(R.id.recentList);
-        recentQueryAdapter = new RecentQueryAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<RecentQuery>());
+        recentQueryAdapter = new RecentQueryAdapter(this, new ArrayList<RecentQuery>());
         recentList.setAdapter(recentQueryAdapter);
 
         recentList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 RecentQuery query = recentQueryAdapter.getItem(position);
+                if (query == null) {
+                    return;
+                }
                 if (query.getRoute() == null) {
                     fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
                     fetchRoutesTask.execute(query.getStop().getNumber());
                 } else {
-                    fetchTripsTask = new FetchTripsTask(StopChooserActivity.this, db);
+                    fetchTripsTask = new FetchTripsTask(StopChooserActivity.this);
                     fetchTripsTask.execute(query);
                 }
             }
@@ -238,24 +242,23 @@ public class StopChooserActivity extends Activity {
     }
 
     private class RecentQueryAdapter extends ArrayAdapter<RecentQuery> {
-        private Context context;
-        private int resourceId;
-        private ArrayList<RecentQuery> queries;
+        private final Context context;
+        private final ArrayList<RecentQuery> queries;
 
-        public RecentQueryAdapter(Context context, int resourceId, ArrayList<RecentQuery> queries) {
-            super(context, resourceId, queries);
+        RecentQueryAdapter(Context context, ArrayList<RecentQuery> queries) {
+            super(context, android.R.layout.simple_list_item_1, queries);
             this.context = context;
-            this.resourceId = resourceId;
             this.queries = queries;
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View v, ViewGroup parent) {
+        public View getView(int position, View v, @NonNull ViewGroup parent) {
             RecentQuery query = queries.get(position);
 
             if (v == null) {
                 LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = li.inflate(resourceId, null);
+                v = li.inflate(android.R.layout.simple_list_item_1, null);
             }
 
             TextView text1 = (TextView) v.findViewById(android.R.id.text1);

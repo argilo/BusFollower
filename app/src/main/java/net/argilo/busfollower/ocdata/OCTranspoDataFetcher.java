@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -35,18 +35,15 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 public class OCTranspoDataFetcher {
     private static final int TIMEOUT_CONNECTION = 15000;
     private static final int TIMEOUT_SOCKET = 15000;
 
-    private Context context;
-    private SQLiteDatabase db;
+    private final Context context;
 
-    public OCTranspoDataFetcher(Context context, SQLiteDatabase db) {
+    public OCTranspoDataFetcher(Context context) {
         this.context = context;
-        this.db = db;
     }
 
     public GetRoutesOrTripsResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
