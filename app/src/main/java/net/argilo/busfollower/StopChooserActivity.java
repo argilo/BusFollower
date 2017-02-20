@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -85,16 +85,9 @@ public class StopChooserActivity extends Activity {
             }
         }
 
-        SimpleCursorAdapter adapter;
-        if (android.os.Build.VERSION.SDK_INT < 11) {
-            adapter = new SimpleCursorAdapter(this,
-                    android.R.layout.simple_dropdown_item_1line, null,
-                    new String[] { "stop_desc" }, new int[] { android.R.id.text1 });
-        } else {
-            adapter = new SimpleCursorAdapter(this,
-                    android.R.layout.simple_spinner_dropdown_item, null,
-                    new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
-        }
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item, null,
+                new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
         stopSearchField.setAdapter(adapter);
 
         adapter.setCursorToStringConverter(new CursorToStringConverter() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2017 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -40,19 +40,15 @@ class Util {
     public static void useAndroidTheme(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             context.setTheme(android.R.style.Theme_Material);
-        } else if (android.os.Build.VERSION.SDK_INT >= 11) {
-            context.setTheme(android.R.style.Theme_Holo);
         } else {
-            context.setTheme(android.R.style.Theme);
+            context.setTheme(android.R.style.Theme_Holo);
         }
     }
 
     public static void setDisplayHomeAsUpEnabled(Activity activity, boolean bool) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ActionBar actionBar = activity.getActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(bool);
-            }
+        ActionBar actionBar = activity.getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(bool);
         }
     }
 
