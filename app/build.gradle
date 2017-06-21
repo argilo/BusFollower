@@ -22,8 +22,8 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-core-utils:25.4.0'
-    compile 'com.google.android.gms:play-services-maps:11.0.0'
+    compile 'com.android.support:support-v4:25.4.0'
+    compile 'com.google.android.gms:play-services-maps:11.0.1'
 }
 
 task generateOCTranspoXML {
