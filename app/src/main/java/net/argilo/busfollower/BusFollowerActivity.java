@@ -33,13 +33,14 @@ import net.argilo.busfollower.ocdata.Trip;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,7 +54,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -69,7 +69,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class BusFollowerActivity extends FragmentActivity implements OnMapReadyCallback {
+public class BusFollowerActivity extends Activity implements OnMapReadyCallback {
     private static final double MIN_LAT_SPAN = 0.01;
     private static final double MIN_LON_SPAN = 0.01;
     private boolean zoomAndCenter = true;
@@ -139,7 +139,7 @@ public class BusFollowerActivity extends FragmentActivity implements OnMapReadyC
 
         padding = ContextCompat.getDrawable(this, R.drawable.pin_red).getIntrinsicHeight();
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }

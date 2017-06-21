@@ -29,6 +29,7 @@ import java.util.Map;
 import net.argilo.busfollower.ocdata.Stop;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,7 +45,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
@@ -54,8 +54,8 @@ import android.view.ViewTreeObserver;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -63,7 +63,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapChooserActivity extends FragmentActivity implements OnMapReadyCallback,
+public class MapChooserActivity extends Activity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, LocationListener {
     private static final String TAG = "MapChooserActivity";
     private static final double MAX_AREA = 0.04 * 0.04; // The maximum area for which stops will be displayed.
@@ -94,7 +94,7 @@ public class MapChooserActivity extends FragmentActivity implements OnMapReadyCa
 
         Util.setDisplayHomeAsUpEnabled(this, true);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
