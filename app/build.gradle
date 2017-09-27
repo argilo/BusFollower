@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.1'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "net.argilo.busfollower"
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 34
-        versionName "2.1.5"
+        versionCode 35
+        versionName "2.1.6"
     }
     signingConfigs {
         release
@@ -23,7 +23,7 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:26.0.2'
-    compile 'com.google.android.gms:play-services-maps:11.2.0'
+    compile 'com.google.android.gms:play-services-maps:11.4.0'
 }
 
 task generateOCTranspoXML {
