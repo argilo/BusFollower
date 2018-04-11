@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -35,7 +35,7 @@ import android.util.Log;
 public class DatabaseHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_PREFS = "DbPrefsFile";
-    private static final int DATABASE_VERSION = 38; // Increment this whenever the DB is changed
+    private static final int DATABASE_VERSION = 39; // Increment this whenever the DB is changed
 
     private final Context context;
     private final String DATABASE_FOLDER;
