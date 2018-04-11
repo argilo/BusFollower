@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -67,7 +67,7 @@ public class OCTranspoDataFetcher {
         validateStopNumber(stopNumber);
         validateRouteNumber(routeNumber);
 
-        URL url = new URL("http://api.octranspo1.com/v1.2/" + command);
+        URL url = new URL("https://api.octranspo1.com/v1.2/" + command);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {
             String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
