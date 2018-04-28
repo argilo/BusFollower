@@ -1,6 +1,6 @@
 ```
 #
-# Copyright 2012-2017 Clayton Smith
+# Copyright 2012-2018 Clayton Smith
 #
 # This file is part of Ottawa Bus Follower.
 #
@@ -87,7 +87,7 @@ de bogues et les contributions de code sont appréciés!
 -----
 
 Build dependencies:
-* Android SDK 25
+* Android SDK 27
 * Inkscape
 * Python 2.x
 * SQLite
