@@ -1,7 +1,7 @@
 # coding=utf-8
 
 #
-# Copyright 2012-2017 Clayton Smith
+# Copyright 2012-2018 Clayton Smith
 #
 # This file is part of Ottawa Bus Follower.
 #
@@ -63,6 +63,8 @@ def normalizeStopName(stopName):
     stopName = stopName.replace("REHABILITATION/CENTRE", "REHABILITATION CENTRE")
     stopName = stopName.replace("SUMMERFIELDS # 1", "SUMMERFIELDS #1")
     stopName = stopName.replace("EVANSHAN", "EVANSHEN")
+    stopName = stopName.replace("BARETTE", "BARRETTE")
+    stopName = stopName.replace("BARRETE", "BARRETTE")
     stopName = stopName.replace("\\", "/")
     stopName = stopName.replace("/", " / ")
     stopName = re.sub(' +', ' ', stopName)
