@@ -63,7 +63,6 @@ def normalizeStopName(stopName):
     stopName = stopName.replace("SOMERSET E / GOULBOURN", "SOMERSET E / GOULBURN")
     stopName = stopName.replace("MANN / GOULBOURN", "MANN / GOULBURN")
     stopName = stopName.replace("KANATA / GOULBURN", "KANATA / GOULBOURN")
-    stopName = stopName.replace("REHABILITATION/CENTRE", "REHABILITATION CENTRE")
     stopName = stopName.replace("SUMMERFIELDS # 1", "SUMMERFIELDS #1")
     stopName = stopName.replace("EVANSHAN", "EVANSHEN")
     stopName = stopName.replace("BARETTE", "BARRETTE")
