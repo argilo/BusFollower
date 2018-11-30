@@ -96,7 +96,8 @@ total_departures INT
 c.execute('CREATE INDEX stop_code ON stops(stop_code)')
 c.execute('CREATE INDEX stop_lon ON stops(stop_lon)')
 
-loader = transitfeed.Loader(os.path.join('gtfs','google_transit.zip'))
+loader = transitfeed.Loader(os.path.join('gtfs','google_transit.zip'),
+                            problems=transitfeed.problems.ProblemReporter())
 schedule = loader.Load()
 
 days_active = {}
