@@ -38,8 +38,8 @@ for filename in os.listdir('svg'):
             density_dir = os.path.join('app', 'src', 'main', 'res', 'drawable-' + density)
             if not os.path.exists(density_dir):
                 os.makedirs(density_dir)
-            if os.system('inkscape -e ' + os.path.join(density_dir, prefix + '.png') \
-                      + ' -d ' + str(dpi) + ' ' + infile) != 0:
+            if os.system('inkscape -e ' + os.path.join(density_dir, prefix + '.png')
+                         + ' -d ' + str(dpi) + ' ' + infile) != 0:
                 sys.exit(1)
         if prefix == 'launcher_icon':
             if os.system('inkscape -e google-play-icon.png -h 512 -w 512 ' + infile) != 0:

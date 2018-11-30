@@ -25,6 +25,7 @@ import os
 import sqlite3
 import re
 
+
 def normalizeStopCode(stopCode):
     if stopCode == "0000":
         return None
@@ -32,6 +33,7 @@ def normalizeStopCode(stopCode):
         return stopCode
     else:
         return None
+
 
 def removeAccents(stopName):
     stopName = stopName.replace(u"À", "A")
@@ -51,6 +53,7 @@ def removeAccents(stopName):
     stopName = stopName.replace(u"Ü", "U")
     stopName = stopName.replace(u"Œ", "OE")
     return stopName
+
 
 def normalizeStopName(stopName):
     stopName = removeAccents(stopName.upper())
@@ -72,6 +75,7 @@ def normalizeStopName(stopName):
     if stopName != original:
         print('Info: Corrected "' + original + '" to "' + stopName + '"')
     return stopName
+
 
 assets_dir = os.path.join('app', 'src', 'main', 'assets')
 if not os.path.exists(assets_dir):
@@ -96,7 +100,7 @@ total_departures INT
 c.execute('CREATE INDEX stop_code ON stops(stop_code)')
 c.execute('CREATE INDEX stop_lon ON stops(stop_lon)')
 
-loader = transitfeed.Loader(os.path.join('gtfs','google_transit.zip'),
+loader = transitfeed.Loader(os.path.join('gtfs', 'google_transit.zip'),
                             problems=transitfeed.problems.ProblemReporter())
 schedule = loader.Load()
 
@@ -118,8 +122,8 @@ for stop_id, stop in schedule.stops.items():
     c.execute('INSERT INTO stops VALUES (?,?,?,?,?,?)', values)
 
     # Warn about unparseable stop codes so we can check for problems.
-    if values[1] == None:
-        print('Warning: Couldn\'t parse stop code "' + stop.stop_code + \
+    if values[1] is None:
+        print('Warning: Couldn\'t parse stop code "' + stop.stop_code +
               '" (' + values[2] + ')')
 
 conn.commit()
