@@ -23,30 +23,30 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
 <resources>
     <string name="app_name">Bus Follower</string>
 
-    <string name="enter_stop">Entrez le num&#233;ro d\'arr&#234;t d\'autobus ou le nom d\'arr&#234;t d\'autobus:</string>
+    <string name="enter_stop">Entrez le numéro d\'arrêt d\'autobus ou le nom d\'arrêt d\'autobus:</string>
     <string name="choose_from_map">Carte</string>
-    <string name="recent_queries">Recherches r&#233;centes:</string>
+    <string name="recent_queries">Recherches récentes:</string>
     <string name="choose_route">Choisissez un circuit:</string>
-    <string name="loading">Chargement. Veuillez patienter&#8230;</string>
+    <string name="loading">Chargement. Veuillez patienter…</string>
 
-    <string name="stop_number">Arr&#234;t</string>
+    <string name="stop_number">Arrêt</string>
     <string name="route_number">Circuit</string>
     <string name="error">Erreur</string>
-    <string name="server_error">Le serveur ne peut pas &#234;tre atteint. S\'il vous pla&#238;t v&#233;rifier votre connexion r&#233;seau.</string>
-    <string name="invalid_response">Le serveur a renvoy&#233; une r&#233;ponse inattendue. S\'il vous pla&#238;t r&#233;essayer plus tard.</string>
-    <string name="no_trips">Il n\'y a pas de voyage &#224; venir pour ce circuit.</string>
-    <string name="no_routes">Il n\'existe aucun circuit r&#233;gulier pour cet arr&#234;t.</string>
-    <string name="no_departures">Il n\'y a pas de d&#233;parts de cet arr&#234;t.</string>
+    <string name="server_error">Le serveur ne peut pas être atteint. S\'il vous plaît vérifier votre connexion réseau.</string>
+    <string name="invalid_response">Le serveur a renvoyé une réponse inattendue. S\'il vous plaît réessayer plus tard.</string>
+    <string name="no_trips">Il n\'y a pas de voyage à venir pour ce circuit.</string>
+    <string name="no_routes">Il n\'existe aucun circuit régulier pour cet arrêt.</string>
+    <string name="no_departures">Il n\'y a pas de départs de cet arrêt.</string>
     <string name="ok">Correct</string>
-    <string name="menu_refresh">Rafra&#238;chir</string>
+    <string name="menu_refresh">Rafraîchir</string>
 
     <string name="direction">Direction:</string>
     <string name="destination">Destination:</string>
-    <string name="start_time">Temps de d&#233;part:</string>
-    <string name="estimated_arrival">Arriv&#233;e estim&#233;e:</string>
-    <string name="scheduled_arrival">Arriv&#233;e pr&#233;vue:</string>
-    <string name="estimated">estim&#233;e</string>
-    <string name="scheduled">pr&#233;vue</string>
+    <string name="start_time">Temps de départ:</string>
+    <string name="estimated_arrival">Arrivée estimée:</string>
+    <string name="scheduled_arrival">Arrivée prévue:</string>
+    <string name="estimated">estimée</string>
+    <string name="scheduled">prévue</string>
     <string name="bus_speed">Vitesse:</string>
     <string name="kph">kmh</string>
     <string name="bus_type">Type d\'autobus:</string>
@@ -67,12 +67,12 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
 
     <string name="length_40">Quarante pieds</string>
     <string name="length_60">Soixante pieds</string>
-    <string name="bike_rack">porte-v&#233;los</string>
+    <string name="bike_rack">porte-vélos</string>
     <string name="hybrid">hybride</string>
-    <string name="double_decker">&#224; deux &#233;tages</string>
+    <string name="double_decker">à deux étages</string>
 
-    <string name="invalid_api_key">La cl&#233; API n\'est pas valide.</string>
-    <string name="unable_to_query_data_source">Impossible d\'interroger la source de donn&#233;es</string>
-    <string name="invalid_stop_number">L\'adresse n\'a pas &#233;t&#233; trouv&#233;e.</string>
-    <string name="invalid_route_number">Le circuit n\'a pas &#233;t&#233; trouv&#233;e.</string>
+    <string name="invalid_api_key">La clé API n\'est pas valide.</string>
+    <string name="unable_to_query_data_source">Impossible d\'interroger la source de données</string>
+    <string name="invalid_stop_number">L\'adresse n\'a pas été trouvée.</string>
+    <string name="invalid_route_number">Le circuit n\'a pas été trouvée.</string>
 </resources>

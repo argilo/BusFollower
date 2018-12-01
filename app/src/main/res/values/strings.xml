@@ -27,7 +27,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="choose_from_map">Map</string>
     <string name="recent_queries">Recent queries:</string>
     <string name="choose_route">Choose a route:</string>
-    <string name="loading">Loading. Please wait&#8230;</string>
+    <string name="loading">Loading. Please wait…</string>
 
     <string name="stop_number">Stop</string>
     <string name="route_number">Route</string>
