@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding=utf-8
 
 #
@@ -20,6 +21,9 @@
 # <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import transitfeed
 import os
 import sqlite3
@@ -36,22 +40,22 @@ def normalizeStopCode(stopCode):
 
 
 def removeAccents(stopName):
-    stopName = stopName.replace(u"À", "A")
-    stopName = stopName.replace(u"Â", "A")
-    stopName = stopName.replace(u"Æ", "AE")
-    stopName = stopName.replace(u"Ç", "C")
-    stopName = stopName.replace(u"È", "E")
-    stopName = stopName.replace(u"É", "E")
-    stopName = stopName.replace(u"Ê", "E")
-    stopName = stopName.replace(u"Ë", "E")
-    stopName = stopName.replace(u"Î", "I")
-    stopName = stopName.replace(u"Ï", "I")
-    stopName = stopName.replace(u"Ô", "O")
-    stopName = stopName.replace(u"Ö", "O")
-    stopName = stopName.replace(u"Ù", "U")
-    stopName = stopName.replace(u"Û", "U")
-    stopName = stopName.replace(u"Ü", "U")
-    stopName = stopName.replace(u"Œ", "OE")
+    stopName = stopName.replace("À", "A")
+    stopName = stopName.replace("Â", "A")
+    stopName = stopName.replace("Æ", "AE")
+    stopName = stopName.replace("Ç", "C")
+    stopName = stopName.replace("È", "E")
+    stopName = stopName.replace("É", "E")
+    stopName = stopName.replace("Ê", "E")
+    stopName = stopName.replace("Ë", "E")
+    stopName = stopName.replace("Î", "I")
+    stopName = stopName.replace("Ï", "I")
+    stopName = stopName.replace("Ô", "O")
+    stopName = stopName.replace("Ö", "O")
+    stopName = stopName.replace("Ù", "U")
+    stopName = stopName.replace("Û", "U")
+    stopName = stopName.replace("Ü", "U")
+    stopName = stopName.replace("Œ", "OE")
     return stopName
 
 

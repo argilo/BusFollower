@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #
 # Copyright 2012-2016 Clayton Smith
 #
@@ -34,7 +36,7 @@ for filename in os.listdir('svg'):
     if filename.endswith('.svg'):
         prefix = filename[0:-4]
         infile = os.path.join('svg', prefix + '.svg')
-        for density, dpi in densities.iteritems():
+        for density, dpi in densities.items():
             density_dir = os.path.join('app', 'src', 'main', 'res', 'drawable-' + density)
             if not os.path.exists(density_dir):
                 os.makedirs(density_dir)
