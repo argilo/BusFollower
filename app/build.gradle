@@ -1,3 +1,5 @@
+import groovy.xml.MarkupBuilder
+
 apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
@@ -31,7 +33,7 @@ task generateOCTranspoXML {
 
     ['debug', 'release'].each { type ->
         def sw = new StringWriter()
-        def xml = new groovy.xml.MarkupBuilder(sw)
+        def xml = new MarkupBuilder(sw)
 
         xml.resources() {
             string(name: "google_maps_key", translatable: "false", props.getProperty("${type}.google_maps_api_key"))
