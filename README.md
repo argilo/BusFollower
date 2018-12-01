@@ -91,7 +91,5 @@ Build dependencies:
 * Inkscape
 * Python 2.x
 * SQLite
-* GoogleTransitDataFeed:
-    https://github.com/google/transitfeed/wiki
-* GTFS data from OC Transpo:
-    http://www.octranspo1.com/files/google_transit.zip
+* TransitFeed library: https://github.com/google/transitfeed/wiki
+* GTFS data from OC Transpo: http://www.octranspo1.com/files/google_transit.zip
