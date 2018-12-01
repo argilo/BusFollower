@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-Copyright 2012-2015 Clayton Smith
+Copyright 2012-2018 Clayton Smith
 
 This file is part of Ottawa Bus Follower.
 
@@ -28,7 +28,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="recent_queries">Recherches r&#233;centes:</string>
     <string name="choose_route">Choisissez un circuit:</string>
     <string name="loading">Chargement. Veuillez patienter&#8230;</string>
-    
+
     <string name="stop_number">Arr&#234;t</string>
     <string name="route_number">Circuit</string>
     <string name="error">Erreur</string>
@@ -39,7 +39,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="no_departures">Il n\'y a pas de d&#233;parts de cet arr&#234;t.</string>
     <string name="ok">Correct</string>
     <string name="menu_refresh">Rafra&#238;chir</string>
-    
+
     <string name="direction">Direction:</string>
     <string name="destination">Destination:</string>
     <string name="start_time">Temps de d&#233;part:</string>
@@ -51,12 +51,12 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="kph">kmh</string>
     <string name="bus_type">Type d\'autobus:</string>
     <string name="last_trip">C\'est le dernier voyage.</string>
-    
+
     <plurals name="inMinutes">
         <item quantity="one">En %d minute</item>
         <item quantity="other">En %d minutes</item>
     </plurals>
-        <plurals name="minutes">
+    <plurals name="minutes">
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
@@ -64,13 +64,13 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
         <item quantity="one">Il y a %d minute</item>
         <item quantity="other">Il y a %d minutes</item>
     </plurals>
-    
+
     <string name="length_40">Quarante pieds</string>
     <string name="length_60">Soixante pieds</string>
     <string name="bike_rack">porte-v&#233;los</string>
     <string name="hybrid">hybride</string>
     <string name="double_decker">&#224; deux &#233;tages</string>
-    
+
     <string name="invalid_api_key">La cl&#233; API n\'est pas valide.</string>
     <string name="unable_to_query_data_source">Impossible d\'interroger la source de donn&#233;es</string>
     <string name="invalid_stop_number">L\'adresse n\'a pas &#233;t&#233; trouv&#233;e.</string>

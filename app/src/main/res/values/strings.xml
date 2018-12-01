@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-Copyright 2012-2015 Clayton Smith
+Copyright 2012-2018 Clayton Smith
 
 This file is part of Ottawa Bus Follower.
 
@@ -28,7 +28,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="recent_queries">Recent queries:</string>
     <string name="choose_route">Choose a route:</string>
     <string name="loading">Loading. Please wait&#8230;</string>
-    
+
     <string name="stop_number">Stop</string>
     <string name="route_number">Route</string>
     <string name="error">Error</string>
@@ -39,7 +39,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="no_departures">There are no departures from this stop.</string>
     <string name="ok">OK</string>
     <string name="menu_refresh">Refresh</string>
-    
+
     <string name="direction">Direction:</string>
     <string name="destination">Destination:</string>
     <string name="start_time">Start time:</string>
@@ -51,12 +51,12 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="kph">km/h</string>
     <string name="bus_type">Bus type:</string>
     <string name="last_trip">This is the last trip.</string>
-    
+
     <plurals name="inMinutes">
         <item quantity="one">In %d min</item>
         <item quantity="other">In %d mins</item>
     </plurals>
-        <plurals name="minutes">
+    <plurals name="minutes">
         <item quantity="one">%d min</item>
         <item quantity="other">%d mins</item>
     </plurals>
@@ -64,13 +64,13 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
         <item quantity="one">%d min ago</item>
         <item quantity="other">%d mins ago</item>
     </plurals>
-    
+
     <string name="length_40">40-foot</string>
     <string name="length_60">60-foot</string>
     <string name="bike_rack">bike rack</string>
     <string name="hybrid">hybrid</string>
     <string name="double_decker">double decker</string>
-    
+
     <string name="invalid_api_key">Invalid API key</string>
     <string name="unable_to_query_data_source">Unable to query data source</string>
     <string name="invalid_stop_number">Invalid stop number</string>
