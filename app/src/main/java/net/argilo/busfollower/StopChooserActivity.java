@@ -127,7 +127,7 @@ public class StopChooserActivity extends Activity {
                     return null;
                 }
                 query.append(" ORDER BY total_departures DESC");
-                Cursor cursor = db.rawQuery(query.toString(), params.toArray(new String[params.size()]));
+                Cursor cursor = db.rawQuery(query.toString(), params.toArray(new String[0]));
                 if (cursor != null) {
                     cursor.moveToFirst();
                     Log.d(TAG, "Done loading cursor.");
