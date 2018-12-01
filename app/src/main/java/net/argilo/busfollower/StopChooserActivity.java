@@ -108,26 +108,26 @@ public class StopChooserActivity extends Activity {
                 String constraintStr = constraint.toString();
                 String[] pieces = constraintStr.split(" ");
 
-                String query = "SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL";
+                StringBuilder query = new StringBuilder("SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL");
                 ArrayList<String> params = new ArrayList<>();
                 boolean validQuery = false;
                 for (String piece : pieces) {
                     if (piece.length() > 0) {
                         validQuery = true;
-                        query += " AND (stop_name LIKE ?";
+                        query.append(" AND (stop_name LIKE ?");
                         params.add("%" + piece + "%");
                         if (piece.matches("\\d\\d\\d?\\d?")) {
-                            query += " OR stop_code LIKE ?";
+                            query.append(" OR stop_code LIKE ?");
                             params.add(piece + "%");
                         }
-                        query += ")";
+                        query.append(")");
                     }
                 }
                 if (!validQuery) {
                     return null;
                 }
-                query += " ORDER BY total_departures DESC";
-                Cursor cursor = db.rawQuery(query, params.toArray(new String[params.size()]));
+                query.append(" ORDER BY total_departures DESC");
+                Cursor cursor = db.rawQuery(query.toString(), params.toArray(new String[params.size()]));
                 if (cursor != null) {
                     cursor.moveToFirst();
                     Log.d(TAG, "Done loading cursor.");
