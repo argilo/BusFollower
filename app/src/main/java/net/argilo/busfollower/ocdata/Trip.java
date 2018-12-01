@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -37,9 +37,9 @@ public class Trip implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String TAG = "Trip";
 
-    private String destination = null;
-    private String startTime = null;
-    private String adjustedScheduleTime = null;
+    private String destination;
+    private String startTime;
+    private String adjustedScheduleTime;
     private float adjustmentAge = Float.NaN;
     private boolean lastTripOfSchedule = false;
     private BusType busType = new BusType("");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -33,9 +33,9 @@ public class GetRoutesOrTripsResult implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String TAG = "GetNextTripFSR";
 
-    private String stopNumber = null;
-    private String stopLabel = null;
-    private String error = null;
+    private String stopNumber;
+    private String stopLabel;
+    private String error;
     private final ArrayList<RouteDirection> routeDirections = new ArrayList<>();
 
     GetRoutesOrTripsResult(XmlPullParser xpp) throws XmlPullParserException, IOException {

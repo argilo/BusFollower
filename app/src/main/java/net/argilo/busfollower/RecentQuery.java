@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -29,10 +29,10 @@ import net.argilo.busfollower.ocdata.Stop;
 class RecentQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Stop stop = null;
-    private Route route = null;
+    private Stop stop;
+    private Route route;
     private int timesQueried = -1;
-    private Date lastQueried = null;
+    private Date lastQueried;
 
     RecentQuery(Stop stop) {
         this.stop = stop;

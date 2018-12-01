@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -72,9 +72,9 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private SQLiteDatabase db;
-    private static FetchRoutesTask task = null;
-    private GoogleMap map = null;
-    private CameraPosition startingPosition = null;
+    private static FetchRoutesTask task;
+    private GoogleMap map;
+    private CameraPosition startingPosition;
     private final Map<Stop, Marker> displayedStops = new HashMap<>();
     private final Map<Marker, Stop> displayedMarkers = new HashMap<>();
 

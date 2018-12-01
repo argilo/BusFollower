@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -39,12 +39,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetRoutesOrTripsResult> {
-    private Context activityContext = null;
-    private Context applicationContext = null;
-    private ProgressDialog progressDialog = null;
-    private Route route = null;
-    private String errorString = null;
-    private OCTranspoDataFetcher dataFetcher = null;
+    private Context activityContext;
+    private Context applicationContext;
+    private ProgressDialog progressDialog;
+    private Route route;
+    private String errorString;
+    private OCTranspoDataFetcher dataFetcher;
     private boolean finished = false;
 
     FetchTripsTask(Context context) {

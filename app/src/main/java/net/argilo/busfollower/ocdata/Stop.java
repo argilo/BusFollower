@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -33,8 +33,8 @@ import com.google.android.gms.maps.model.LatLng;
 public class Stop implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String number = null;
-    private String name = null;
+    private String number;
+    private String name;
     private double latitude;
     private double longitude;
 

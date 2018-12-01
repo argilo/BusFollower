@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -25,7 +25,7 @@ import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
 public class BusFollowerApplication extends Application {
-    private SQLiteDatabase db = null;
+    private SQLiteDatabase db;
 
     @Override
     public void onCreate() {

@@ -59,11 +59,11 @@ public class StopChooserActivity extends Activity {
     private static final String TAG = "StopChooserActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-    private SQLiteDatabase db = null;
-    private static FetchRoutesTask fetchRoutesTask = null;
-    private static FetchTripsTask fetchTripsTask = null;
-    private RecentQueryAdapter recentQueryAdapter = null;
-    private AutoCompleteTextView stopSearchField = null;
+    private SQLiteDatabase db;
+    private static FetchRoutesTask fetchRoutesTask;
+    private static FetchTripsTask fetchTripsTask;
+    private RecentQueryAdapter recentQueryAdapter;
+    private AutoCompleteTextView stopSearchField;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

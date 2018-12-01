@@ -76,12 +76,12 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
 
     private SQLiteDatabase db;
     private static FetchTripsTask task;
-    private GetRoutesOrTripsResult result = null;
+    private GetRoutesOrTripsResult result;
     private Route route;
 
-    private GoogleMap map = null;
+    private GoogleMap map;
     private int padding = 0;
-    private ListView tripList = null;
+    private ListView tripList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

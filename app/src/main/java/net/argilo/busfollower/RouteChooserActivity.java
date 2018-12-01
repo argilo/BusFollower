@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -35,7 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class RouteChooserActivity extends ListActivity {
-    private static FetchTripsTask task = null;
+    private static FetchTripsTask task;
 
     private Stop stop;
     private ArrayList<RouteDirection> routeDirections;

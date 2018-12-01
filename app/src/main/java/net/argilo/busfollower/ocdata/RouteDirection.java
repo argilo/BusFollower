@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2017 Clayton Smith
+ * Copyright 2012-2018 Clayton Smith
  *
  * This file is part of Ottawa Bus Follower.
  *
@@ -36,12 +36,12 @@ public class RouteDirection implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String TAG = "RouteDirection";
 
-    private String routeNumber = null;
-    private String routeLabel = null;
-    private String directionID = null;
-    private String direction = null;
-    private String error = null;
-    private String requestProcessingTime = null;
+    private String routeNumber;
+    private String routeLabel;
+    private String directionID;
+    private String direction;
+    private String error;
+    private String requestProcessingTime;
     private final ArrayList<Trip> trips = new ArrayList<>();
 
     RouteDirection(XmlPullParser xpp) throws XmlPullParserException, IOException {
