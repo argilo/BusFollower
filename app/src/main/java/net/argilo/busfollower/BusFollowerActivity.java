@@ -93,7 +93,7 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
 
         Util.setDisplayHomeAsUpEnabled(this, true);
 
-        tripList = (ListView) findViewById(R.id.tripList);
+        tripList = findViewById(R.id.tripList);
         tripList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -308,9 +308,9 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
             }
             final Trip trip = trips.get(position);
             if (trip != null) {
-                TextView text1 = (TextView) v.findViewById(android.R.id.text1);
-                TextView text2 = (TextView) v.findViewById(android.R.id.text2);
-                ImageView busPin = (ImageView) v.findViewById(R.id.busPin);
+                TextView text1 = v.findViewById(android.R.id.text1);
+                TextView text2 = v.findViewById(android.R.id.text2);
+                ImageView busPin = v.findViewById(R.id.busPin);
                 text1.setText(getHumanReadableTime(trip.getAdjustedScheduleTime()) + " (" + context.getResources().getString(trip.isEstimated() ? R.string.estimated : R.string.scheduled) + ")");
                 text2.setText(context.getString(R.string.destination) + " " + trip.getDestination());
                 if (trip.getLocation() == null) {

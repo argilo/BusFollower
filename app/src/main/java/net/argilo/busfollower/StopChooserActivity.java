@@ -73,8 +73,8 @@ public class StopChooserActivity extends Activity {
 
         db = ((BusFollowerApplication) getApplication()).getDatabase();
 
-        stopSearchField = (AutoCompleteTextView) findViewById(R.id.stopSearch);
-        final Button chooseMapButton = (Button) findViewById(R.id.chooseMap);
+        stopSearchField = findViewById(R.id.stopSearch);
+        final Button chooseMapButton = findViewById(R.id.chooseMap);
 
         if (savedInstanceState != null) {
             // Let the AsyncTasks know we're back.
@@ -169,7 +169,7 @@ public class StopChooserActivity extends Activity {
             }
         });
 
-        ListView recentList = (ListView) findViewById(R.id.recentList);
+        ListView recentList = findViewById(R.id.recentList);
         recentQueryAdapter = new RecentQueryAdapter(this, new ArrayList<RecentQuery>());
         recentList.setAdapter(recentQueryAdapter);
 
@@ -261,7 +261,7 @@ public class StopChooserActivity extends Activity {
                 v = li.inflate(android.R.layout.simple_list_item_1, null);
             }
 
-            TextView text1 = (TextView) v.findViewById(android.R.id.text1);
+            TextView text1 = v.findViewById(android.R.id.text1);
             text1.setSingleLine();
             text1.setEllipsize(TextUtils.TruncateAt.END);
             if (query.getRoute() == null) {
