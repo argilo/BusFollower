@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Ottawa Bus Follower; see the file COPYING.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * <https://www.gnu.org/licenses/>.
  */
 
 package net.argilo.busfollower.ocdata;
