@@ -35,6 +35,8 @@ def normalizeStopCode(stopCode):
         return None
     elif re.match(r"^\d\d\d\d$", stopCode):
         return stopCode
+    elif re.match(r"^\d\d\d$", stopCode):
+        return "0" + stopCode
     else:
         return None
 
