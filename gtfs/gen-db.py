@@ -73,37 +73,38 @@ def normalizeStopName(stopName):
     stopName = stopName.replace("BARRETE", "BARRETTE")
     stopName = stopName.replace("MER BELUE", "MER BLEUE")
     stopName = stopName.replace("/", " / ")
-    stopName = re.sub(' +', ' ', stopName)
-    stopName = re.sub('\\b(STE?)-', '\\1 ', stopName)
+    stopName = re.sub(" +", " ", stopName)
+    stopName = re.sub("\\b(STE?)-", "\\1 ", stopName)
     if stopName != original:
-        print('Info: Corrected "' + original + '" to "' + stopName + '"')
+        print("Info: Corrected '{}' to '{}'".format(original, stopName))
     return stopName
 
 
-assets_dir = os.path.join('app', 'src', 'main', 'assets')
+assets_dir = os.path.join("app", "src", "main", "assets")
 if not os.path.exists(assets_dir):
     os.makedirs(assets_dir)
 
-conn = sqlite3.connect(os.path.join(assets_dir, 'db'))
+out_file = "db"
+conn = sqlite3.connect(os.path.join(assets_dir, out_file))
 c = conn.cursor()
 
-c.execute('DROP TABLE IF EXISTS android_metadata')
-c.execute('CREATE TABLE android_metadata (locale TEXT)')
-c.execute('INSERT INTO android_metadata VALUES ("en_US")')
+c.execute("DROP TABLE IF EXISTS android_metadata")
+c.execute("CREATE TABLE android_metadata (locale TEXT)")
+c.execute("INSERT INTO android_metadata VALUES ('en_US')")
 
-c.execute('DROP TABLE IF EXISTS stops')
-c.execute('''CREATE TABLE stops (
+c.execute("DROP TABLE IF EXISTS stops")
+c.execute("""CREATE TABLE stops (
 stop_id TEXT PRIMARY KEY,
 stop_code TEXT,
 stop_name TEXT,
 stop_lat REAL,
 stop_lon REAL,
 total_departures INT
-)''')
-c.execute('CREATE INDEX stop_code ON stops(stop_code)')
-c.execute('CREATE INDEX stop_lon ON stops(stop_lon)')
+)""")
+c.execute("CREATE INDEX stop_code ON stops(stop_code)")
+c.execute("CREATE INDEX stop_lon ON stops(stop_lon)")
 
-loader = transitfeed.Loader(os.path.join('gtfs', 'google_transit.zip'),
+loader = transitfeed.Loader(os.path.join("gtfs", "google_transit.zip"),
                             problems=transitfeed.problems.ProblemReporter())
 schedule = loader.Load()
 
@@ -122,13 +123,12 @@ for stop_id, stop in schedule.stops.items():
               stop.stop_lat,
               stop.stop_lon,
               total_departures]
-    c.execute('INSERT INTO stops VALUES (?,?,?,?,?,?)', values)
+    c.execute("INSERT INTO stops VALUES (?,?,?,?,?,?)", values)
 
     # Warn about unparseable stop codes so we can check for problems.
     if values[1] is None:
-        print('Warning: Couldn\'t parse stop code "' + stop.stop_code +
-              '" (' + values[2] + ')')
+        print("Warning: Couldn't parse stop code '{}' ({})".format(stop.stop_code, values[2]))
 
 conn.commit()
 c.close()
-print('Created database "db".')
+print("Created database '{}'.".format(out_file))
