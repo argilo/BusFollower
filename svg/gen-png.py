@@ -24,11 +24,11 @@ import os
 import sys
 
 densities = {
-       "ldpi": 120,
-       "mdpi": 160,
-       "hdpi": 240,
-      "xhdpi": 320,
-     "xxhdpi": 480,
+    "ldpi": 120,
+    "mdpi": 160,
+    "hdpi": 240,
+    "xhdpi": 320,
+    "xxhdpi": 480,
     "xxxhdpi": 640,
 }
 
