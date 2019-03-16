@@ -35,8 +35,6 @@ def normalizeStopCode(stopCode):
         return None
     elif re.match(r"^\d\d\d\d$", stopCode):
         return stopCode
-    elif re.match(r"^\d\d\d$", stopCode):
-        return "0" + stopCode
     else:
         return None
 
@@ -65,7 +63,7 @@ def normalizeStopName(stopName):
     stopName = removeAccents(stopName.upper())
     original = stopName
     stopName = stopName.strip()
-    stopName = stopName.replace("LAURIER / GOULBOURN", "LAURIER / GOULBURN")
+    stopName = stopName.replace("LAURIER E / GOULBOURN", "LAURIER E / GOULBURN")
     stopName = stopName.replace("SOMERSET E / GOULBOURN", "SOMERSET E / GOULBURN")
     stopName = stopName.replace("MANN / GOULBOURN", "MANN / GOULBURN")
     stopName = stopName.replace("KANATA / GOULBURN", "KANATA / GOULBOURN")
@@ -73,7 +71,7 @@ def normalizeStopName(stopName):
     stopName = stopName.replace("EVANSHAN", "EVANSHEN")
     stopName = stopName.replace("BARETTE", "BARRETTE")
     stopName = stopName.replace("BARRETE", "BARRETTE")
-    stopName = stopName.replace("\\", "/")
+    stopName = stopName.replace("MER BELUE", "MER BLEUE")
     stopName = stopName.replace("/", " / ")
     stopName = re.sub(' +', ' ', stopName)
     stopName = re.sub('\\b(STE?)-', '\\1 ', stopName)
