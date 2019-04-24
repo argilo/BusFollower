@@ -20,16 +20,12 @@
 
 package net.argilo.busfollower.ocdata;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.security.KeyStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
 
 import net.argilo.busfollower.R;
 
@@ -40,44 +36,15 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import android.content.Context;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
 
 public class OCTranspoDataFetcher {
     private static final int TIMEOUT_CONNECTION = 15000;
     private static final int TIMEOUT_SOCKET = 15000;
 
     private final Context context;
-    private SSLContext sslContext;
 
     public OCTranspoDataFetcher(Context context) {
         this.context = context;
-
-        try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream in = context.getAssets().open("letsencryptauthorityx3.cer");
-            InputStream caInput = new BufferedInputStream(in);
-            Certificate ca;
-            try {
-                ca = cf.generateCertificate(caInput);
-            } finally {
-                caInput.close();
-            }
-
-            String keyStoreType = KeyStore.getDefaultType();
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
-
-            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-            tmf.init(keyStore);
-
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, tmf.getTrustManagers(), null);
-        } catch (Exception e) {
-            // Ignore
-        }
     }
 
     public GetRoutesOrTripsResult getRouteSummaryForStop(String stopNumber) throws IOException, XmlPullParserException {
@@ -103,7 +70,6 @@ public class OCTranspoDataFetcher {
 
         URL url = new URL("https://api.octranspo1.com/v1.3/" + command);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        conn.setSSLSocketFactory(sslContext.getSocketFactory());
         try {
             String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
                     "&apiKey=" + context.getString(R.string.oc_transpo_application_key) +
