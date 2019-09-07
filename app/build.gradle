@@ -2,11 +2,11 @@ import groovy.xml.MarkupBuilder
 
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "net.argilo.busfollower"
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 52
         versionName "2.1.23"
     }
@@ -24,7 +24,7 @@ android {
 
 dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.core:core:1.0.2'
+    implementation 'androidx.core:core:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 }
 
