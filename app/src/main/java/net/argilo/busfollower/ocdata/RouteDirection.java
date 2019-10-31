@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Log;
 
-public class RouteDirection implements Serializable {
+public class RouteDirection implements Comparable<RouteDirection>, Serializable {
     private static final long serialVersionUID = 1L;
     private static final String TAG = "RouteDirection";
 
@@ -139,5 +139,28 @@ public class RouteDirection implements Serializable {
             result += "  " + routeLabel;
         }
         return result;
+    }
+
+    @Override
+    public int compareTo(RouteDirection other) {
+        return this.sortOrder() - other.sortOrder();
+    }
+
+    private int sortOrder() {
+        int order = -1;
+
+        try {
+            if (routeNumber.startsWith("R")) {
+                order = Integer.parseInt(routeNumber.substring(1)) * 10 + 5;
+            } else {
+                order = Integer.parseInt(routeNumber) * 10;
+            }
+            order += Integer.parseInt(directionID);
+
+        } catch (NumberFormatException e) {
+            // Ignore
+        }
+
+        return order;
     }
 }

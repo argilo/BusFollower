@@ -23,6 +23,7 @@ package net.argilo.busfollower.ocdata;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -64,6 +65,8 @@ public class GetRoutesOrTripsResult implements Serializable {
             }
             xpp.require(XmlPullParser.END_TAG, null, tagName);
         }
+
+        Collections.sort(routeDirections);
     }
 
     public String getStopNumber() {
