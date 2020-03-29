@@ -79,6 +79,13 @@ def normalize_stop_name(stop_name):
     return stop_name
 
 
+def gtfs_table(gtfs_zip, filename):
+    with gtfs_zip.open(filename) as table:
+        reader = csv.DictReader(io.TextIOWrapper(table, "utf-8"))
+        for line in reader:
+            yield line
+
+
 def parse_date(date_string):
     year = int(date_string[0:4])
     month = int(date_string[4:6])
@@ -112,65 +119,54 @@ c.execute("CREATE INDEX stop_lon ON stops(stop_lon)")
 
 with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as gtfs:
     service_days = {}
-    with gtfs.open("calendar.txt") as calendar:
-        reader = csv.DictReader(io.TextIOWrapper(calendar, "utf-8"))
-        for service in reader:
-            service_id = service["service_id"]
-            service_days[service_id] = set()
-            start_date = parse_date(service["start_date"])
-            end_date = parse_date(service["end_date"])
-            date = start_date
-            while date <= end_date:
-                if service[date.strftime("%A").lower()] == "1":
-                    service_days[service_id].add(date)
-                date += datetime.timedelta(days=1)
-
-    with gtfs.open("calendar_dates.txt") as calendar_dates:
-        reader = csv.DictReader(io.TextIOWrapper(calendar_dates, "utf-8"))
-        for calendar_date in reader:
-            service_id = calendar_date["service_id"]
-            date = parse_date(calendar_date["date"])
-            if service_id not in service_days:
-                service_days[service_id] = set()
-            if calendar_date["exception_type"] == "1":
+    for service in gtfs_table(gtfs, "calendar.txt"):
+        service_id = service["service_id"]
+        service_days[service_id] = set()
+        start_date = parse_date(service["start_date"])
+        end_date = parse_date(service["end_date"])
+        date = start_date
+        while date <= end_date:
+            if service[date.strftime("%A").lower()] == "1":
                 service_days[service_id].add(date)
-            else:
-                service_days[service_id].discard(date)
+            date += datetime.timedelta(days=1)
+
+    for calendar_date in gtfs_table(gtfs, "calendar_dates.txt"):
+        service_id = calendar_date["service_id"]
+        date = parse_date(calendar_date["date"])
+        if service_id not in service_days:
+            service_days[service_id] = set()
+        if calendar_date["exception_type"] == "1":
+            service_days[service_id].add(date)
+        else:
+            service_days[service_id].discard(date)
 
     for service_id in service_days:
         service_days[service_id] = len(service_days[service_id])
 
     trip_service_id = {}
-    with gtfs.open("trips.txt") as trips:
-        reader = csv.DictReader(io.TextIOWrapper(trips, "utf-8"))
-        for trip in reader:
-            trip_service_id[trip["trip_id"]] = trip["service_id"]
+    for trip in gtfs_table(gtfs, "trips.txt"):
+        trip_service_id[trip["trip_id"]] = trip["service_id"]
 
     stop_id_stops = {}
-    with gtfs.open("stop_times.txt") as stop_times:
-        reader = csv.DictReader(io.TextIOWrapper(stop_times, "utf-8"))
-        for stop_time in reader:
-            trip_id = stop_time["trip_id"]
-            service_id = trip_service_id[trip_id]
-            departures = service_days.get(service_id, 0)
-            stop_id_stops[stop_time["stop_id"]] = stop_id_stops.get(stop_time["stop_id"], 0) + departures
+    for stop_time in gtfs_table(gtfs, "stop_times.txt"):
+        trip_id = stop_time["trip_id"]
+        service_id = trip_service_id[trip_id]
+        departures = service_days.get(service_id, 0)
+        stop_id_stops[stop_time["stop_id"]] = stop_id_stops.get(stop_time["stop_id"], 0) + departures
 
-    with gtfs.open("stops.txt") as stops:
-        reader = csv.DictReader(io.TextIOWrapper(stops, "utf-8"))
-        for stop in reader:
-            total_departures = stop_id_stops[stop["stop_id"]]
-            values = [stop["stop_id"],
-                      normalize_stop_code(stop["stop_code"]),
-                      normalize_stop_name(stop["stop_name"]),
-                      float(stop["stop_lat"]),
-                      float(stop["stop_lon"]),
-                      total_departures]
-            c.execute("INSERT INTO stops VALUES (?,?,?,?,?,?)", values)
+    for stop in gtfs_table(gtfs, "stops.txt"):
+        total_departures = stop_id_stops[stop["stop_id"]]
+        values = [stop["stop_id"],
+                  normalize_stop_code(stop["stop_code"]),
+                  normalize_stop_name(stop["stop_name"]),
+                  float(stop["stop_lat"]),
+                  float(stop["stop_lon"]),
+                  total_departures]
+        c.execute("INSERT INTO stops VALUES (?,?,?,?,?,?)", values)
 
-            # Warn about unparseable stop codes so we can check for problems.
-            if values[1] is None:
-                print("Warning: Couldn't parse stop code '{}' ({})".format(stop["stop_code"], values[2]))
-
+        # Warn about unparseable stop codes so we can check for problems.
+        if values[1] is None:
+            print("Warning: Couldn't parse stop code '{}' ({})".format(stop["stop_code"], values[2]))
 
 conn.commit()
 c.close()
