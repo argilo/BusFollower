@@ -29,60 +29,60 @@ import re
 import zipfile
 
 
-def normalizeStopCode(stopCode):
-    if stopCode == "0000":
+def normalize_stop_code(stop_code):
+    if stop_code == "0000":
         return None
-    elif re.match(r"^\d\d\d\d$", stopCode):
-        return stopCode
+    elif re.match(r"^\d\d\d\d$", stop_code):
+        return stop_code
     else:
         return None
 
 
-def removeAccents(stopName):
-    stopName = stopName.replace("À", "A")
-    stopName = stopName.replace("Â", "A")
-    stopName = stopName.replace("Æ", "AE")
-    stopName = stopName.replace("Ç", "C")
-    stopName = stopName.replace("È", "E")
-    stopName = stopName.replace("É", "E")
-    stopName = stopName.replace("Ê", "E")
-    stopName = stopName.replace("Ë", "E")
-    stopName = stopName.replace("Î", "I")
-    stopName = stopName.replace("Ï", "I")
-    stopName = stopName.replace("Ô", "O")
-    stopName = stopName.replace("Ö", "O")
-    stopName = stopName.replace("Ù", "U")
-    stopName = stopName.replace("Û", "U")
-    stopName = stopName.replace("Ü", "U")
-    stopName = stopName.replace("Œ", "OE")
-    return stopName
+def remove_accents(stop_name):
+    stop_name = stop_name.replace("À", "A")
+    stop_name = stop_name.replace("Â", "A")
+    stop_name = stop_name.replace("Æ", "AE")
+    stop_name = stop_name.replace("Ç", "C")
+    stop_name = stop_name.replace("È", "E")
+    stop_name = stop_name.replace("É", "E")
+    stop_name = stop_name.replace("Ê", "E")
+    stop_name = stop_name.replace("Ë", "E")
+    stop_name = stop_name.replace("Î", "I")
+    stop_name = stop_name.replace("Ï", "I")
+    stop_name = stop_name.replace("Ô", "O")
+    stop_name = stop_name.replace("Ö", "O")
+    stop_name = stop_name.replace("Ù", "U")
+    stop_name = stop_name.replace("Û", "U")
+    stop_name = stop_name.replace("Ü", "U")
+    stop_name = stop_name.replace("Œ", "OE")
+    return stop_name
 
 
-def normalizeStopName(stopName):
-    stopName = removeAccents(stopName.upper())
-    original = stopName
-    stopName = stopName.strip()
-    stopName = stopName.replace("LAURIER E / GOULBOURN", "LAURIER E / GOULBURN")
-    stopName = stopName.replace("SOMERSET E / GOULBOURN", "SOMERSET E / GOULBURN")
-    stopName = stopName.replace("MANN / GOULBOURN", "MANN / GOULBURN")
-    stopName = stopName.replace("KANATA / GOULBURN", "KANATA / GOULBOURN")
-    stopName = stopName.replace("SUMMERFIELDS # 1", "SUMMERFIELDS #1")
-    stopName = stopName.replace("EVANSHAN", "EVANSHEN")
-    stopName = stopName.replace("BARETTE", "BARRETTE")
-    stopName = stopName.replace("BARRETE", "BARRETTE")
-    stopName = stopName.replace("MER BELUE", "MER BLEUE")
-    stopName = stopName.replace("/", " / ")
-    stopName = re.sub(" +", " ", stopName)
-    stopName = re.sub("\\b(STE?)-", "\\1 ", stopName)
-    if stopName != original:
-        print("Info: Corrected '{}' to '{}'".format(original, stopName))
-    return stopName
+def normalize_stop_name(stop_name):
+    stop_name = remove_accents(stop_name.upper())
+    original = stop_name
+    stop_name = stop_name.strip()
+    stop_name = stop_name.replace("LAURIER E / GOULBOURN", "LAURIER E / GOULBURN")
+    stop_name = stop_name.replace("SOMERSET E / GOULBOURN", "SOMERSET E / GOULBURN")
+    stop_name = stop_name.replace("MANN / GOULBOURN", "MANN / GOULBURN")
+    stop_name = stop_name.replace("KANATA / GOULBURN", "KANATA / GOULBOURN")
+    stop_name = stop_name.replace("SUMMERFIELDS # 1", "SUMMERFIELDS #1")
+    stop_name = stop_name.replace("EVANSHAN", "EVANSHEN")
+    stop_name = stop_name.replace("BARETTE", "BARRETTE")
+    stop_name = stop_name.replace("BARRETE", "BARRETTE")
+    stop_name = stop_name.replace("MER BELUE", "MER BLEUE")
+    stop_name = stop_name.replace("/", " / ")
+    stop_name = re.sub(" +", " ", stop_name)
+    stop_name = re.sub("\\b(STE?)-", "\\1 ", stop_name)
+    if stop_name != original:
+        print("Info: Corrected '{}' to '{}'".format(original, stop_name))
+    return stop_name
 
 
-def parseDate(dateString):
-    year = int(dateString[0:4])
-    month = int(dateString[4:6])
-    day = int(dateString[6:8])
+def parse_date(date_string):
+    year = int(date_string[0:4])
+    month = int(date_string[4:6])
+    day = int(date_string[6:8])
     return datetime.date(year, month, day)
 
 
@@ -117,8 +117,8 @@ with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as zip:
         for service in reader:
             service_id = service["service_id"]
             service_days[service_id] = set()
-            start_date = parseDate(service["start_date"])
-            end_date = parseDate(service["end_date"])
+            start_date = parse_date(service["start_date"])
+            end_date = parse_date(service["end_date"])
             date = start_date
             while date <= end_date:
                 if service[date.strftime("%A").lower()] == "1":
@@ -129,7 +129,7 @@ with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as zip:
         reader = csv.DictReader(io.TextIOWrapper(calendar_dates, "utf-8"))
         for calendar_date in reader:
             service_id = calendar_date["service_id"]
-            date = parseDate(calendar_date["date"])
+            date = parse_date(calendar_date["date"])
             if service_id not in service_days:
                 service_days[service_id] = set()
             if calendar_date["exception_type"] == "1":
@@ -160,8 +160,8 @@ with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as zip:
         for stop in reader:
             total_departures = stop_id_stops[stop["stop_id"]]
             values = [stop["stop_id"],
-                      normalizeStopCode(stop["stop_code"]),
-                      normalizeStopName(stop["stop_name"]),
+                      normalize_stop_code(stop["stop_code"]),
+                      normalize_stop_name(stop["stop_name"]),
                       float(stop["stop_lat"]),
                       float(stop["stop_lon"]),
                       total_departures]
