@@ -75,7 +75,7 @@ def normalize_stop_name(stop_name):
     stop_name = re.sub(" +", " ", stop_name)
     stop_name = re.sub("\\b(STE?)-", "\\1 ", stop_name)
     if stop_name != original:
-        print("Info: Corrected '{}' to '{}'".format(original, stop_name))
+        print(f"Info: Corrected '{original}' to '{stop_name}'")
     return stop_name
 
 
@@ -158,8 +158,9 @@ with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as gtfs:
 
     for stop in gtfs_table(gtfs, "stops.txt"):
         stop_id = stop["stop_id"]
+        stop_code = stop["stop_code"]
         values = [stop_id,
-                  normalize_stop_code(stop["stop_code"]),
+                  normalize_stop_code(stop_code),
                   normalize_stop_name(stop["stop_name"]),
                   float(stop["stop_lat"]),
                   float(stop["stop_lon"]),
@@ -168,8 +169,8 @@ with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as gtfs:
 
         # Warn about unparseable stop codes so we can check for problems.
         if values[1] is None:
-            print("Warning: Couldn't parse stop code '{}' ({})".format(stop["stop_code"], values[2]))
+            print(f"Warning: Couldn't parse stop code '{stop_code}' ({values[2]})")
 
 conn.commit()
 c.close()
-print("Created database '{}'.".format(out_file))
+print(f"Created database '{out_file}'.")

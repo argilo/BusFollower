@@ -89,6 +89,6 @@ de bogues et les contributions de code sont appréciés!
 Build dependencies:
 * Android SDK 28
 * Inkscape
-* Python 3
+* Python 3.6 or later
 * SQLite
 * GTFS data from OC Transpo: http://www.octranspo1.com/files/google_transit.zip
