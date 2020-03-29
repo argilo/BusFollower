@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
 
 #
-# Copyright 2012-2018 Clayton Smith
+# Copyright 2012-2020 Clayton Smith
 #
 # This file is part of Ottawa Bus Follower.
 #
@@ -21,13 +20,13 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-from __future__ import print_function
-from __future__ import unicode_literals
-
-import transitfeed
+import csv
+import datetime
+import io
 import os
 import sqlite3
 import re
+import zipfile
 
 
 def normalizeStopCode(stopCode):
@@ -80,6 +79,13 @@ def normalizeStopName(stopName):
     return stopName
 
 
+def parseDate(dateString):
+    year = int(dateString[0:4])
+    month = int(dateString[4:6])
+    day = int(dateString[6:8])
+    return datetime.date(year, month, day)
+
+
 assets_dir = os.path.join("app", "src", "main", "assets")
 if not os.path.exists(assets_dir):
     os.makedirs(assets_dir)
@@ -104,30 +110,67 @@ total_departures INT
 c.execute("CREATE INDEX stop_code ON stops(stop_code)")
 c.execute("CREATE INDEX stop_lon ON stops(stop_lon)")
 
-loader = transitfeed.Loader(os.path.join("gtfs", "google_transit.zip"),
-                            problems=transitfeed.problems.ProblemReporter())
-schedule = loader.Load()
+with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as zip:
+    service_days = {}
+    with zip.open("calendar.txt") as calendar:
+        reader = csv.DictReader(io.TextIOWrapper(calendar, "utf-8"))
+        for service in reader:
+            service_id = service["service_id"]
+            service_days[service_id] = set()
+            start_date = parseDate(service["start_date"])
+            end_date = parseDate(service["end_date"])
+            date = start_date
+            while date <= end_date:
+                if service[date.strftime("%A").lower()] == "1":
+                    service_days[service_id].add(date)
+                date += datetime.timedelta(days=1)
 
-days_active = {}
-for service_period_id, service_period in schedule.service_periods.items():
-    days_active[service_period_id] = len(service_period.ActiveDates())
+    with zip.open("calendar_dates.txt") as calendar_dates:
+        reader = csv.DictReader(io.TextIOWrapper(calendar_dates, "utf-8"))
+        for calendar_date in reader:
+            service_id = calendar_date["service_id"]
+            date = parseDate(calendar_date["date"])
+            if service_id not in service_days:
+                service_days[service_id] = set()
+            if calendar_date["exception_type"] == "1":
+                service_days[service_id].add(date)
+            else:
+                service_days[service_id].discard(date)
 
-for stop_id, stop in schedule.stops.items():
-    total_departures = 0
-    for trip in stop.GetTrips():
-        total_departures += days_active[trip.service_id]
+    for service_id in service_days:
+        service_days[service_id] = len(service_days[service_id])
 
-    values = [stop.stop_id,
-              normalizeStopCode(stop.stop_code),
-              normalizeStopName(stop.stop_name),
-              stop.stop_lat,
-              stop.stop_lon,
-              total_departures]
-    c.execute("INSERT INTO stops VALUES (?,?,?,?,?,?)", values)
+    trip_service_id = {}
+    with zip.open("trips.txt") as trips:
+        reader = csv.DictReader(io.TextIOWrapper(trips, "utf-8"))
+        for trip in reader:
+            trip_service_id[trip["trip_id"]] = trip["service_id"]
 
-    # Warn about unparseable stop codes so we can check for problems.
-    if values[1] is None:
-        print("Warning: Couldn't parse stop code '{}' ({})".format(stop.stop_code, values[2]))
+    stop_id_stops = {}
+    with zip.open("stop_times.txt") as stop_times:
+        reader = csv.DictReader(io.TextIOWrapper(stop_times, "utf-8"))
+        for stop_time in reader:
+            trip_id = stop_time["trip_id"]
+            service_id = trip_service_id[trip_id]
+            departures = service_days.get(service_id, 0)
+            stop_id_stops[stop_time["stop_id"]] = stop_id_stops.get(stop_time["stop_id"], 0) + departures
+
+    with zip.open("stops.txt") as stops:
+        reader = csv.DictReader(io.TextIOWrapper(stops, "utf-8"))
+        for stop in reader:
+            total_departures = stop_id_stops[stop["stop_id"]]
+            values = [stop["stop_id"],
+                      normalizeStopCode(stop["stop_code"]),
+                      normalizeStopName(stop["stop_name"]),
+                      float(stop["stop_lat"]),
+                      float(stop["stop_lon"]),
+                      total_departures]
+            c.execute("INSERT INTO stops VALUES (?,?,?,?,?,?)", values)
+
+            # Warn about unparseable stop codes so we can check for problems.
+            if values[1] is None:
+                print("Warning: Couldn't parse stop code '{}' ({})".format(stop["stop_code"], values[2]))
+
 
 conn.commit()
 c.close()

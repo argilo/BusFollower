@@ -89,7 +89,6 @@ de bogues et les contributions de code sont appréciés!
 Build dependencies:
 * Android SDK 28
 * Inkscape
-* Python 2.x
+* Python 3
 * SQLite
-* TransitFeed library: https://github.com/google/transitfeed/wiki
 * GTFS data from OC Transpo: http://www.octranspo1.com/files/google_transit.zip
