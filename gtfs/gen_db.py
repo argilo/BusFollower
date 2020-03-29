@@ -126,7 +126,8 @@ with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as gtfs:
         end_date = parse_date(service["end_date"])
         date = start_date
         while date <= end_date:
-            if service[date.strftime("%A").lower()] == "1":
+            weekday = date.strftime("%A").lower()
+            if service[weekday] == "1":
                 service_days[service_id].add(date)
             date += datetime.timedelta(days=1)
 
@@ -147,21 +148,22 @@ with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as gtfs:
     for trip in gtfs_table(gtfs, "trips.txt"):
         trip_service_id[trip["trip_id"]] = trip["service_id"]
 
-    stop_id_stops = {}
+    stop_departures = {}
     for stop_time in gtfs_table(gtfs, "stop_times.txt"):
+        stop_id = stop_time["stop_id"]
         trip_id = stop_time["trip_id"]
         service_id = trip_service_id[trip_id]
         departures = service_days.get(service_id, 0)
-        stop_id_stops[stop_time["stop_id"]] = stop_id_stops.get(stop_time["stop_id"], 0) + departures
+        stop_departures[stop_id] = stop_departures.get(stop_id, 0) + departures
 
     for stop in gtfs_table(gtfs, "stops.txt"):
-        total_departures = stop_id_stops[stop["stop_id"]]
-        values = [stop["stop_id"],
+        stop_id = stop["stop_id"]
+        values = [stop_id,
                   normalize_stop_code(stop["stop_code"]),
                   normalize_stop_name(stop["stop_name"]),
                   float(stop["stop_lat"]),
                   float(stop["stop_lon"]),
-                  total_departures]
+                  stop_departures[stop_id]]
         c.execute("INSERT INTO stops VALUES (?,?,?,?,?,?)", values)
 
         # Warn about unparseable stop codes so we can check for problems.
