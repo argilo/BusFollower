@@ -1,6 +1,6 @@
 ```
 #
-# Copyright 2012-2018 Clayton Smith
+# Copyright 2012-2020 Clayton Smith
 #
 # This file is part of Ottawa Bus Follower.
 #
