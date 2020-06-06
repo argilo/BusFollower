@@ -55,6 +55,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -142,6 +143,8 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        updateTripList();
     }
 
     @Override
@@ -184,7 +187,19 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
         }
     }
 
-    private void displayGetNextTripsForStopResult() {
+    private void updateTripList() {
+        for (RouteDirection rd : result.getRouteDirections()) {
+            if (rd.matchesDirection(route)) {
+                tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, rd.getTrips()));
+            }
+        }
+    }
+
+    private void updateMap() {
+        if (map == null) {
+            return;
+        }
+
         double minLatitude = Double.MAX_VALUE;
         double maxLatitude = Double.MIN_VALUE;
         double minLongitude = Double.MAX_VALUE;
@@ -208,8 +223,6 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
 
         for (RouteDirection rd : result.getRouteDirections()) {
             if (rd.matchesDirection(route)) {
-                tripList.setAdapter(new TripAdapter(BusFollowerActivity.this, rd.getTrips()));
-
                 int number = 0;
                 for (Trip trip : rd.getTrips()) {
                     number++;
@@ -260,15 +273,17 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
 
     public void setResult(GetRoutesOrTripsResult result) {
         this.result = result;
+        updateTripList();
+
         // The user requested a refresh. Don't reset zoom & center.
         zoomAndCenter = false;
-        displayGetNextTripsForStopResult();
+        updateMap();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        displayGetNextTripsForStopResult();
+        updateMap();
     }
 
     private Bitmap getLabeledPin(String text) {
