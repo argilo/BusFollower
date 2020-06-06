@@ -104,15 +104,18 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
                 task.setActivityContext(this);
                 Log.d(TAG, "set task activity in onCreate");
             }
-            startingPosition = new CameraPosition(
-                    new LatLng(
-                            savedInstanceState.getDouble("mapTargetLatitude"),
-                            savedInstanceState.getDouble("mapTargetLongitude")
-                    ),
-                    savedInstanceState.getFloat("mapZoomV2"),
-                    savedInstanceState.getFloat("mapTilt"),
-                    savedInstanceState.getFloat("mapBearing")
-            );
+            float mapZoom = savedInstanceState.getFloat("mapZoomV2", -1);
+            if (mapZoom != -1) {
+                startingPosition = new CameraPosition(
+                        new LatLng(
+                                savedInstanceState.getDouble("mapTargetLatitude"),
+                                savedInstanceState.getDouble("mapTargetLongitude")
+                        ),
+                        savedInstanceState.getFloat("mapZoomV2"),
+                        savedInstanceState.getFloat("mapTilt"),
+                        savedInstanceState.getFloat("mapBearing")
+                );
+            }
         } else {
             SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
             float mapZoom = settings.getFloat("mapZoomV2", -1);
@@ -203,12 +206,14 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
             Log.d(TAG, "cleared task activity");
         }
 
-        CameraPosition pos = map.getCameraPosition();
-        outState.putDouble("mapTargetLatitude", pos.target.latitude);
-        outState.putDouble("mapTargetLongitude", pos.target.longitude);
-        outState.putFloat("mapZoomV2", pos.zoom);
-        outState.putFloat("mapTilt", pos.tilt);
-        outState.putFloat("mapBearing", pos.bearing);
+        if (map != null) {
+            CameraPosition pos = map.getCameraPosition();
+            outState.putDouble("mapTargetLatitude", pos.target.latitude);
+            outState.putDouble("mapTargetLongitude", pos.target.longitude);
+            outState.putFloat("mapZoomV2", pos.zoom);
+            outState.putFloat("mapTilt", pos.tilt);
+            outState.putFloat("mapBearing", pos.bearing);
+        }
     }
 
     @Override
