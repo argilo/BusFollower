@@ -36,12 +36,12 @@ densities = {
 for filename in os.listdir("svg"):
     if filename.endswith(".svg"):
         prefix = filename[0:-4]
-        infile = os.path.join("svg", prefix + ".svg")
+        infile = os.path.join("svg", f"{prefix}.svg")
         for density, dpi in densities.items():
-            density_dir = os.path.join("app", "src", "main", "res", "drawable-" + density)
+            density_dir = os.path.join("app", "src", "main", "res", f"drawable-{density}")
             if not os.path.exists(density_dir):
                 os.makedirs(density_dir)
-            if subprocess.run(["inkscape", "-o", os.path.join(density_dir, prefix + ".png"),
+            if subprocess.run(["inkscape", "-o", os.path.join(density_dir, f"{prefix}.png"),
                                "-d", str(dpi), infile]).returncode != 0:
                 sys.exit(1)
         if prefix == "launcher_icon":
