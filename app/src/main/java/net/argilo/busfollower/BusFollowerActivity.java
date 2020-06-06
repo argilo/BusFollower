@@ -150,7 +150,11 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
     @Override
     protected void onRestart() {
         super.onRestart();
-        ((TripAdapter) tripList.getAdapter()).notifyDataSetChanged();
+
+        TripAdapter ta = (TripAdapter) tripList.getAdapter();
+        if (ta != null) {
+            ta.notifyDataSetChanged();
+        }
     }
 
     @Override
