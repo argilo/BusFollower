@@ -156,9 +156,14 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
             map.setMyLocationEnabled(true);
 
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            Criteria locationCriteria = new Criteria();
-            locationCriteria.setAccuracy(Criteria.ACCURACY_FINE);
-            locationManager.requestSingleUpdate(locationManager.getBestProvider(locationCriteria, true), this, null);
+            if (locationManager != null) {
+                Criteria locationCriteria = new Criteria();
+                locationCriteria.setAccuracy(Criteria.ACCURACY_FINE);
+                String bestProvider = locationManager.getBestProvider(locationCriteria, true);
+                if (bestProvider != null) {
+                    locationManager.requestSingleUpdate(bestProvider, this, null);
+                }
+            }
         }
     }
 
