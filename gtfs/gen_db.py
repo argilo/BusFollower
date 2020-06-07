@@ -116,14 +116,16 @@ cursor.execute("CREATE TABLE android_metadata (locale TEXT)")
 cursor.execute("INSERT INTO android_metadata VALUES ('en_US')")
 
 cursor.execute("DROP TABLE IF EXISTS stops")
-cursor.execute("""CREATE TABLE stops (
-stop_id TEXT PRIMARY KEY,
-stop_code TEXT,
-stop_name TEXT,
-stop_lat REAL,
-stop_lon REAL,
-total_departures INT
-)""")
+cursor.execute("""
+    CREATE TABLE stops (
+        stop_id TEXT PRIMARY KEY,
+        stop_code TEXT,
+        stop_name TEXT,
+        stop_lat REAL,
+        stop_lon REAL,
+        total_departures INT
+    )
+""")
 cursor.execute("CREATE INDEX stop_code ON stops(stop_code)")
 cursor.execute("CREATE INDEX stop_lon ON stops(stop_lon)")
 
