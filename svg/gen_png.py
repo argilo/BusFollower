@@ -20,10 +20,12 @@
 # <https://www.gnu.org/licenses/>.
 #
 
+"""Convert SVG images to bitmaps at various pixel densities."""
+
 import os
 import subprocess
 
-densities = {
+DENSITIES = {
     "ldpi": 120,
     "mdpi": 160,
     "hdpi": 240,
@@ -36,7 +38,7 @@ for filename in os.listdir("svg"):
     if filename.endswith(".svg"):
         prefix = filename[0:-4]
         infile = os.path.join("svg", f"{prefix}.svg")
-        for density, dpi in densities.items():
+        for density, dpi in DENSITIES.items():
             density_dir = os.path.join("app", "src", "main", "res", f"drawable-{density}")
             if not os.path.exists(density_dir):
                 os.makedirs(density_dir)
