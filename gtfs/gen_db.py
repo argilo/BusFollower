@@ -20,6 +20,8 @@
 # <https://www.gnu.org/licenses/>.
 #
 
+"""Extract stop data from a GTFS file and put it in a SQLite database."""
+
 import csv
 import datetime
 import io
@@ -29,16 +31,17 @@ import re
 import zipfile
 
 
-def normalize_stop_code(stop_code):
-    if stop_code == "0000":
-        return None
-    elif re.match(r"^\d\d\d\d$", stop_code):
-        return stop_code
-    else:
-        return None
+def normalize_stop_code(code):
+    """Ensure stop code is in the range 0001-9999."""
+
+    if code != "0000" and re.match(r"^\d\d\d\d$", code):
+        return code
+    return None
 
 
 def remove_accents(stop_name):
+    """Remove accents from French stop names for easier searching."""
+
     stop_name = stop_name.replace("À", "A")
     stop_name = stop_name.replace("Â", "A")
     stop_name = stop_name.replace("Æ", "AE")
@@ -59,6 +62,8 @@ def remove_accents(stop_name):
 
 
 def normalize_stop_name(stop_name):
+    """Remove accents, correct errors, and consistenly format stop names."""
+
     stop_name = remove_accents(stop_name.upper())
     original = stop_name
     stop_name = stop_name.strip()
@@ -81,6 +86,8 @@ def normalize_stop_name(stop_name):
 
 
 def gtfs_table(gtfs_zip, filename):
+    """Read lines from a table in a GTFS file."""
+
     with gtfs_zip.open(filename) as table:
         reader = csv.DictReader(io.TextIOWrapper(table, "utf-8"))
         for line in reader:
@@ -88,26 +95,28 @@ def gtfs_table(gtfs_zip, filename):
 
 
 def parse_date(date_string):
+    """Convert from YYYYMMDD to Python date object."""
+
     year = int(date_string[0:4])
     month = int(date_string[4:6])
     day = int(date_string[6:8])
     return datetime.date(year, month, day)
 
 
-assets_dir = os.path.join("app", "src", "main", "assets")
-if not os.path.exists(assets_dir):
-    os.makedirs(assets_dir)
+ASSETS_DIR = os.path.join("app", "src", "main", "assets")
+if not os.path.exists(ASSETS_DIR):
+    os.makedirs(ASSETS_DIR)
 
-out_file = "db"
-conn = sqlite3.connect(os.path.join(assets_dir, out_file))
-c = conn.cursor()
+OUT_FILE = "db"
+conn = sqlite3.connect(os.path.join(ASSETS_DIR, OUT_FILE))
+cursor = conn.cursor()
 
-c.execute("DROP TABLE IF EXISTS android_metadata")
-c.execute("CREATE TABLE android_metadata (locale TEXT)")
-c.execute("INSERT INTO android_metadata VALUES ('en_US')")
+cursor.execute("DROP TABLE IF EXISTS android_metadata")
+cursor.execute("CREATE TABLE android_metadata (locale TEXT)")
+cursor.execute("INSERT INTO android_metadata VALUES ('en_US')")
 
-c.execute("DROP TABLE IF EXISTS stops")
-c.execute("""CREATE TABLE stops (
+cursor.execute("DROP TABLE IF EXISTS stops")
+cursor.execute("""CREATE TABLE stops (
 stop_id TEXT PRIMARY KEY,
 stop_code TEXT,
 stop_name TEXT,
@@ -115,8 +124,8 @@ stop_lat REAL,
 stop_lon REAL,
 total_departures INT
 )""")
-c.execute("CREATE INDEX stop_code ON stops(stop_code)")
-c.execute("CREATE INDEX stop_lon ON stops(stop_lon)")
+cursor.execute("CREATE INDEX stop_code ON stops(stop_code)")
+cursor.execute("CREATE INDEX stop_lon ON stops(stop_lon)")
 
 with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as gtfs:
     service_days = {}
@@ -166,12 +175,12 @@ with zipfile.ZipFile(os.path.join("gtfs", "google_transit.zip")) as gtfs:
                   float(stop["stop_lat"]),
                   float(stop["stop_lon"]),
                   stop_departures[stop_id]]
-        c.execute("INSERT INTO stops VALUES (?,?,?,?,?,?)", values)
+        cursor.execute("INSERT INTO stops VALUES (?,?,?,?,?,?)", values)
 
         # Warn about unparseable stop codes so we can check for problems.
         if values[1] is None:
             print(f"Warning: Couldn't parse stop code '{stop_code}' ({values[2]})")
 
 conn.commit()
-c.close()
-print(f"Created database '{out_file}'.")
+cursor.close()
+print(f"Created database '{OUT_FILE}'.")
