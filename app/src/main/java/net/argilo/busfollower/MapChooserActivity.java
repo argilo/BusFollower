@@ -73,6 +73,7 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
 
     private SQLiteDatabase db;
     private static FetchRoutesTask task;
+    private MapFragment mapFragment;
     private GoogleMap map;
     private CameraPosition startingPosition;
     private final Map<Stop, Marker> displayedStops = new HashMap<>();
@@ -94,8 +95,7 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
 
         Util.setDisplayHomeAsUpEnabled(this, true);
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         if (savedInstanceState != null) {
@@ -240,12 +240,11 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
         } else {
             cameraUpdate = CameraUpdateFactory.newCameraPosition(startingPosition);
         }
-        final View layout = findViewById(R.id.layout);
 
-        layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mapFragment.getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                mapFragment.getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 map.moveCamera(cameraUpdate);
             }
         });

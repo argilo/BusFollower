@@ -80,6 +80,7 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
     private GetRoutesOrTripsResult result;
     private Route route;
 
+    private MapFragment mapFragment;
     private GoogleMap map;
     private int padding = 0;
     private ListView tripList;
@@ -140,8 +141,7 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
 
         padding = ContextCompat.getDrawable(this, R.drawable.pin_red).getIntrinsicHeight();
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         updateTripList();
@@ -263,12 +263,11 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
         if (zoomAndCenter) {
             LatLngBounds bounds = new LatLngBounds(new LatLng (minLatitude, minLongitude), new LatLng (maxLatitude, maxLongitude));
             final CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            final View layout = findViewById(R.id.layout);
 
-            layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            mapFragment.getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    mapFragment.getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     map.moveCamera(cameraUpdate);
                 }
             });
