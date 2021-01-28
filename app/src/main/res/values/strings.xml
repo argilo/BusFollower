@@ -47,7 +47,6 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="scheduled_arrival">Scheduled arrival:</string>
     <string name="estimated">estimated</string>
     <string name="scheduled">scheduled</string>
-    <string name="bus_speed">Speed:</string>
     <string name="kph">km/h</string>
     <string name="bus_type">Bus type:</string>
     <string name="last_trip">This is the last trip.</string>

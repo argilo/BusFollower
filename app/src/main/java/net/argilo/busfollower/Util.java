@@ -57,8 +57,6 @@ class Util {
                 "\n" + context.getString(R.string.start_time) + " " + getHumanReadableTime(context, trip.getStartTime()) +
                 "\n" + context.getString(trip.isEstimated() ? R.string.estimated_arrival : R.string.scheduled_arrival) +
                 " " + getHumanReadableTime(context, trip.getAdjustedScheduleTime()) +
-                (Float.isNaN(trip.getGpsSpeed()) ? "" : "\n" + context.getString(R.string.bus_speed) + " " +
-                Math.round(trip.getGpsSpeed() - 0.01) + " " + context.getString(R.string.kph)) +
                 "\n" + context.getString(R.string.bus_type) + " " + getBusTypeString(context, trip.getBusType()) +
                 (trip.isLastTrip() ? "\n" + context.getString(R.string.last_trip) : "");
     }

@@ -47,7 +47,6 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="scheduled_arrival">Arrivée prévue:</string>
     <string name="estimated">estimée</string>
     <string name="scheduled">prévue</string>
-    <string name="bus_speed">Vitesse:</string>
     <string name="kph">kmh</string>
     <string name="bus_type">Type d\'autobus:</string>
     <string name="last_trip">C\'est le dernier voyage.</string>

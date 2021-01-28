@@ -43,7 +43,6 @@ public class Trip implements Serializable {
     private float adjustmentAge = Float.NaN;
     private boolean lastTripOfSchedule = false;
     private BusType busType = new BusType("");
-    private float gpsSpeed = Float.NaN;
     private double latitude = Double.NaN;
     private double longitude = Double.NaN;
 
@@ -72,11 +71,7 @@ public class Trip implements Serializable {
             } else if ("BusType".equalsIgnoreCase(tagName)) {
                 busType = new BusType(xpp.nextText());
             } else if ("GPSSpeed".equalsIgnoreCase(tagName)) {
-                try {
-                    gpsSpeed = Float.parseFloat(xpp.nextText());
-                } catch (Exception e) {
-                    // Ignore.
-                }
+                xpp.nextText(); // Ignore.
             } else if ("Latitude".equalsIgnoreCase(tagName)) {
                 try {
                     latitude = Double.parseDouble(xpp.nextText());
@@ -166,10 +161,6 @@ public class Trip implements Serializable {
 
     public BusType getBusType() {
         return busType;
-    }
-
-    public float getGpsSpeed() {
-        return gpsSpeed;
     }
 
     public LatLng getLocation() {
