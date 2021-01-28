@@ -87,7 +87,7 @@ de bogues et les contributions de code sont appréciés!
 -----
 
 Build dependencies:
-* Android SDK 29
+* Android SDK 30
 * Inkscape 1.0 or later
 * Python 3.6 or later
 * SQLite
