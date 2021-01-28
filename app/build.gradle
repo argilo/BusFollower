@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 66
-        versionName "2.1.37"
+        versionName "2.2.0"
     }
     signingConfigs {
         release
