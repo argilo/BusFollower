@@ -68,11 +68,12 @@ public class OCTranspoDataFetcher {
         validateStopNumber(stopNumber);
         validateRouteNumber(routeNumber);
 
-        URL url = new URL("https://api.octranspo1.com/v1.3/" + command);
+        URL url = new URL("https://api.octranspo1.com/v2.0/" + command);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         try {
             String params = "appID=" + context.getString(R.string.oc_transpo_application_id) +
                     "&apiKey=" + context.getString(R.string.oc_transpo_application_key) +
+                    "&format=xml" +
                     "&stopNo=" + stopNumber;
             if (routeNumber != null) {
                 params += "&routeNo=" + routeNumber;
