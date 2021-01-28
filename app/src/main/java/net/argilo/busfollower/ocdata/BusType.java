@@ -41,6 +41,10 @@ public class BusType implements Serializable {
         }
     }
 
+    public boolean isPresent() {
+        return busType != "";
+    }
+
     public boolean hasBikeRack() {
         return busType.contains("B");
     }
