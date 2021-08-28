@@ -77,6 +77,7 @@ def normalize_stop_name(stop_name):
     stop_name = stop_name.replace("BARRETE", "BARRETTE")
     stop_name = stop_name.replace("MER BELUE", "MER BLEUE")
     stop_name = stop_name.replace("ROCKLAND / BUCKLAND", "ROCKDALE / BUCKLAND")
+    stop_name = stop_name.replace("KITTIWKE", "KITTIWAKE")
     stop_name = stop_name.replace("/", " / ")
     stop_name = " ".join(stop_name.split())
     stop_name = re.sub(r"\b(STE?)-", r"\1 ", stop_name)
