@@ -2,11 +2,11 @@ import groovy.xml.MarkupBuilder
 
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "net.argilo.busfollower"
         minSdkVersion 14
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 70
         versionName "2.2.4"
     }
