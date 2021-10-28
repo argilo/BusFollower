@@ -244,7 +244,7 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
         mapFragment.getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mapFragment.getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                mapFragment.getView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 map.moveCamera(cameraUpdate);
             }
         });
