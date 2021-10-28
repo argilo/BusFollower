@@ -5,7 +5,7 @@ android {
     compileSdkVersion 31
     defaultConfig {
         applicationId "net.argilo.busfollower"
-        minSdkVersion 14
+        minSdkVersion 19
         targetSdkVersion 31
         versionCode 70
         versionName "2.2.4"
@@ -24,8 +24,8 @@ android {
 
 dependencies {
     implementation 'androidx.annotation:annotation:1.2.0'
-    implementation 'androidx.core:core:1.6.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'androidx.core:core:1.7.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.0'
 }
 
 task generateOCTranspoXML {

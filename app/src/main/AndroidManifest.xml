@@ -46,6 +46,7 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
 
         <activity android:name=".StopChooserActivity"
             android:label="@string/app_name"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
