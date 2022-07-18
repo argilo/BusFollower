@@ -42,8 +42,9 @@ for filename in os.listdir("svg"):
             density_dir = os.path.join("app", "src", "main", "res", f"drawable-{density}")
             if not os.path.exists(density_dir):
                 os.makedirs(density_dir)
-            subprocess.run(["inkscape", "--export-png", os.path.join(density_dir, f"{prefix}.png"),
-                            "-d", str(dpi), infile], check=True)
+            outfile = os.path.join(density_dir, f"{prefix}.png")
+            subprocess.run(["inkscape", "--export-type=png", f"--export-filename={outfile}",
+                            f"--export-dpi={dpi}", infile], check=True)
         if prefix == "launcher_icon":
-            subprocess.run(["inkscape", "--export-png", "google-play-icon.png", "-h",
+            subprocess.run(["inkscape", "--export-type=png", "--export-filename=google-play-icon.png", "-h",
                             "512", "-w", "512", infile], check=True)
