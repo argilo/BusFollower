@@ -60,7 +60,7 @@ public class Route implements Serializable {
         }
         if (other instanceof Route) {
             Route otherRoute = (Route) other;
-            return number.equals(otherRoute.number) && direction.equals(otherRoute.direction);
+            return number.equals(otherRoute.number) && directionID.equals(otherRoute.directionID);
         } else {
             return false;
         }
