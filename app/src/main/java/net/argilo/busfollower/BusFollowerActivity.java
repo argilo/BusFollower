@@ -63,12 +63,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class BusFollowerActivity extends Activity implements OnMapReadyCallback {
     private static final double MIN_LAT_SPAN = 0.01;
@@ -96,21 +94,14 @@ public class BusFollowerActivity extends Activity implements OnMapReadyCallback 
         Util.setDisplayHomeAsUpEnabled(this, true);
 
         tripList = findViewById(R.id.tripList);
-        tripList.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Trip trip = (Trip) tripList.getAdapter().getItem(position);
-                RouteDirection rd = trip.getRouteDirection();
-                AlertDialog.Builder dialog = new AlertDialog.Builder(BusFollowerActivity.this);
-                dialog.setTitle(rd.getRouteNumber() + " " + rd.getRouteLabel());
-                dialog.setMessage(Util.getBusInformationString(BusFollowerActivity.this, rd, trip));
-                dialog.setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-                dialog.show();
-            }
+        tripList.setOnItemClickListener((parent, view, position, id) -> {
+            Trip trip = (Trip) tripList.getAdapter().getItem(position);
+            RouteDirection rd = trip.getRouteDirection();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(BusFollowerActivity.this);
+            dialog.setTitle(rd.getRouteNumber() + " " + rd.getRouteLabel());
+            dialog.setMessage(Util.getBusInformationString(BusFollowerActivity.this, rd, trip));
+            dialog.setNegativeButton(getString(R.string.ok), (dialog1, id1) -> dialog1.cancel());
+            dialog.show();
         });
 
         result = (GetRoutesOrTripsResult) getIntent().getSerializableExtra("result");

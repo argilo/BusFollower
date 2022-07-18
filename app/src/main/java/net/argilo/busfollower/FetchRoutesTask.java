@@ -32,7 +32,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -98,11 +97,7 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRoutesOrTripsResult> {
             AlertDialog.Builder builder = new AlertDialog.Builder(activityContext);
             builder.setTitle(R.string.error)
             .setMessage(errorString)
-            .setNegativeButton(applicationContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
-                }
-            });
+            .setNegativeButton(applicationContext.getString(R.string.ok), (dialog, id) -> dialog.cancel());
             AlertDialog alert = builder.create();
             alert.show();
         } else {
@@ -125,13 +120,10 @@ class FetchRoutesTask extends AsyncTask<String, Void, GetRoutesOrTripsResult> {
     }
 
     private ProgressDialog createProgressDialog() {
-        return ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                if (dataFetcher != null) {
-                    cancel(false);
-                    dataFetcher.abortRequest();
-                }
+        return ProgressDialog.show(activityContext, "", applicationContext.getString(R.string.loading), true, true, dialog -> {
+            if (dataFetcher != null) {
+                cancel(false);
+                dataFetcher.abortRequest();
             }
         });
     }

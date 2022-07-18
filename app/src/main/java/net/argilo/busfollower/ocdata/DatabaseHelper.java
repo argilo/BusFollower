@@ -73,7 +73,7 @@ public class DatabaseHelper {
             InputStream is = context.getAssets().open("db");
 
             // Copy the database into the destination
-            OutputStream os = new FileOutputStream(new File(DATABASE_PATH));
+            OutputStream os = new FileOutputStream(DATABASE_PATH);
             byte[] buffer = new byte[1024];
             int length;
             while ((length = is.read(buffer)) > 0) {

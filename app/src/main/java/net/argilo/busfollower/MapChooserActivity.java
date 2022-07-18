@@ -32,7 +32,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -48,7 +47,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -221,12 +219,7 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
         map = googleMap;
         enableMyLocation();
 
-        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                new DisplayStopsTask().execute(map.getProjection().getVisibleRegion().latLngBounds);
-            }
-        });
+        map.setOnCameraIdleListener(() -> new DisplayStopsTask().execute(map.getProjection().getVisibleRegion().latLngBounds));
 
         map.setOnMarkerClickListener(this);
         final CameraUpdate cameraUpdate;
@@ -259,14 +252,11 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
             dialog.setMessage(stop.getNumber() == null ? getString(R.string.no_departures) : stop.getName());
             dialog.setNegativeButton(android.R.string.cancel, null); // dismisses by default
             if (stop.getNumber() != null) {
-                dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        task = new FetchRoutesTask(MapChooserActivity.this, db);
-                        Log.d(TAG, "set task activity in onMarkerClick");
-                        task.execute(stop.getNumber());
-                    }
+                dialog.setPositiveButton(android.R.string.ok, (dialog1, which) -> {
+                    dialog1.dismiss();
+                    task = new FetchRoutesTask(MapChooserActivity.this, db);
+                    Log.d(TAG, "set task activity in onMarkerClick");
+                    task.execute(stop.getNumber());
                 });
             }
             dialog.create();

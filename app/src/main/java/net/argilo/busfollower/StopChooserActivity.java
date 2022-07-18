@@ -37,20 +37,14 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 public class StopChooserActivity extends Activity {
     private static final String TAG = "StopChooserActivity";
@@ -87,102 +81,81 @@ public class StopChooserActivity extends Activity {
                 new String[] { "stop_desc" }, new int[] { android.R.id.text1 }, 0);
         stopSearchField.setAdapter(adapter);
 
-        adapter.setCursorToStringConverter(new CursorToStringConverter() {
-            @Override
-            public String convertToString(Cursor cursor) {
-                return cursor.getString(cursor.getColumnIndexOrThrow("stop_code"));
-            }
-        });
+        adapter.setCursorToStringConverter(cursor -> cursor.getString(cursor.getColumnIndexOrThrow("stop_code")));
 
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
-            @Override
-            public Cursor runQuery(CharSequence constraint) {
-                Log.d(TAG, "Loading cursor in runQuery().");
-                if (constraint == null) {
-                    return null;
-                }
-                String constraintStr = constraint.toString();
-                String[] pieces = constraintStr.split(" ");
-
-                StringBuilder query = new StringBuilder("SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL");
-                ArrayList<String> params = new ArrayList<>();
-                boolean validQuery = false;
-                for (String piece : pieces) {
-                    if (piece.length() > 0) {
-                        validQuery = true;
-                        query.append(" AND (stop_name LIKE ?");
-                        params.add("%" + piece + "%");
-                        if (piece.matches("\\d\\d\\d?\\d?")) {
-                            query.append(" OR stop_code LIKE ?");
-                            params.add(piece + "%");
-                        }
-                        query.append(")");
-                    }
-                }
-                if (!validQuery) {
-                    return null;
-                }
-                query.append(" ORDER BY total_departures DESC");
-                Cursor cursor = db.rawQuery(query.toString(), params.toArray(new String[0]));
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    Log.d(TAG, "Done loading cursor.");
-                    return cursor;
-                }
-
-                Log.d(TAG, "Cursor was null.");
+        adapter.setFilterQueryProvider(constraint -> {
+            Log.d(TAG, "Loading cursor in runQuery().");
+            if (constraint == null) {
                 return null;
             }
-        });
+            String constraintStr = constraint.toString();
+            String[] pieces = constraintStr.split(" ");
 
-        stopSearchField.setOnEditorActionListener(new OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId,
-                    KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_GO ||
-                        (actionId == EditorInfo.IME_NULL && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
-                    fetchRoutesTask.execute(stopSearchField.getText().toString());
-                    return true;
+            StringBuilder query = new StringBuilder("SELECT stop_id AS _id, stop_code, stop_code || \"  \" || stop_name AS stop_desc FROM stops WHERE stop_code IS NOT NULL");
+            ArrayList<String> params = new ArrayList<>();
+            boolean validQuery = false;
+            for (String piece : pieces) {
+                if (piece.length() > 0) {
+                    validQuery = true;
+                    query.append(" AND (stop_name LIKE ?");
+                    params.add("%" + piece + "%");
+                    if (piece.matches("\\d\\d\\d?\\d?")) {
+                        query.append(" OR stop_code LIKE ?");
+                        params.add(piece + "%");
+                    }
+                    query.append(")");
                 }
-                return false;
             }
+            if (!validQuery) {
+                return null;
+            }
+            query.append(" ORDER BY total_departures DESC");
+            Cursor cursor = db.rawQuery(query.toString(), params.toArray(new String[0]));
+            if (cursor != null) {
+                cursor.moveToFirst();
+                Log.d(TAG, "Done loading cursor.");
+                return cursor;
+            }
+
+            Log.d(TAG, "Cursor was null.");
+            return null;
         });
 
-        stopSearchField.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        stopSearchField.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_GO ||
+                    (actionId == EditorInfo.IME_NULL && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
                 fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
                 fetchRoutesTask.execute(stopSearchField.getText().toString());
+                return true;
             }
+            return false;
         });
 
-        chooseMapButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(StopChooserActivity.this, MapChooserActivity.class);
-                startActivity(intent);
-            }
+        stopSearchField.setOnItemClickListener((parent, view, position, id) -> {
+            fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
+            fetchRoutesTask.execute(stopSearchField.getText().toString());
+        });
+
+        chooseMapButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StopChooserActivity.this, MapChooserActivity.class);
+            startActivity(intent);
         });
 
         ListView recentList = findViewById(R.id.recentList);
-        recentQueryAdapter = new RecentQueryAdapter(this, new ArrayList<RecentQuery>());
+        recentQueryAdapter = new RecentQueryAdapter(this, new ArrayList<>());
         recentList.setAdapter(recentQueryAdapter);
 
-        recentList.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                RecentQuery query = recentQueryAdapter.getItem(position);
-                if (query == null) {
-                    return;
-                }
-                if (query.getRoute() == null) {
-                    fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
-                    fetchRoutesTask.execute(query.getStop().getNumber());
-                } else {
-                    fetchTripsTask = new FetchTripsTask(StopChooserActivity.this);
-                    fetchTripsTask.execute(query);
-                }
+        recentList.setOnItemClickListener((parent, v, position, id) -> {
+            RecentQuery query = recentQueryAdapter.getItem(position);
+            if (query == null) {
+                return;
+            }
+            if (query.getRoute() == null) {
+                fetchRoutesTask = new FetchRoutesTask(StopChooserActivity.this, db);
+                fetchRoutesTask.execute(query.getStop().getNumber());
+            } else {
+                fetchTripsTask = new FetchTripsTask(StopChooserActivity.this);
+                fetchTripsTask.execute(query);
             }
         });
     }
