@@ -34,7 +34,7 @@ public class Stop implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String number;
-    private String name;
+    private final String name;
     private final double latitude;
     private final double longitude;
 
@@ -49,6 +49,7 @@ public class Stop implements Serializable {
             throw new IllegalArgumentException(context.getString(R.string.invalid_stop_number));
         }
 
+        String name = null;
         result.moveToFirst();
         if (result.getCount() == 1) {
             name = result.getString(0);
@@ -76,6 +77,7 @@ public class Stop implements Serializable {
                 name = result.getString(0);
             }
         }
+        this.name = name;
 
         // Average out the stop locations in case there are multiple entries
         // (e.g. different platforms at a Transitway station)
