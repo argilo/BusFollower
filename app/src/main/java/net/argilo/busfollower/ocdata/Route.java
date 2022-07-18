@@ -25,10 +25,10 @@ import java.io.Serializable;
 public class Route implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String number;
-    private String directionID;
-    private String direction;
-    private String heading;
+    private final String number;
+    private final String directionID;
+    private final String direction;
+    private final String heading;
 
     public Route(RouteDirection routeDirection) {
         this.number = routeDirection.getRouteNumber();

@@ -39,7 +39,7 @@ import android.os.AsyncTask;
 
 class FetchTripsTask extends AsyncTask<RecentQuery, Void, GetRoutesOrTripsResult> {
     private Context activityContext;
-    private Context applicationContext;
+    private final Context applicationContext;
     private ProgressDialog progressDialog;
     private Route route;
     private String errorString;

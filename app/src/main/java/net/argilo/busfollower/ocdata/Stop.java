@@ -33,10 +33,10 @@ import com.google.android.gms.maps.model.LatLng;
 public class Stop implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String number;
+    private final String number;
     private String name;
-    private double latitude;
-    private double longitude;
+    private final double latitude;
+    private final double longitude;
 
     public Stop(Context context, SQLiteDatabase db, String number) throws IllegalArgumentException {
         // Zero-pad the stop number to 4 digits.

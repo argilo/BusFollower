@@ -38,8 +38,8 @@ import android.os.AsyncTask;
 
 class FetchRoutesTask extends AsyncTask<String, Void, GetRoutesOrTripsResult> {
     private Context activityContext;
-    private Context applicationContext;
-    private SQLiteDatabase db;
+    private final Context applicationContext;
+    private final SQLiteDatabase db;
     private ProgressDialog progressDialog;
     private Stop stop;
     private String errorString;
