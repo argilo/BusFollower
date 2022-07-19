@@ -54,14 +54,17 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <plurals name="inMinutes">
         <item quantity="one">En %d minute</item>
         <item quantity="other">En %d minutes</item>
+        <item quantity="many">En %d minutes</item>
     </plurals>
     <plurals name="minutes">
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
+        <item quantity="many">%d minutes</item>
     </plurals>
     <plurals name="minutesAgo">
         <item quantity="one">Il y a %d minute</item>
         <item quantity="other">Il y a %d minutes</item>
+        <item quantity="many">Il y a %d minutes</item>
     </plurals>
 
     <string name="length_40">Quarante pieds</string>

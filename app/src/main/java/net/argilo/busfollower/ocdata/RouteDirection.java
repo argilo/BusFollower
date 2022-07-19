@@ -32,6 +32,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 public class RouteDirection implements Comparable<RouteDirection>, Serializable {
     private static final long serialVersionUID = 1L;
     private static final String TAG = "RouteDirection";
@@ -129,6 +131,7 @@ public class RouteDirection implements Comparable<RouteDirection>, Serializable 
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         String result = "";

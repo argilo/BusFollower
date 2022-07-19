@@ -215,7 +215,7 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
         enableMyLocation();
 
@@ -244,7 +244,7 @@ public class MapChooserActivity extends Activity implements OnMapReadyCallback,
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
+    public boolean onMarkerClick(@NonNull Marker marker) {
         final Stop stop = displayedMarkers.get(marker);
         if (stop != null) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
