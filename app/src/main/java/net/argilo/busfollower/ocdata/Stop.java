@@ -40,8 +40,8 @@ public class Stop implements Serializable {
 
     public Stop(Context context, SQLiteDatabase db, String number) throws IllegalArgumentException {
         // Zero-pad the stop number to 4 digits.
-        while (number.length() < 4) {
-            number = "0" + number;
+        if (number.length() < 4) {
+            number = "0000".substring(number.length()) + number;
         }
 
         Cursor result = db.rawQuery("SELECT stop_name, stop_lat, stop_lon FROM stops WHERE stop_code = ?", new String[] { number });
