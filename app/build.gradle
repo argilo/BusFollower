@@ -7,8 +7,8 @@ android {
         applicationId "net.argilo.busfollower"
         minSdkVersion 19
         targetSdkVersion 33
-        versionCode 73
-        versionName "2.2.7"
+        versionCode 74
+        versionName "2.2.8"
     }
     signingConfigs {
         release
