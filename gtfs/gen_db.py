@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #
-# Copyright 2012-2020 Clayton Smith
+# Copyright 2012-2023 Clayton Smith
 #
 # This file is part of Ottawa Bus Follower.
 #
