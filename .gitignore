@@ -22,8 +22,10 @@
 /secure.properties
 /.idea/caches
 /.idea/codeStyles
+/.idea/deploymentTargetDropDown.xml
 /.idea/encodings.xml
 /.idea/libraries
+/.idea/migrations.xml
 /.idea/misc.xml
 /.idea/modules.xml
 /.idea/vcs.xml
