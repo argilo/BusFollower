@@ -29,7 +29,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
 }
 
-task generateOCTranspoXML {
+tasks.register('generateOCTranspoXML') {
     def props = new Properties()
     props.load(new FileInputStream(rootProject.file("secure.properties")))
 
@@ -49,14 +49,14 @@ task generateOCTranspoXML {
     }
 }
 
-task generatePNG(type:Exec) {
+tasks.register('generatePNG', Exec) {
     inputs.dir '../svg'
     outputs.dir 'src/main/res'
     workingDir '..'
     commandLine 'python3', "svg${File.separator}gen_png.py"
 }
 
-task generateDB(type:Exec) {
+tasks.register('generateDB', Exec) {
     inputs.dir '../gtfs'
     outputs.file 'src/main/assets/db'
     workingDir '..'
