@@ -43,8 +43,8 @@ task generateOCTranspoXML {
             string(name: "oc_transpo_application_key", translatable: "false", props.getProperty("${type}.oc_transpo_application_key"))
         }
 
-        new File("app/src/${type}/res/values").mkdirs()
-        def stringsFile = new File("app/src/${type}/res/values/api_keys.xml")
+        rootProject.file("app/src/${type}/res/values").mkdirs()
+        def stringsFile = rootProject.file("app/src/${type}/res/values/api_keys.xml")
         stringsFile.write(sw.toString())
     }
 }
