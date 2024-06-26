@@ -88,9 +88,13 @@ public class OCTranspoDataFetcher {
             InputStream in = conn.getInputStream();
             xpp.setInput(in, "UTF-8");
             xpp.next(); // <soap:Envelope>
+            xpp.require(XmlPullParser.START_TAG, null, "Envelope");
             xpp.next(); //   <soap:Body>
+            xpp.require(XmlPullParser.START_TAG, null, "Body");
             xpp.next(); //     <Get*Response>
+            xpp.require(XmlPullParser.START_TAG, null, command + "Response");
             xpp.next(); //       <Get*Result>
+            xpp.require(XmlPullParser.START_TAG, null, command + "Result");
             GetRoutesOrTripsResult result = new GetRoutesOrTripsResult(xpp);
             in.close();
             return result;
