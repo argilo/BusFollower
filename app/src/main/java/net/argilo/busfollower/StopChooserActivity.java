@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import net.argilo.busfollower.ocdata.Stop;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -158,6 +159,12 @@ public class StopChooserActivity extends Activity {
                 fetchTripsTask.execute(query);
             }
         });
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(StopChooserActivity.this);
+        dialog.setTitle(R.string.shutdown_title);
+        dialog.setMessage(R.string.shutdown_body);
+        dialog.setNegativeButton(getString(R.string.ok), (dialog1, id1) -> dialog1.cancel());
+        dialog.show();
     }
 
     @Override

@@ -74,4 +74,14 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="unable_to_query_data_source">Unable to query data source</string>
     <string name="invalid_stop_number">Invalid stop number</string>
     <string name="invalid_route_number">Invalid route number</string>
+
+    <string name="shutdown_title">Shutdown on April 30</string>
+    <string name="shutdown_body">
+        After 13 years of volunteer work, I have decided to shut down this application, effective April 30.
+        Unfortunately, that means that you\'ll need to choose another application to get information about OC Transpo buses.
+        \n\nThe reason for the shutdown is that OC Transpo is updating the system that it uses to distribute
+        real-time information about its buses, and will soon shut down the old system.
+        I am not prepared to invest the time needed to support the new system, since I no longer live in Ottawa.
+        \n\nThank you for using Bus Follower!
+    </string>
 </resources>
