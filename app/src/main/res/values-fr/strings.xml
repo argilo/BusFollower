@@ -78,15 +78,16 @@ along with Ottawa Bus Follower; see the file COPYING.  If not, see
     <string name="invalid_stop_number">L\'adresse n\'a pas été trouvée.</string>
     <string name="invalid_route_number">Le circuit n\'a pas été trouvée.</string>
 
-    <string name="shutdown_title">Fermeture le 30 avril</string>
+    <string name="shutdown_title">Fin de la route le 30 avril</string>
     <string name="shutdown_body">
-        Après 13 ans de bénévolat, j\'ai décidé de fermer cette application à compter du 30 avril.
-        Malheureusement, cela signifie que vous devrez choisir une autre application
-        pour obtenir des informations sur les autobus d\'OC Transpo.
-        \n\nLa raison de la fermeture est qu\'OC Transpo met à jour le système qu\'il utilise
-        pour distribuer des informations en temps réel sur ses autobus et fermera bientôt l\'ancien système.
-        Je ne suis pas prêt à investir le temps nécessaire pour soutenir le nouveau système,
-        puisque je n\'habite plus à Ottawa.
-        \n\nMerci d\'utiliser Bus Follower !
+        Malgré 13 ans de bénévolat dédié à Bus Follower, j\'ai décidé de cesser le développement de
+        cette application à compter du 30 avril. Malheureusement, cela signifie que vous devrez
+        choisir une autre application pour obtenir des informations au sujet des autobus d\'OC
+        Transpo.
+        \n\nOC Transpo met à jour le système qu\'il utilise pour distribuer les informations en
+        temps réel au sujet de ses autobus et l\'ancien système qu\'utilise Bus Follower sera
+        bientôt désactivé. Étant donné que je n\'habite plus à Ottawa je ne suis pas prêt à
+        investir le temps nécessaire pour adopter le nouveau système.
+        \n\nMerci d\'avoir utilisé Bus Follower !
     </string>
 </resources>
